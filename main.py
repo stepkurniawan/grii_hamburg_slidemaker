@@ -123,7 +123,8 @@ def main():
     add_church_cover_page(prs)
 
     check_placeholders_in_slide_index(prs, 4)
-    add_bible_reading_page(prs)
+    # add_bible_reading_page(prs)
+    add_doa_bapa_kami_page(prs)
 
     # save file
     prs.save('test.pptx')

@@ -30,7 +30,7 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     elif language == "DE":
         # Set up the WebDriver (Edge in this example)
         driver = webdriver.Edge()
-        driver.get("https://www.bible.com/bible/877/GEN.1.BIBEL.HEUTE")
+        driver.get("https://www.bible.com/bible/51/GEN.1.DELUT")
         book = indonesian_to_german_bible.get(book) # translate book name from indonesian to german
 
     # calculate how many verses to get

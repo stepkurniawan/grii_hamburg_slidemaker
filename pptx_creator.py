@@ -80,7 +80,11 @@ def add_bible_reading_page(prs):
         except IndexError:
             print("Invalid placeholder index.")
     
-    
+def add_doa_bapa_kami_page(prs):
+    add_slide_layout_from_layout_name(prs, "BAPA_KAMI_1")
+    add_slide_layout_from_layout_name(prs, "BAPA_KAMI_2")
+    add_slide_layout_from_layout_name(prs, "BAPA_KAMI_3")
+
 
 
 ######## Helper functions ####################################################
