@@ -85,6 +85,18 @@ def add_doa_bapa_kami_page(prs):
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_2")
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_3")
 
+def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
+    layout_name = "PREACHER" # renamed in the master template pptx file
+    slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+    print("preacher layout")
+    check_placeholders_in_slide(prs,slide_layout)
+
+    de_preacher_placeholder = slide_layout.placeholders[10]
+    id_preacher_placeholder = slide_layout.placeholders[11]
+
+    de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
+    id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
 
 ######## Helper functions ####################################################

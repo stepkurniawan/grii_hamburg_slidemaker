@@ -75,9 +75,9 @@ OPEN_BIBLE_CHAPTER = ""
 OPEN_BIBLE_VERSE_START = ""
 OPEN_BIBLE_VERSE_END = ""
 # 3. Pastor's title in Indonesian and German, and name
-PASTOR_TITLE_ID = ""
-PASTOR_TITLE_DE = ""
-PASTOR_NAME = ""
+PASTOR_TITLE_ID = "Pdt."
+PASTOR_TITLE_DE = "Pfr."
+PASTOR_NAME = "Test"
 # 4. Second (blue) offering purpose in Indonesian and German
 SECOND_OFFERING_PURPOSE_ID = ""
 SECOND_OFFERING_PURPOSE_DE = ""
@@ -125,6 +125,7 @@ def main():
     check_placeholders_in_slide_index(prs, 4)
     # add_bible_reading_page(prs)
     add_doa_bapa_kami_page(prs)
+    add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
 
     # save file
     prs.save('test.pptx')
