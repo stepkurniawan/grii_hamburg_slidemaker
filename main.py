@@ -125,9 +125,6 @@ def main():
     check_placeholders_in_slide_index(prs, 4)
     add_bible_reading_page(prs)
 
-    id_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "ID")
-    de_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "DE")
-
     # save file
     prs.save('test.pptx')
 

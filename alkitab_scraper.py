@@ -51,7 +51,7 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
         search_input.send_keys(Keys.ENTER)
 
         # Wait for the search results to load (you may need to adjust the time depending on your internet speed)
-        time.sleep(1) # Wait for 5 seconds (adjust as needed)
+        time.sleep(2) # Wait for 5 seconds (adjust as needed)
 
         # Get the search results
         bible_verse_element = driver.find_element_by_xpath("/html/body/div/div/main/div[1]/div/div/div/div/div[2]/div/div[1]/div/p")

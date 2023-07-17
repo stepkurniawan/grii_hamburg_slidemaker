@@ -1,3 +1,5 @@
+from alkitab_scraper import *
+
 
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
@@ -12,7 +14,7 @@ def insert_slides_from_pict_folder(prs, folder_path):
         file_path = os.path.join(folder_path, file)
         pic = slide.shapes.add_picture(file_path, Inches(0), Inches(0), width=prs.slide_width, height=prs.slide_height)
 
-def get_slide_layout_from_layout_name(prs,layout_name):
+def add_slide_layout_from_layout_name(prs,layout_name):
     # Specify the layout name you want to use
     slide_layout = None
     for layout in prs.slide_master.slide_layouts:
@@ -30,21 +32,21 @@ def get_slide_layout_from_layout_name(prs,layout_name):
 def add_beginning_slide(prs):
     # Specify the layout name you want to use
     layout_name = "beginning" # renamed in the master template pptx file
-    get_slide_layout_from_layout_name(prs, layout_name)
+    add_slide_layout_from_layout_name(prs, layout_name)
 
 
 
 def add_church_cover_page(prs):
     # Specify the layout name you want to use
     layout_name = "church_cover" # renamed in the master template pptx file
-    get_slide_layout_from_layout_name(prs, layout_name)
+    add_slide_layout_from_layout_name(prs, layout_name)
 
 
 
 def add_bible_reading_page(prs):
     # Find the layout with the specified name
     layout_name_cover = "BIBLE_READING" # renamed in the master template pptx file
-    slide_layout_cover = get_slide_layout_from_layout_name(prs, layout_name_cover)
+    slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
         bible_verse = slide_layout_cover.placeholders[10]
@@ -52,15 +54,31 @@ def add_bible_reading_page(prs):
     except IndexError:
         print("Invalid placeholder index.")
 
+    id_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "ID") #TDOD: get from input
+    de_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "DE") #TDOD: get from input
 
-    bible_verse_layout_name = "BIBLE_VERSE" # renamed in the master template pptx file
-    slide_layout_bible_verse = get_slide_layout_from_layout_name(prs, bible_verse_layout_name)
-    try:
-        print("bible verse layout")
-        check_placeholders_in_slide(prs,slide_layout_bible_verse)
-        
-    except IndexError:
-        print("Invalid placeholder index.")
+    # count how many verse 
+    verse_count = len(id_bible_verse)
+
+    # loop so we add slide for each verse
+    for id_key, de_key in zip(id_bible_verse.keys(), de_bible_verse.keys()):
+        bible_verse_layout_name = "BIBLE_VERSE" # renamed in the master template pptx file
+        slide_layout_bible_verse = add_slide_layout_from_layout_name(prs, bible_verse_layout_name)
+        try:
+            # print("bible verse layout")
+            # check_placeholders_in_slide(prs,slide_layout_bible_verse)
+            de_bible_verse_placeholder = slide_layout_bible_verse.placeholders[10]
+            id_bible_verse_placeholder = slide_layout_bible_verse.placeholders[11]
+
+            # Get the values corresponding to the current keys
+            de_value = de_bible_verse[de_key]
+            id_value = id_bible_verse[id_key]
+
+            de_bible_verse_placeholder.text = de_key + " : " + de_value
+            id_bible_verse_placeholder.text = id_key + " : " + id_value
+            
+        except IndexError:
+            print("Invalid placeholder index.")
     
     
 
