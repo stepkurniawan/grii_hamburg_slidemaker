@@ -79,8 +79,7 @@ PASTOR_TITLE_ID = "Pdt."
 PASTOR_TITLE_DE = "Pfr."
 PASTOR_NAME = "Test"
 # 4. Second (blue) offering purpose in Indonesian and German
-SECOND_OFFERING_PURPOSE_ID = ""
-SECOND_OFFERING_PURPOSE_DE = ""
+SECOND_OFFERING_PURPOSE_ID = ["none", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
 
 
 ########################################### Global variables##########################################
@@ -126,6 +125,9 @@ def main():
     # add_bible_reading_page(prs)
     add_doa_bapa_kami_page(prs)
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
+    add_appostle_creed_page(prs)
+    add_secondary_offering_purpose_page(prs, "P_PENGINJILAN") # TODO: change this to the actual offering purpose
+    add_bekantmachung_page(prs)
 
     # save file
     prs.save('test.pptx')

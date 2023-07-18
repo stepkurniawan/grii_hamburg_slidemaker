@@ -16,6 +16,7 @@ def insert_slides_from_pict_folder(prs, folder_path):
 
 def add_slide_layout_from_layout_name(prs,layout_name):
     # Specify the layout name you want to use
+    slide = None
     slide_layout = None
     for layout in prs.slide_master.slide_layouts:
         if layout.name == layout_name:
@@ -97,6 +98,33 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
 
     de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
+
+def add_appostle_creed_page(prs):
+    #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"
+    for i in range(0,6):
+        layout_name = str(i) + "_APOSTLE_CREED_1"
+        slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+        print( str(i) + " apostle creed layout")
+
+def add_secondary_offering_purpose_page(prs, offering_purpose):
+    # if offering_purpose is P_PENGINJILAN, then add slide with layout name "P_PENGINJILAN"
+    # if offering_purpose is P_SEKOLAH, then add slide with layout name "P_SEKOLAH"
+    layout_name = offering_purpose
+    slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+def add_doxology_page(prs):
+    add_slide_layout_from_layout_name(prs, "0_DOXOLOGY")
+    add_slide_layout_from_layout_name(prs, "1_DOXOLOGY")
+    add_slide_layout_from_layout_name(prs, "2_DOXOLOGY")
+    add_slide_layout_from_layout_name(prs, "3_DOXOLOGY")
+
+def add_bekantmachung_page(prs):
+    for i in range(0,7): # 0,1,2,3,4,5,6
+        layout_name = "WARTA_" + str(i) 
+        add_slide_layout_from_layout_name(prs, layout_name)
+
+
+
 
 
 ######## Helper functions ####################################################
