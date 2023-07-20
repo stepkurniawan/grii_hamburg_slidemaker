@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from main import SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_BOOK, OPEN_BIBLE_CHAPTER, OPEN_BIBLE_VERSE_START, OPEN_BIBLE_VERSE_END, PASTOR_TITLE_DE
-
 def ask_for_input():
     global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de
 

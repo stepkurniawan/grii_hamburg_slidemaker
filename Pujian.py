@@ -30,7 +30,6 @@ import stat
 import win32net
 
 from pptx_creator import insert_slides_from_pict_folder
-from main import CURRENT_DIR
 
 
 # pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
@@ -45,7 +44,7 @@ import os
 # INPUT
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
-songs_folder = os.path.join(CURRENT_DIR, 'Songs' )
+songs_folder = os.path.join(os.path.dirname(__file__), 'Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'mrii-automated-slides-service-accn-private-key.json'
 
@@ -138,11 +137,11 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
     except HttpError as error:
         print(f'An error occurred: {error}')
 
-def download_folder(google_folder_item, destination_folder):
+def download_folder(google_folder_item, destination_folder, song_number):
     service = build('drive', 'v3', credentials=creds)
 
-    g_folder_id, g_folder_name = make_local_folder_based_on_google_folder_name(google_folder_item, destination_folder)
-    destination_folder = os.path.join(destination_folder, g_folder_name)
+    g_folder_id, folder_name = make_local_folder_based_on_google_folder_name(google_folder_item, destination_folder, song_number)
+    destination_folder = os.path.join(destination_folder, folder_name)
 
     query = "'{0}' in parents".format(g_folder_id)
     results = service.files().list(q=query, fields="nextPageToken, files(id, name, mimeType)").execute()
@@ -155,7 +154,7 @@ def download_folder(google_folder_item, destination_folder):
         for item in items:
             print(u'{0} ({1})'.format(item['name'], item['id']))
             if item['mimeType'] == 'application/vnd.google-apps.folder':
-                download_folder(item, destination_folder)
+                download_folder(item, destination_folder, song_number)
             else:
                 download_file(item, destination_folder)
 
@@ -172,10 +171,13 @@ def download_file(item, destination_folder):
     while done is False:
         status, done = downloader.next_chunk()
 
-def make_local_folder_based_on_google_folder_name(item, destination_folder):
+def make_local_folder_based_on_google_folder_name(item, destination_folder, song_number=None):
     folder_id = item['id']
     folder_name = item['name']
-    temp_destination_folder = os.path.join(destination_folder, folder_name)
+    song_number = str(song_number) # convert to string
+    # change the folder name to the song number if it is not None
+    temp_destination_folder = os.path.join(destination_folder, song_number) 
+    folder_name = song_number
     # Create the destination folder if it does not exist
     if not os.path.exists(temp_destination_folder):
         os.makedirs(temp_destination_folder)
@@ -185,13 +187,13 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder):
 
 
 ############### COMBINING ALL THE FUNCTIONS #####################
-def download_new_song_pipeline(): 
+def download_new_song_pipeline(song_number): 
     # test_connection()
     print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id)
 
     # open song folder with the name: number 
-    folder_song_name = get_folder_id_by_name(SONG_NUMBER, master_lagu_ibadah_folder_id)
+    folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
     print("song folder:")
     folder_song_name_inside = get_list_folders(folder_song_name)
     print(folder_song_name_inside)
@@ -208,4 +210,4 @@ def download_new_song_pipeline():
     else:
         folder_song_name_inside = folder_song_name_inside[0]
 
-    download_folder(folder_song_name_inside, songs_folder)
+    download_folder(folder_song_name_inside, songs_folder, song_number)

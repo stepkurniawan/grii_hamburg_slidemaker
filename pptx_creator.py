@@ -1,6 +1,6 @@
 import os
 from alkitab_scraper import *
-
+from pptx.util import Inches
 
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
@@ -150,5 +150,5 @@ def check_placeholders_in_slide(prs, slide):
 #### TEST FUNCTIONS ############################################################
 
 def test_insert_slides_from_pict_folder(prs, folder_path):
-    folder_path = os.path.join(CURRENT_DIR, 'Sample', '2', '2')
+    folder_path = os.path.join(os.path.dirname(__file__), 'Sample', '2', '2')
     insert_slides_from_pict_folder(prs, folder_path)
