@@ -65,14 +65,11 @@ from Pujian import download_new_song_pipeline
 # 1. 4 song's numbers
 SONG_NUMBERS = [161, 320, 93, 169]
 # 2. Opening Bible verse
-OPEN_BIBLE_BOOK = ""
-OPEN_BIBLE_CHAPTER = ""
-OPEN_BIBLE_VERSE_START = ""
-OPEN_BIBLE_VERSE_END = ""
+OPEN_BIBLE_FULL_VERSE = "Kejadian 1:2-3"
 # 3. Pastor's title in Indonesian and German, and name
 PASTOR_TITLE_ID = "Pdt."
 PASTOR_TITLE_DE = "Pfr."
-PASTOR_NAME = "Test"
+PASTOR_NAME = "Billy Kristanto"
 # 4. Second (blue) offering purpose in Indonesian and German
 SECOND_OFFERING_PURPOSE_ID = ["none", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
 
@@ -88,15 +85,17 @@ TEMPLATE_FILE = 'master_slide_template.pptx'
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
-    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_BOOK, OPEN_BIBLE_CHAPTER, OPEN_BIBLE_VERSE_START, OPEN_BIBLE_VERSE_END, PASTOR_TITLE_DE
+    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE, PASTOR_TITLE_DE
     
     SONG_NUMBERS = data_array[0].split(",")
+    # remove whitespace
+    SONG_NUMBERS = [song_number.strip() for song_number in SONG_NUMBERS]
     PASTOR_TITLE_ID = data_array[1].split(" ")[0]
-    PASTOR_NAME = data_array[1].split(" ")[1]
-    OPEN_BIBLE_BOOK = data_array[2].split(" ")[0]
-    OPEN_BIBLE_CHAPTER = data_array[2].split(" ")[1].split(":")[0]
-    OPEN_BIBLE_VERSE_START = data_array[2].split(" ")[1].split(":")[1].split("-")[0]
-    OPEN_BIBLE_VERSE_END = data_array[2].split(" ")[1].split(":")[1].split("-")[1]
+    PASTOR_NAME = data_array[1].split(" ")[1] 
+    # if there is a third word, then it is the last name
+    if len(data_array[1].split(" ")) > 2:
+        PASTOR_NAME += " " + data_array[1].split(" ")[2]
+    OPEN_BIBLE_FULL_VERSE = data_array[2]
     PASTOR_TITLE_DE = data_array[3]
 
 def sunday_date(formatted=False):
@@ -122,9 +121,8 @@ def main():
     """
 
     ##### ask for input from the user UI
-    ##### TODO: uncomment this
-    # data = ask_for_input()
-    # processing_answers(data)
+    data = ask_for_input()
+    processing_answers(data)
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
@@ -161,7 +159,7 @@ def main():
     second_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
-    add_bible_reading_page(prs)
+    add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
 
     add_church_cover_page(prs, sunday_date())
 

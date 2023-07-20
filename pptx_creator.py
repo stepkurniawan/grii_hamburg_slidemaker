@@ -1,6 +1,7 @@
 import os
 from alkitab_scraper import *
 from pptx.util import Inches
+from bible_translation import indonesian_to_german_bible
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
@@ -59,7 +60,7 @@ def add_church_cover_page(prs, sunday_date):
 
 
 
-def add_bible_reading_page(prs, bible_verse_text = "Yesaya 55:6-8"):
+def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     # Find the layout with the specified name
     layout_name_cover = "BIBLE_READING" # renamed in the master template pptx file
     slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
@@ -70,8 +71,16 @@ def add_bible_reading_page(prs, bible_verse_text = "Yesaya 55:6-8"):
     except IndexError:
         print("Invalid placeholder index.")
 
-    id_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 3, "ID") #TDOD: get from input
-    de_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 3, "DE") #TDOD: get from input
+    bible_book_ID = bible_verse_text.split(" ")[0]
+    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
+    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
+    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+
+    # get the bible verse in german
+    bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
+
+    id_bible_verse = get_ayat_alkitab_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
+    de_bible_verse = get_ayat_alkitab_dict(bible_book_DE, bible_chapter, bible_verse_start, bible_verse_end, "DE")
 
     # count how many verse 
     verse_count = len(id_bible_verse)
@@ -96,10 +105,16 @@ def add_bible_reading_page(prs, bible_verse_text = "Yesaya 55:6-8"):
         except IndexError:
             print("Invalid placeholder index.")
     
+
+
+
 def add_doa_bapa_kami_page(prs):
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_1")
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_2")
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_3")
+
+
+
 
 def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     layout_name = "PREACHER" # renamed in the master template pptx file
@@ -114,6 +129,9 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
+
+
+
 def add_appostle_creed_page(prs):
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"
     for i in range(0,6):
@@ -121,11 +139,15 @@ def add_appostle_creed_page(prs):
         slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
         print( str(i) + " apostle creed layout")
 
+
+
 def add_secondary_offering_purpose_page(prs, offering_purpose):
     # if offering_purpose is P_PENGINJILAN, then add slide with layout name "P_PENGINJILAN"
     # if offering_purpose is P_SEKOLAH, then add slide with layout name "P_SEKOLAH"
     layout_name = offering_purpose
     slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+
 
 def add_doxology_page(prs):
     add_slide_layout_from_layout_name(prs, "0_DOXOLOGY")
@@ -133,10 +155,13 @@ def add_doxology_page(prs):
     add_slide_layout_from_layout_name(prs, "2_DOXOLOGY")
     add_slide_layout_from_layout_name(prs, "3_DOXOLOGY")
 
+
+
 def add_bekantmachung_page(prs):
     for i in range(0,7): # 0,1,2,3,4,5,6
         layout_name = "WARTA_" + str(i) 
         add_slide_layout_from_layout_name(prs, layout_name)
+
 
 
 
@@ -160,6 +185,9 @@ def check_placeholders_in_slide(prs, slide):
             phf = shape.placeholder_format
             print('id: %d, name: %s' % (phf.idx, phf.type))
     print('check done. Remember, the id is more important than the position')
+
+
+    
 
 #### TEST FUNCTIONS ############################################################
 

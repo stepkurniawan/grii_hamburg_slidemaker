@@ -7,8 +7,6 @@ from selenium import webdriver
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.common.keys import Keys
 import time
-from bible_translation import indonesian_to_german_bible
-
 
 
 def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
@@ -19,6 +17,8 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     output dict= {verse_number: verse_text}
     """
     output_dict= {}
+    verse_start = int(verse_start)
+    verse_end = int(verse_end)
 
     # IF INDONESIAN
     if language == "ID":
@@ -31,7 +31,6 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
         # Set up the WebDriver (Edge in this example)
         driver = webdriver.Edge()
         driver.get("https://www.bible.com/bible/51/GEN.1.DELUT")
-        book = indonesian_to_german_bible.get(book) # translate book name from indonesian to german
 
     # calculate how many verses to get
     verse_count = verse_end - verse_start + 1
