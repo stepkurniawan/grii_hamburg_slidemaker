@@ -2,18 +2,25 @@ import os
 from alkitab_scraper import *
 from pptx.util import Inches
 
+def sort_by_number(file_name):
+    # Custom sorting function to extract numbers from the file name and sort numerically
+    key = int(''.join(filter(str.isdigit, file_name)))
+    return key
+
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
     # get all files in the folder
-    files = os.listdir(folder_path)
-    # loop through all files
+    files = sorted(os.listdir(folder_path), key=sort_by_number)
+
+    # loop through all files (picture only) can be png, jpg, jpeg, etc, or it can also be uppercase
+    # it has to be sorted by name
     for file in files:
-        # create a new slide
-        blank_slide_layout = prs.slide_layouts[6]
-        slide = prs.slides.add_slide(blank_slide_layout)
-        # add image to the slide
-        file_path = os.path.join(folder_path, file)
-        pic = slide.shapes.add_picture(file_path, Inches(0), Inches(0), width=prs.slide_width, height=prs.slide_height)
+        # check if the file is a picture
+        if file.endswith(".jpg") or file.endswith(".png") or file.endswith(".jpeg") or file.endswith(".JPG") or file.endswith(".PNG") or file.endswith(".JPEG"):
+            # create a new slide
+            slide = prs.slides.add_slide(prs.slide_layouts[6])
+            # add the picture to the slide
+            pic = slide.shapes.add_picture(os.path.join(folder_path, file), Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
 
 def add_slide_layout_from_layout_name(prs,layout_name):
     # Specify the layout name you want to use
@@ -38,26 +45,33 @@ def add_beginning_slide(prs):
 
 
 
-def add_church_cover_page(prs):
+def add_church_cover_page(prs, sunday_date):
     # Specify the layout name you want to use
-    layout_name = "church_cover" # renamed in the master template pptx file
-    add_slide_layout_from_layout_name(prs, layout_name)
+    layout_name = "COVER_2" # renamed in the master template pptx file
+    
+    # print("cover layout")
+    slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+    check_placeholders_in_slide(prs,slide_layout)
+
+    sundays_date_placeholder = slide_layout.placeholders[10]
+    sundays_date_placeholder.text = sunday_date
+    
 
 
 
-def add_bible_reading_page(prs):
+def add_bible_reading_page(prs, bible_verse_text = "Yesaya 55:6-8"):
     # Find the layout with the specified name
     layout_name_cover = "BIBLE_READING" # renamed in the master template pptx file
     slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
         bible_verse = slide_layout_cover.placeholders[10]
-        bible_verse.text = "Jesaya 55:6-11" #TOOD: get from input	
+        bible_verse.text = bible_verse_text 
     except IndexError:
         print("Invalid placeholder index.")
 
-    id_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "ID") #TDOD: get from input
-    de_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 5, "DE") #TDOD: get from input
+    id_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 3, "ID") #TDOD: get from input
+    de_bible_verse = get_ayat_alkitab_dict("Kejadian", 2, 1, 3, "DE") #TDOD: get from input
 
     # count how many verse 
     verse_count = len(id_bible_verse)
