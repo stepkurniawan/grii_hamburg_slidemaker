@@ -134,8 +134,16 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
             return None
         else:
             return items[0]['id']
+    # file not found
+    except IndexError:
+        print("Folder not found")
+        # throws error so user knows that the folder is not found
+        raise IndexError
+    
     except HttpError as error:
         print(f'An error occurred: {error}')
+
+    
 
 def download_folder(google_folder_item, destination_folder, song_number):
     service = build('drive', 'v3', credentials=creds)
