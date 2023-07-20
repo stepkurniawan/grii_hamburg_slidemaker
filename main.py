@@ -71,8 +71,8 @@ PASTOR_TITLE_ID = "Pdt."
 PASTOR_TITLE_DE = "Pfr."
 PASTOR_NAME = "Billy Kristanto"
 # 4. Second (blue) offering purpose in Indonesian and German
-SECOND_OFFERING_PURPOSE_ID = ["none", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
-
+SECOND_OFFERING_PURPOSE_ID = ["NONE", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
+SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 
 ########################################### Global variables##########################################
 MY_SLIDE_WIDTH = Inches(16)
@@ -85,7 +85,7 @@ TEMPLATE_FILE = 'master_slide_template.pptx'
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
-    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE, PASTOR_TITLE_DE
+    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE, PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
     
     SONG_NUMBERS = data_array[0].split(",")
     # remove whitespace
@@ -97,6 +97,7 @@ def processing_answers(data_array):
         PASTOR_NAME += " " + data_array[1].split(" ")[2]
     OPEN_BIBLE_FULL_VERSE = data_array[2]
     PASTOR_TITLE_DE = data_array[3]
+    SELECTED_SECOND_OFFERING_PURPOSE_ID = data_array[4]
 
 def sunday_date(formatted=False):
     # save file as with next sunday's date yyyymmdd.pptx
@@ -179,7 +180,7 @@ def main():
 
     add_church_cover_page(prs, sunday_date())
 
-    add_secondary_offering_purpose_page(prs, "none") # TODO: change this to the actual offering purpose
+    add_secondary_offering_purpose_page(prs, SELECTED_SECOND_OFFERING_PURPOSE_ID) # TODO: change this to the actual offering purpose
 
     # add fourth song
     fourth_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[3]))

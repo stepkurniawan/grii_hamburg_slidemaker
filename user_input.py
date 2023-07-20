@@ -4,7 +4,7 @@ DEFAULT_PASTOR_NAME = "Pdt. Billy Kristanto"
 DEFAULT_PASTOR_TITLE_DE = "Pfr."
 
 def ask_for_input():
-    global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, pastor_name, pastor_title_de, data_array
+    global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, data_array, entry_second_offering_purpose
 
     # Create the main Tkinter window
     root = tk.Tk()
@@ -23,6 +23,9 @@ def ask_for_input():
     label_pastor_title_de = tk.Label(root, text="pastor title in DE: [Pfr.]")
     entry_pastor_title_de = tk.Entry(root, width=30)
 
+    label_second_offering_purpose = tk.Label(root, text="second offering purpose: [none, P_PENGINJILAN, P_SEKOLAH, P_MANDAT, P_PEMBANGUNAN, P_DIAKONIA]")
+    entry_second_offering_purpose = tk.Entry(root, width=30)
+
     # Create a Submit button
     submit_button = tk.Button(root, text="Submit", command=submit)
 
@@ -38,6 +41,9 @@ def ask_for_input():
 
     label_pastor_title_de.pack()
     entry_pastor_title_de.pack()
+
+    label_second_offering_purpose.pack()
+    entry_second_offering_purpose.pack()
 
     submit_button.pack()
 
@@ -59,6 +65,13 @@ def ask_for_input():
         # The widget has been destroyed (window was closed), handle gracefully with default value
         data_array[3] = DEFAULT_PASTOR_TITLE_DE
 
+    try:
+        if entry_second_offering_purpose.get().strip() == "":
+            entry_second_offering_purpose.insert(0, "NONE")
+    except tk.TclError:
+        # The widget has been destroyed (window was closed), handle gracefully with default value
+        data_array[4] = "NONE"
+
     return data_array
     
 
@@ -69,9 +82,10 @@ def submit():
     pastor_name = entry_pastor_name.get().strip()
     votum_bible_verse = entry_votum_bible_verse.get().strip()
     pastor_title_de = entry_pastor_title_de.get().strip()
+    second_offering_purpose = entry_second_offering_purpose.get().strip()
 
     # Do whatever you want with the collected data
-    data_array = [song_numbers, pastor_name, votum_bible_verse, pastor_title_de]
+    data_array = [song_numbers, pastor_name, votum_bible_verse, pastor_title_de,second_offering_purpose ]
     print(data_array)
 
     # Close the window
