@@ -1,3 +1,4 @@
+import os
 from alkitab_scraper import *
 
 

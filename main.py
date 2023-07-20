@@ -63,8 +63,10 @@ from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.enum.dml import MSO_THEME_COLOR_INDEX
 from pptx.enum.dml import MSO_FILL
 
+
 from alkitab_scraper import *
 from pptx_creator import *
+from user_input import *
 
 ########################################### INPUTS ##########################################
 # 1. 4 song's numbers
@@ -91,12 +93,30 @@ TEMPLATE_FILE = 'master_slide_template.pptx'
 
 ########################################### Functions ##########################################
 
+def processing_answers(data_array):
+    # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
+    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_BOOK, OPEN_BIBLE_CHAPTER, OPEN_BIBLE_VERSE_START, OPEN_BIBLE_VERSE_END, PASTOR_TITLE_DE
+    
+    SONG_NUMBERS = data_array[0].split(",")
+    PASTOR_TITLE_ID = data_array[1].split(" ")[0]
+    PASTOR_NAME = data_array[1].split(" ")[1]
+    OPEN_BIBLE_BOOK = data_array[2].split(" ")[0]
+    OPEN_BIBLE_CHAPTER = data_array[2].split(" ")[1].split(":")[0]
+    OPEN_BIBLE_VERSE_START = data_array[2].split(" ")[1].split(":")[1].split("-")[0]
+    OPEN_BIBLE_VERSE_END = data_array[2].split(" ")[1].split(":")[1].split("-")[1]
+    PASTOR_TITLE_DE = data_array[3]
+
+
 def main():
 
     """
     the structure of the slide is
     Presentation -> Layout name -> slide layout -> slide -> shapes -> placeholders
     """
+
+    # ask for input from the user UI
+    # data = ask_for_input()
+    # processing_answers(data)
     
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
@@ -126,7 +146,7 @@ def main():
     add_doa_bapa_kami_page(prs)
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
     add_appostle_creed_page(prs)
-    add_secondary_offering_purpose_page(prs, "P_PENGINJILAN") # TODO: change this to the actual offering purpose
+    add_secondary_offering_purpose_page(prs, "none") # TODO: change this to the actual offering purpose
     add_bekantmachung_page(prs)
 
     # save file

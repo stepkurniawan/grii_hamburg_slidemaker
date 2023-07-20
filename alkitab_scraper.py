@@ -68,17 +68,3 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     driver.quit()
 
     return output_dict
-
-# def get_german_bible_verse_dict(book, chapter, verse_start, verse_end):
-#     book_dict_german = {}
-#     # translate book name from indonesian to german
-#     indonesian_book_name = book
-#     german_book_name = indonesian_to_german_bible.get(indonesian_book_name)
-#     print("German book name: " + german_book_name) 
-
-#     # Set up the WebDriver (Edge in this example)
-#     driver = webdriver.Edge()
-#     driver.get("https://www.bible.com/bible/877/GEN.1.BIBEL.HEUTE") # link to german bible
-
-
-
