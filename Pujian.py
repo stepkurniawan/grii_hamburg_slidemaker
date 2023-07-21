@@ -24,10 +24,10 @@ if it found the folder
 import json
 import os
 import io
+import sys
 from pptx import Presentation
 from pptx.util import Inches
 import stat
-import win32net
 
 from pptx_creator import insert_slides_from_pict_folder
 
@@ -41,15 +41,16 @@ from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 import os
 
+base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
+
+
 # INPUT
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
 songs_folder = os.path.join(os.path.dirname(__file__), 'Songs' )
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'mrii-automated-slides-service-accn-private-key.json'
-
-# Replace with the path to your credentials.json file
-credentials_file = 'mrii-automated-slides-service-accn-private-key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
 # ID of the folder you want to download from Google Drive
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
@@ -136,10 +137,9 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
             return items[0]['id']
     # file not found
     except IndexError:
+        # throws error so user knows that the folder is not found and exit the program
         print("Folder not found")
-        # throws error so user knows that the folder is not found
         raise IndexError
-    
     except HttpError as error:
         print(f'An error occurred: {error}')
 

@@ -123,5 +123,5 @@ indo_abbreviation_to_full = {
     "2Tes.": "2 Tesalonika",
     "1Tim.": "1 Timotius",
     "2Tim.": "2 Timotius",
-    
+    "Tit" : "Titus",
 }
