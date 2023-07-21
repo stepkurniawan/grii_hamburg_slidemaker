@@ -188,8 +188,9 @@ def main():
 
     add_bekantmachung_page(prs)
 
-    
-    prs.save(str(sunday_date(True)) + '.pptx')
+    output_folder = os.path.join(CURRENT_DIR, 'Output')
+    # save in output folder
+    prs.save(os.path.join(output_folder, sunday_date(True) + ".pptx"))
 
 
 if __name__ == "__main__":
