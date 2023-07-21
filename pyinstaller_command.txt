@@ -1,0 +1,1 @@
+pyinstaller --onefile --add-data "mrii-automated-slides-service-accn-private-key.json;." entry_point.py
