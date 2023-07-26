@@ -1,1 +1,1 @@
-pyinstaller --onefile --name grii-slide-maker --add-data "mrii-automated-slides-service-accn-private-key.json;." entry_point.py
+pyinstaller --onefile --name grii-slide-maker --add-data "mrii-automated-slides-service-accn-private-key.json;." --add-data "master_slide_template.pptx;." entry_point.py

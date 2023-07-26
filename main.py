@@ -84,10 +84,24 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE_FILE = os.path.join(CURRENT_DIR, 'master_slide_template.pptx')
+OUTPUT_DIR = os.path.join(CURRENT_DIR, 'Output')
+# OUTPUT_DIR = "C:\\Program Files"
+# HOME_DIR = os.path.expanduser("~")
+# print("HOME_DIR: " + HOME_DIR)
 
 
 ########################################### Functions ##########################################
+def get_resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        # Running from PyInstaller executable, use sys._MEIPASS
+        base_path = sys._MEIPASS
+    else:
+        # Running from source code
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
@@ -216,16 +230,17 @@ def main():
     add_bekantmachung_page(prs)
 
     try:
-        output_folder = os.path.join(CURRENT_DIR, 'Output')
 
         # create the output folder if it doesnt exist
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder)
+        if not os.path.exists(OUTPUT_DIR):
+            os.makedirs(OUTPUT_DIR)
+            print("output folder created")
     except:
         print("cannot create output folder")
 
     # save in output folder
-    prs.save(os.path.join(output_folder, sunday_date("filename") + ".pptx"))
+    prs.save(os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx"))
+    print("saved in " + OUTPUT_DIR)
 
 
 if __name__ == "__main__":
