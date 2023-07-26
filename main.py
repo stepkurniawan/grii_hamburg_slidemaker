@@ -103,9 +103,8 @@ def processing_answers(data_array):
         PASTOR_NAME += " " + data_array[1].split(" ")[2]
     OPEN_BIBLE_FULL_VERSE = data_array[2]
     PASTOR_TITLE_DE = data_array[3]
-    SELECTED_SECOND_OFFERING_PURPOSE_ID = data_array[4]
 
-def sunday_date(formatted=False):
+def sunday_date(formatted):
     # save file as with next sunday's date yyyymmdd.pptx
     # Get today's date
     today = datetime.date.today()
@@ -113,11 +112,14 @@ def sunday_date(formatted=False):
     days_until_sunday = (6 - today.weekday()) % 7
     # Calculate the date of the next Sunday
     next_sunday = today + datetime.timedelta(days=days_until_sunday)
-    if formatted:
+    if formatted == "filename":
         next_sunday = str(next_sunday).replace("-", "")
-    else:
+    elif formatted == "slide":
         # return 12 July 2020
         next_sunday = str(next_sunday.strftime("%d %B %Y"))
+    else:
+        next_sunday = next_sunday
+        
     return next_sunday
 
 def main():
@@ -143,60 +145,79 @@ def main():
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
 
-    # set height and width
-    # prs.slide_width = MY_SLIDE_WIDTH
-    # prs.slide_height = MY_SIDE_HEIGHT
-
     ##### TESTING PURPOSE test create_slides_from_folder
     # folder_path = os.path.join(CURRENT_DIR, 'Sample', '2', '2')
     # test_insert_slides_from_pict_folder(prs, folder_path)
 
     #### Slide creation starts here ####
     add_beginning_slide(prs)
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
     # check_placeholders_in_slide_index(prs, 4)
 
     # add first song
+    print("Adding first song")
     first_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[0]))
     insert_slides_from_pict_folder(prs, first_song_folder_path)
 
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
+    print("Adding second song")
     second_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
+    print("Adding bible reading")
     add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
 
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
 
     # add third song
+    print("Adding third song")
     third_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[2]))
     insert_slides_from_pict_folder(prs, third_song_folder_path)
 
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
 
+    print("Adding Lord's Prayer")
     add_doa_bapa_kami_page(prs)
 
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
 
+    print("Adding Preacher")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
 
+    add_church_cover_page(prs, sunday_date("slide"))
+
+    print("Adding Apostles' Creed")
     add_appostle_creed_page(prs)
 
-    add_church_cover_page(prs, sunday_date())
+    add_church_cover_page(prs, sunday_date("slide"))
 
-    add_secondary_offering_purpose_page(prs, SELECTED_SECOND_OFFERING_PURPOSE_ID) # TODO: change this to the actual offering purpose
+    print("Adding Offerings")
+    secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
+    add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
 
     # add fourth song
+    print("Adding fourth song")
     fourth_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[3]))
     insert_slides_from_pict_folder(prs, fourth_song_folder_path)
+
+    add_church_cover_page(prs, sunday_date("slide"))
+
+    print("Adding Puji Allah Bapa Putra")
+    add_doxology_page(prs)
+
+    add_church_cover_page(prs, sunday_date("slide"))
+
+    add_amen_page(prs)
+
+    add_church_cover_page(prs, sunday_date("slide"))
 
     add_bekantmachung_page(prs)
 
     output_folder = os.path.join(CURRENT_DIR, 'Output')
     # save in output folder
-    prs.save(os.path.join(output_folder, sunday_date(True) + ".pptx"))
+    prs.save(os.path.join(output_folder, sunday_date("filename") + ".pptx"))
 
 
 if __name__ == "__main__":

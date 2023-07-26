@@ -20,18 +20,21 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     output_dict= {}
     verse_start = int(verse_start)
     verse_end = int(verse_end)
+    bible_name = "alkitab terjemahan baru"
 
     # IF INDONESIAN
     if language == "ID":
         # Set up the WebDriver (Edge in this example)
         driver = webdriver.Chrome()
         driver.get("https://www.bible.com/bible/306/GEN.1.TB") # link to indonesian bible
+        
 
     # IF GERMAN
     elif language == "DE":
         # Set up the WebDriver (Edge in this example)
         driver = webdriver.Edge()
         driver.get("https://www.bible.com/bible/51/GEN.1.DELUT")
+        bible_name = "lutherbibel"
 
     # calculate how many verses to get
     verse_count = verse_end - verse_start + 1
@@ -48,11 +51,27 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
         search_input.clear()
 
         current_ayat_alkitab = book + " " + str(chapter) + ":" + str(verse_start + i)
-        print(current_ayat_alkitab)
+
+        # Clear the text by sending an empty string
+        search_input.send_keys(Keys.CONTROL + "a")  # Select all text
+        search_input.send_keys(Keys.BACKSPACE)  # Delete the selected text
+        search_input.send_keys(current_ayat_alkitab)
+        search_input.send_keys(Keys.ENTER)
+
         # second method: open new link and then use path to query ex: Kejadian 1:2 = https://www.bible.com/search/bible?query=Kejadian%201%3A2
-        current_ayat_alkitab = current_ayat_alkitab.replace(" ", "%20")
-        current_ayat_alkitab = current_ayat_alkitab.replace(":", "%3A")
-        driver.get("https://www.bible.com/search/bible?query=" + current_ayat_alkitab)
+        current_ayat_alkitab_link = current_ayat_alkitab
+        current_ayat_alkitab_link = current_ayat_alkitab_link.replace(" ", "%20")
+        current_ayat_alkitab_link = current_ayat_alkitab_link.replace(":", "%3A") 
+        driver.get("https://www.bible.com/search/bible?query=" + current_ayat_alkitab_link)
+
+        # select bible
+        try:
+            bible_dropdown = driver.find_element(By.XPATH, "/html/body/div/div/main/div[1]/div/div/div/div/div[2]/select")
+            bible_dropdown.click()
+            bible_dropdown.send_keys(bible_name) # type "alkitab terjemahan baru"
+            bible_dropdown.send_keys(Keys.ENTER)
+        except:
+            print("cannot select bible")
 
         # Wait for the search results to load (you may need to adjust the time depending on your internet speed)
         time.sleep(3) # Wait for 5 seconds (adjust as needed)

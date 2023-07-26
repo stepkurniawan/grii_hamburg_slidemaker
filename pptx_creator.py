@@ -2,6 +2,7 @@ import os
 from alkitab_scraper import *
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
+from bible_translation import lai_abbre_to_full
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
@@ -60,10 +61,25 @@ def add_church_cover_page(prs, sunday_date):
 
 
 
+def get_full_book_name(book_name):
+    # if bible_book has less than 4 characters, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
+    output = ""
+    if len(book_name) < 4:
+        output = lai_abbre_to_full[book_name]
+    # if bible_book has 4 characters, but the first one is a number, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
+    elif book_name[0].isdigit() & (len(book_name) == 4):
+        output = lai_abbre_to_full[book_name]
+    else:
+        output = book_name
+    return output
+
 def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     # Find the layout with the specified name
     layout_name_cover = "BIBLE_READING" # renamed in the master template pptx file
     slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
+    bible_book_ID = ""
+    bible_book_DE = ""
+
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
         bible_verse = slide_layout_cover.placeholders[10]
@@ -71,7 +87,9 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     except IndexError:
         print("Invalid placeholder index.")
 
-    bible_book_ID = bible_verse_text.split(" ")[0]
+    bible_book = bible_verse_text.split(" ")[0]
+    bible_book_ID = get_full_book_name(bible_book)
+
     bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
     bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
     bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
@@ -139,7 +157,25 @@ def add_appostle_creed_page(prs):
         slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
         print( str(i) + " apostle creed layout")
 
-
+def decide_offering_purpose_layout_name(next_sunday_date):
+    # if next sunday is the first sunday of the month, then its "P_PENGINJILAN"
+    # second sunday, then its "P_SEKOLAH"
+    # third sunday, then its "P_MANDAT"
+    # fourth sunday, then its "P_PEMBANGUNAN"
+    # fifth sunday, then its "P_DIAKONIA"
+    output = ""
+    if next_sunday_date.day <= 7:
+        output = "P_PENGINJILAN"
+    elif next_sunday_date.day <= 14:
+        output = "P_SEKOLAH"
+    elif next_sunday_date.day <= 21:
+        output = "P_MANDAT"
+    elif next_sunday_date.day <= 28:
+        output = "P_PEMBANGUNAN"
+    else:
+        output = "P_DIAKONIA"
+    return output
+    
 
 def add_secondary_offering_purpose_page(prs, offering_purpose):
     # if offering_purpose is P_PENGINJILAN, then add slide with layout name "P_PENGINJILAN"
@@ -149,10 +185,13 @@ def add_secondary_offering_purpose_page(prs, offering_purpose):
 
 
 
+
 def add_doxology_page(prs):
     add_slide_layout_from_layout_name(prs, "0_DOXOLOGY")
     add_slide_layout_from_layout_name(prs, "1_DOXOLOGY")
     add_slide_layout_from_layout_name(prs, "2_DOXOLOGY")
+
+def add_amen_page(prs):
     add_slide_layout_from_layout_name(prs, "3_DOXOLOGY")
 
 
