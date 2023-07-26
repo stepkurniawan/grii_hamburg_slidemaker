@@ -14,17 +14,14 @@ def ask_for_input():
     label_song_numbers = tk.Label(root, text="4 song numbers or name: [161, 320, 93, 169]")
     entry_song_numbers = tk.Entry(root, width=30)
 
-    label_pastor_name = tk.Label(root, text="pastor name: [Pdt. Billy Kristanto]")
-    entry_pastor_name = tk.Entry(root, width=30)
-
     label_votum_bible_verse = tk.Label(root, text="votum bible verse: [Keluaran 16:2-3]")
     entry_votum_bible_verse = tk.Entry(root, width=30)
 
+    label_pastor_name = tk.Label(root, text="pastor name: [Pdt. Billy Kristanto]")
+    entry_pastor_name = tk.Entry(root, width=30)
+
     label_pastor_title_de = tk.Label(root, text="pastor title in DE: [Pfr.]")
     entry_pastor_title_de = tk.Entry(root, width=30)
-
-    label_second_offering_purpose = tk.Label(root, text="second offering purpose: [none, P_PENGINJILAN, P_SEKOLAH, P_MANDAT, P_PEMBANGUNAN, P_DIAKONIA]")
-    entry_second_offering_purpose = tk.Entry(root, width=30)
 
     # Create a Submit button
     submit_button = tk.Button(root, text="Submit", command=submit)
@@ -33,17 +30,14 @@ def ask_for_input():
     label_song_numbers.pack()
     entry_song_numbers.pack()
 
-    label_pastor_name.pack()
-    entry_pastor_name.pack()
-
     label_votum_bible_verse.pack()
     entry_votum_bible_verse.pack()
 
+    label_pastor_name.pack()
+    entry_pastor_name.pack()
+
     label_pastor_title_de.pack()
     entry_pastor_title_de.pack()
-
-    label_second_offering_purpose.pack()
-    entry_second_offering_purpose.pack()
 
     submit_button.pack()
 
@@ -65,13 +59,6 @@ def ask_for_input():
         # The widget has been destroyed (window was closed), handle gracefully with default value
         data_array[3] = DEFAULT_PASTOR_TITLE_DE
 
-    try:
-        if entry_second_offering_purpose.get().strip() == "":
-            entry_second_offering_purpose.insert(0, "NONE")
-    except tk.TclError:
-        # The widget has been destroyed (window was closed), handle gracefully with default value
-        data_array[4] = "NONE"
-
     return data_array
     
 
@@ -79,13 +66,12 @@ def submit():
     global data_array
 
     song_numbers = entry_song_numbers.get().strip()
-    pastor_name = entry_pastor_name.get().strip()
     votum_bible_verse = entry_votum_bible_verse.get().strip()
+    pastor_name = entry_pastor_name.get().strip()
     pastor_title_de = entry_pastor_title_de.get().strip()
-    second_offering_purpose = entry_second_offering_purpose.get().strip()
 
     # Do whatever you want with the collected data
-    data_array = [song_numbers, pastor_name, votum_bible_verse, pastor_title_de,second_offering_purpose ]
+    data_array = [song_numbers, pastor_name, votum_bible_verse, pastor_title_de ]
     print(data_array)
 
     # Close the window
