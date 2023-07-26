@@ -51,7 +51,7 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
 # songs_folder = os.path.join(base_path, 'Songs' )
-songs_folder = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
+SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
@@ -212,7 +212,6 @@ def download_new_song_pipeline(song_number):
     # FOLDER SELECTION
     # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE string in the name
     # otherwise download the first folder 
-
     if len(folder_song_name_inside) > 1:
         for folder in folder_song_name_inside:
             if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
@@ -221,4 +220,4 @@ def download_new_song_pipeline(song_number):
     else:
         folder_song_name_inside = folder_song_name_inside[0]
 
-    download_folder(folder_song_name_inside, songs_folder, song_number)
+    download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)

@@ -66,6 +66,7 @@ from alkitab_scraper import *
 from pptx_creator import *
 from user_input import *
 from Pujian import download_new_song_pipeline
+from Pujian import SONGS_FOLDER
 
 ########################################### INPUTS ##########################################
 # 1. 4 song's numbers
@@ -151,7 +152,7 @@ def main():
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
         # check if the song folder exists
-        song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(song_number))
+        song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
         if not os.path.exists(song_folder_path):
             # download the song folder from google drive
             download_new_song_pipeline(song_number)
@@ -171,14 +172,14 @@ def main():
 
     # add first song
     print("Adding first song")
-    first_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[0]))
+    first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
     insert_slides_from_pict_folder(prs, first_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
     print("Adding second song")
-    second_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[1]))
+    second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
     print("Adding bible reading")
@@ -188,7 +189,7 @@ def main():
 
     # add third song
     print("Adding third song")
-    third_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[2]))
+    third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
     insert_slides_from_pict_folder(prs, third_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
@@ -214,7 +215,7 @@ def main():
 
     # add fourth song
     print("Adding fourth song")
-    fourth_song_folder_path = os.path.join(CURRENT_DIR, 'Songs', str(SONG_NUMBERS[3]))
+    fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
     insert_slides_from_pict_folder(prs, fourth_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
