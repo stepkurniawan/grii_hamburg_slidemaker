@@ -51,7 +51,7 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
 # songs_folder = os.path.join(base_path, 'Songs' )
-songs_folder = os.path.join(DOWNLOAD_FOLDER, 'GRII_Songs' )
+songs_folder = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 

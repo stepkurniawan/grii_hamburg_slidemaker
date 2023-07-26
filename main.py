@@ -89,7 +89,7 @@ HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
 
-OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII_Slides")
+OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
 ########################################### Functions ##########################################
 def get_resource_path(relative_path):
