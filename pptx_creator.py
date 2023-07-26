@@ -53,7 +53,7 @@ def add_church_cover_page(prs, sunday_date):
     
     # print("cover layout")
     slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
-    check_placeholders_in_slide(prs,slide_layout)
+    # check_placeholders_in_slide(prs,slide_layout)
 
     sundays_date_placeholder = slide_layout.placeholders[10]
     sundays_date_placeholder.text = sunday_date
@@ -139,7 +139,7 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
 
     print("preacher layout")
-    check_placeholders_in_slide(prs,slide_layout)
+    # check_placeholders_in_slide(prs,slide_layout)
 
     de_preacher_placeholder = slide_layout.placeholders[10]
     id_preacher_placeholder = slide_layout.placeholders[11]
