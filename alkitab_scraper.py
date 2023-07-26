@@ -21,18 +21,17 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     verse_start = int(verse_start)
     verse_end = int(verse_end)
     bible_name = "alkitab terjemahan baru"
+    driver = webdriver.Chrome()
 
     # IF INDONESIAN
     if language == "ID":
         # Set up the WebDriver (Edge in this example)
-        driver = webdriver.Chrome()
         driver.get("https://www.bible.com/bible/306/GEN.1.TB") # link to indonesian bible
         
 
     # IF GERMAN
     elif language == "DE":
         # Set up the WebDriver (Edge in this example)
-        driver = webdriver.Edge()
         driver.get("https://www.bible.com/bible/51/GEN.1.DELUT")
         bible_name = "lutherbibel"
 
