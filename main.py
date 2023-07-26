@@ -215,7 +215,15 @@ def main():
 
     add_bekantmachung_page(prs)
 
-    output_folder = os.path.join(CURRENT_DIR, 'Output')
+    try:
+        output_folder = os.path.join(CURRENT_DIR, 'Output')
+
+        # create the output folder if it doesnt exist
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+    except:
+        print("cannot create output folder")
+
     # save in output folder
     prs.save(os.path.join(output_folder, sunday_date("filename") + ".pptx"))
 
