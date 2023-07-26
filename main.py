@@ -50,11 +50,17 @@ The slide will be generated based on this structure:
 """
 
 # Importing libraries
+import collections
+import collections.abc
+
 import datetime
 import os
+import sys
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
+
+
 
 from alkitab_scraper import *
 from pptx_creator import *
@@ -77,8 +83,8 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 ########################################### Global variables##########################################
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
-CURRENT_DIR = os.path.dirname(__file__)
-TEMPLATE_FILE = 'master_slide_template.pptx'
+CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_FILE = os.path.join(CURRENT_DIR, 'master_slide_template.pptx')
 
 
 ########################################### Functions ##########################################
@@ -122,8 +128,8 @@ def main():
     """
 
     ##### ask for input from the user UI
-    data = ask_for_input()
-    processing_answers(data)
+    # data = ask_for_input()
+    # processing_answers(data)
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:

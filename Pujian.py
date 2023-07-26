@@ -48,7 +48,7 @@ credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-p
 # INPUT
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
-songs_folder = os.path.join(os.path.dirname(__file__), 'Songs' )
+songs_folder = os.path.join(base_path, 'Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 

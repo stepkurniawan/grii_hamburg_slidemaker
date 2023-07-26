@@ -24,7 +24,7 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
     # IF INDONESIAN
     if language == "ID":
         # Set up the WebDriver (Edge in this example)
-        driver = webdriver.Edge()
+        driver = webdriver.Chrome()
         driver.get("https://www.bible.com/bible/306/GEN.1.TB") # link to indonesian bible
 
     # IF GERMAN
@@ -46,12 +46,13 @@ def get_ayat_alkitab_dict(book, chapter, verse_start, verse_end, language="ID"):
         except:
             search_input = driver.find_element(By.XPATH, "/html/body/div/div/header/div/div[2]/div/input")
         search_input.clear()
-        # Clear the text by sending an empty string
-        search_input.send_keys(Keys.CONTROL + "a")  # Select all text
-        search_input.send_keys(Keys.BACKSPACE)  # Delete the selected text
+
         current_ayat_alkitab = book + " " + str(chapter) + ":" + str(verse_start + i)
-        search_input.send_keys(current_ayat_alkitab)
-        search_input.send_keys(Keys.ENTER)
+        print(current_ayat_alkitab)
+        # second method: open new link and then use path to query ex: Kejadian 1:2 = https://www.bible.com/search/bible?query=Kejadian%201%3A2
+        current_ayat_alkitab = current_ayat_alkitab.replace(" ", "%20")
+        current_ayat_alkitab = current_ayat_alkitab.replace(":", "%3A")
+        driver.get("https://www.bible.com/search/bible?query=" + current_ayat_alkitab)
 
         # Wait for the search results to load (you may need to adjust the time depending on your internet speed)
         time.sleep(3) # Wait for 5 seconds (adjust as needed)
