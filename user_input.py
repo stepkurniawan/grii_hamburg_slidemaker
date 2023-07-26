@@ -4,11 +4,13 @@ DEFAULT_PASTOR_NAME = "Pdt. Billy Kristanto"
 DEFAULT_PASTOR_TITLE_DE = "Pfr."
 
 def ask_for_input():
-    global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, data_array, entry_second_offering_purpose
+    global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, data_array
 
     # Create the main Tkinter window
     root = tk.Tk()
-    root.title("Awan GRII Slide Maker V1.3")
+    root.title("Awan GRII Slide Maker V1.4")
+
+    root.option_add("*Font", "Helvetica 24")
 
     # Create labels and entry widgets for user input
     label_song_numbers = tk.Label(root, text="4 song numbers or name: [161, 320, 93, 169]")
