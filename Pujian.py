@@ -46,9 +46,12 @@ credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-p
 
 
 # INPUT
+HOME_DIR = os.path.expanduser("~")
+DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
-songs_folder = os.path.join(base_path, 'Songs' )
+# songs_folder = os.path.join(base_path, 'Songs' )
+songs_folder = os.path.join(DOWNLOAD_FOLDER, 'GRII_Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
@@ -150,6 +153,7 @@ def download_folder(google_folder_item, destination_folder, song_number):
 
     g_folder_id, folder_name = make_local_folder_based_on_google_folder_name(google_folder_item, destination_folder, song_number)
     destination_folder = os.path.join(destination_folder, folder_name)
+    print("destination_folder for songs: " + destination_folder)
 
     query = "'{0}' in parents".format(g_folder_id)
     results = service.files().list(q=query, fields="nextPageToken, files(id, name, mimeType)").execute()
@@ -202,7 +206,6 @@ def download_new_song_pipeline(song_number):
 
     # open song folder with the name: number 
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
-    print("song folder:")
     folder_song_name_inside = get_list_folders(folder_song_name)
     print(folder_song_name_inside)
 

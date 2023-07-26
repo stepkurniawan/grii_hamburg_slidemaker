@@ -84,12 +84,13 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(CURRENT_DIR, 'Output')
-# OUTPUT_DIR = "C:\\Program Files"
-# HOME_DIR = os.path.expanduser("~")
+
+HOME_DIR = os.path.expanduser("~")
+DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
 
-
+OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII_Slides")
+# OUTPUT_DIR = "C:\\Program Files"
 ########################################### Functions ##########################################
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):

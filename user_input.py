@@ -8,7 +8,7 @@ def ask_for_input():
 
     # Create the main Tkinter window
     root = tk.Tk()
-    root.title("User Input UI")
+    root.title("Awan GRII Slide Maker V1.3")
 
     # Create labels and entry widgets for user input
     label_song_numbers = tk.Label(root, text="4 song numbers or name: [161, 320, 93, 169]")
@@ -40,6 +40,9 @@ def ask_for_input():
     entry_pastor_title_de.pack()
 
     submit_button.pack()
+
+    # Bind the Return key press event to the submit function
+    root.bind('<Return>', lambda event: submit())
 
     # Run the Tkinter main loop
     root.mainloop()
