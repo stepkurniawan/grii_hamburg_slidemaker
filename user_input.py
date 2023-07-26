@@ -59,9 +59,6 @@ def ask_for_input():
         # The widget has been destroyed (window was closed), handle gracefully with default value
         data_array[3] = DEFAULT_PASTOR_TITLE_DE
 
-    # if user press ENTER, its the same as clicking the submit button
-    root.bind('<Return>', lambda event=None: submit())
-
     return data_array
     
 
