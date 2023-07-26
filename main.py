@@ -128,8 +128,8 @@ def main():
     """
 
     ##### ask for input from the user UI
-    # data = ask_for_input()
-    # processing_answers(data)
+    data = ask_for_input()
+    processing_answers(data)
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
