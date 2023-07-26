@@ -1,3 +1,5 @@
 token.json
 credentials.json
 *.json
+build/
+__pycache__/
