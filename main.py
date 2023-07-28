@@ -68,6 +68,9 @@ from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 
+from streamlit_app import *
+from footer import footer
+
 ########################################### INPUTS ##########################################
 # 1. 4 song's numbers
 SONG_NUMBERS = [161, 320, 93, 169]
@@ -92,7 +95,7 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 
 OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
-########################################### Functions ##########################################
+
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
         # Running from PyInstaller executable, use sys._MEIPASS
@@ -105,6 +108,9 @@ def get_resource_path(relative_path):
 
 TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
+
+########################################### Functions ##########################################
+
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
     global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE, PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
@@ -112,12 +118,12 @@ def processing_answers(data_array):
     SONG_NUMBERS = data_array[0].split(",")
     # remove whitespace
     SONG_NUMBERS = [song_number.strip() for song_number in SONG_NUMBERS]
-    PASTOR_TITLE_ID = data_array[1].split(" ")[0]
-    PASTOR_NAME = data_array[1].split(" ")[1] 
+    OPEN_BIBLE_FULL_VERSE = data_array[1]
+    PASTOR_TITLE_ID = data_array[2].split(" ")[0]
+    PASTOR_NAME = data_array[2].split(" ")[1] 
     # if there is a third word, then it is the last name
     if len(data_array[1].split(" ")) > 2:
-        PASTOR_NAME += " " + data_array[1].split(" ")[2]
-    OPEN_BIBLE_FULL_VERSE = data_array[2]
+        PASTOR_NAME += " " + data_array[2].split(" ")[2]
     PASTOR_TITLE_DE = data_array[3]
 
 def sunday_date(formatted):
@@ -138,6 +144,94 @@ def sunday_date(formatted):
         
     return next_sunday
 
+
+def create_website():
+    # website title
+    page_title = "MRII Europe Automatic Slide Maker"
+
+    st.set_page_config( page_icon=":church:", page_title=page_title)
+
+    # website description
+    # heading
+    st.title(page_title)
+    # subheading
+    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker")
+    st.write("This website is used to create a powerpoint presentation for Sunday service.")
+    st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
+
+    # subheading
+    st.subheader("How to use this website")
+    st.write("1. Enter the song numbers separated by comma on the left sidebar")
+    st.write("2. Enter the Bible verse. Feel free to use Indonesian abbreviation like Kej for Kejadian")
+    st.write("3. (Optional) Enter the pastor name ")
+    st.write("4. (Optional) Enter the pastor title in German ")
+    st.write("5. Click the submit button")
+    
+    # subheading
+    st.subheader("Where are the songs?")
+    st.write("The songs are downloaded from the database as a jpg into your computer.")
+    st.write("It is stored in the folder: " + SONGS_FOLDER)
+    st.write("If you have downloaded the songs before, then it will not be downloaded again.")
+    st.markdown("**Please make sure that you have space on your computer**")
+
+    st.subheader("Where is the Slide?")
+    st.write("The slide is saved in the folder: " + OUTPUT_DIR)
+    st.markdown("The file name is the date of the **next Sunday** service")
+    st.write("Example: 20210718.pptx")
+
+    # ask for user input as parameters on the side bar
+    # ask for song numbers
+    st.sidebar.subheader("Song numbers")
+    st.sidebar.write("Please enter the song numbers separated by comma")
+    st.sidebar.write("Example: 161, 320, 93, 169")
+    song_numbers = st.sidebar.text_input("Song numbers")
+
+    # ask for Bible verse
+    st.sidebar.subheader("Bible verse")
+    st.sidebar.write("Please enter the Bible verse")
+    st.sidebar.write("Example: Keluaran 16:2-3")
+    bible_verse = st.sidebar.text_input("Bible verse")
+    
+    # ask for pastor name
+    st.sidebar.subheader("Pastor name")
+    st.sidebar.write("Please enter the pastor name")
+    st.sidebar.write("Default Example: Pdt. Billy Kristanto")
+    pastor_name = st.sidebar.text_input("Pastor name")
+
+    # if pastor_name is empty, then use default value
+    if pastor_name == "":
+        pastor_name = "Pdt. Billy Kristanto"
+
+    # ask for pastor title in German
+    st.sidebar.subheader("Pastor title in German")
+    st.sidebar.write("Please enter the pastor title in German")
+    st.sidebar.write("Default Example: Pfr.")
+    # default is Pfr.
+    pastor_title_de = st.sidebar.text_input("Pastor title in German")
+
+    # if pastor_title_de is empty, then use default value
+    if pastor_title_de == "":
+        pastor_title_de = "Pfr."
+
+
+    # create a submit button
+    submit_button = st.sidebar.button("Submit")
+    # if submit button is clicked
+    if submit_button:
+        # send the data to main.py
+        # 1. song numbers
+        # 2. Bible verse
+        # 3. pastor name
+        # 4. pastor title in German
+        data_array = [song_numbers, bible_verse, pastor_name, pastor_title_de]
+        st.write("Data sent to main.py")
+        st.write(data_array)
+        processing_answers(data_array)
+        main()
+
+    footer()
+
+
 def main():
 
     """
@@ -145,9 +239,14 @@ def main():
     Presentation -> Layout name -> slide layout -> slide -> shapes -> placeholders
     """
 
+    ########################################### ASKING USER DATA ##########################################
     ##### ask for input from the user UI
-    data = ask_for_input()
-    processing_answers(data)
+    # use this input if not using STREAMLIT
+    # data = ask_for_input()
+    # processing_answers(data)
+
+
+    ########################################### CHECKING SONGS ##########################################
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
@@ -158,6 +257,7 @@ def main():
             download_new_song_pipeline(song_number)
 
     
+    ########################################### CREATE SLIDES ##########################################
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
 
@@ -245,6 +345,8 @@ def main():
     print("saved in " + OUTPUT_DIR)
 
 
+
+
 if __name__ == "__main__":
-    main()
+    create_website()
 

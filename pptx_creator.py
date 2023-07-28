@@ -90,9 +90,14 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     bible_book = bible_verse_text.split(" ")[0]
     bible_book_ID = get_full_book_name(bible_book)
 
-    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
-    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
-    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+    try:
+        bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
+        bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
+        bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+    except IndexError:
+        print("WOY! Invalid bible verse format", bible_verse_text)
+        raise IndexError
+    
 
     # get the bible verse in german
     bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
