@@ -227,7 +227,11 @@ def create_website():
         st.write("Data sent to main.py")
         st.write(data_array)
         processing_answers(data_array)
-        main()
+        with st.spinner('Generating the slide...'):
+            main()
+            st.balloons()
+            st.sidebar.success("Slide generated successfully")
+
 
     footer()
 
