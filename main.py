@@ -59,6 +59,7 @@ import sys
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
+import streamlit as st
 
 
 
@@ -68,7 +69,6 @@ from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 
-from streamlit_app import *
 from footer import footer
 
 ########################################### INPUTS ##########################################
