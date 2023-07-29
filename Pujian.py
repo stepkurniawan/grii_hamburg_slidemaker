@@ -228,15 +228,28 @@ def download_new_song_pipeline(song_number):
         return
 
     # FOLDER SELECTION
-    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE string in the name
+    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
     # otherwise download the first folder 
     if len(folder_song_name_inside) > 1:
         for folder in folder_song_name_inside:
             if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
                 folder_song_name_inside = folder
                 break
-            else:
-                folder_song_name_inside = folder_song_name_inside[0]
+
+        # if there is no folder with de or DE or de or De string in the name, then just download the first folder
+        if type(folder_song_name_inside) == list:
+            folder_song_name_inside = folder_song_name_inside[0]
+
+    # if there is only one folder, then just download that folder
+    elif len(folder_song_name_inside) == 1:
+        folder_song_name_inside = folder_song_name_inside[0]
+
+    # if there is no folder, then return
+    else:
+        print("DEBUG! Wrong folder structure, probably not a song folder, the folder name is: ", song_number)
+        return
+
+    print("folder song name inside: ", folder_song_name_inside)
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
