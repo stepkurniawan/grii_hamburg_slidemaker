@@ -58,9 +58,6 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 # ID of the folder you want to download from Google Drive
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 
-# Read the credentials from the credentials.json file and parse it as a dictionary
-with open(credentials_file, 'r') as f:
-    credentials_data = json.load(f)
 
 # Define the required scopes for the Drive API
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
@@ -114,6 +111,11 @@ def get_list_folders(folder_id):
         results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
+        while 'nextPageToken' in results:
+            page_token = results['nextPageToken']
+            results = service.files().list(q=query, fields="nextPageToken, files(id, name)", pageToken=page_token).execute()
+            items.extend(results.get('files', []))
+
         if not items:
             print('No folders found.')
         # else:
@@ -121,7 +123,7 @@ def get_list_folders(folder_id):
         #     for item in items:
         #         print(u'{0} ({1})'.format(item['name'], item['id']))
         return items
-    
+
     except HttpError as error:
         print(f'An error occurred: {error}')
 
@@ -233,8 +235,8 @@ def download_new_song_pipeline(song_number):
             if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
                 folder_song_name_inside = folder
                 break
-    else:
-        folder_song_name_inside = folder_song_name_inside[0]
+            else:
+                folder_song_name_inside = folder_song_name_inside[0]
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
