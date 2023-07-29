@@ -50,8 +50,8 @@ HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
-# songs_folder = os.path.join(base_path, 'Songs' )
-SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
+SONGS_FOLDER = os.path.join(base_path, 'Songs' )
+# SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
@@ -116,10 +116,10 @@ def get_list_folders(folder_id):
 
         if not items:
             print('No folders found.')
-        else:
-            print('Folders found in:', folder_id)
-            for item in items:
-                print(u'{0} ({1})'.format(item['name'], item['id']))
+        # else:
+        #     print('Folders found in:', folder_id)
+        #     for item in items:
+        #         print(u'{0} ({1})'.format(item['name'], item['id']))
         return items
     
     except HttpError as error:
@@ -167,8 +167,10 @@ def download_folder(google_folder_item, destination_folder, song_number):
             print(u'{0} ({1})'.format(item['name'], item['id']))
             if item['mimeType'] == 'application/vnd.google-apps.folder':
                 download_folder(item, destination_folder, song_number)
+                print("downloaded folder: " + item['name'])
             else:
                 download_file(item, destination_folder)
+                print("downloaded file: " + item['name'])
 
 def download_file(item, destination_folder):
     service = build('drive', 'v3', credentials=creds)
@@ -184,8 +186,15 @@ def download_file(item, destination_folder):
         status, done = downloader.next_chunk()
 
 def make_local_folder_based_on_google_folder_name(item, destination_folder, song_number=None):
-    folder_id = item['id']
-    folder_name = item['name']
+    try: 
+        folder_id = item['id']
+        folder_name = item['name']
+
+        #some weird folder structure, just use the first folder  
+    except:
+        folder_id = item[0]['id']
+        folder_name = item[0]['name']
+        
     song_number = str(song_number) # convert to string
     # change the folder name to the song number if it is not None
     temp_destination_folder = os.path.join(destination_folder, song_number) 
@@ -196,18 +205,25 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
         os.chmod(temp_destination_folder, stat.S_IWGRP | stat.S_IWOTH | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IRUSR)
 
     return folder_id, folder_name
+    
+
 
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
     # test_connection()
-    print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id)
 
     # open song folder with the name: number 
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
     folder_song_name_inside = get_list_folders(folder_song_name)
-    print(folder_song_name_inside)
+    print("folder song name inside: ", folder_song_name_inside)
+
+
+    # if folder_song_name_inside is NoneType, then return
+    if folder_song_name_inside is None:
+        print("Folder not found")
+        return
 
     # FOLDER SELECTION
     # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE string in the name
@@ -220,4 +236,27 @@ def download_new_song_pipeline(song_number):
     else:
         folder_song_name_inside = folder_song_name_inside[0]
 
-    download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+    #### check if the song is available locally if not, download from google drive
+    song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
+    if not os.path.exists(song_folder_path):
+        # download the song folder from google drive
+        download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+
+##################### download all songs ############################
+def download_all_songs():
+    # test_connection()
+    print("parent folder:")
+    get_list_folders(master_lagu_ibadah_folder_id)
+
+    # open song folder with the name: number 
+    master_lagu_ibadah = get_list_folders(master_lagu_ibadah_folder_id)
+    print(master_lagu_ibadah)
+
+    # structure : Master_Lagu_Ibadah > song number > song_number-DE again, but with DE > songs.jpg
+    # we want to download all the songs in the folder 1-DE, 2DE, 3-DE, etc
+    # so its a recursive function
+    for song_number in master_lagu_ibadah:
+        download_new_song_pipeline(song_number['name'])
+
+
+download_all_songs()
