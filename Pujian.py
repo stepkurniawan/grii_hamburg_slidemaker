@@ -56,7 +56,7 @@ master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 creds = None
 service = None
 
-test_connection_using_TOML_file(creds)
+test_connection_using_streamlit_secrets(creds)
 
 def get_list_folders(folder_id):
     try:
