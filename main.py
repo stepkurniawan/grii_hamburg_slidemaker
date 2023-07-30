@@ -230,7 +230,7 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main()
             st.balloons()
-            st.sidebar.success("Slide generated successfully")
+            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR)
 
 
     footer()
