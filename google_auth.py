@@ -12,8 +12,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow # missing refresh_token
 from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 
-from streamlit_oauth import OAuth2Component # pip install streamlit-oauth
-
 from google.oauth2 import service_account
 
 
