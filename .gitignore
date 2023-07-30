@@ -6,3 +6,5 @@ mrii-automated-slides-service-accn-private-key.json
 *.log
 build/
 __pycache__/
+.env
+*.toml
