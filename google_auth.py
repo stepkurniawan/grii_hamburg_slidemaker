@@ -16,9 +16,9 @@ from googleapiclient.errors import HttpError
 ################################## GLOBALS ##################################
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
+# credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
