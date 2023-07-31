@@ -15,7 +15,6 @@ openai.api_key = st.secrets["OPENAI_API_KEY_AZURE"]
 bible_id_book = "Keluaran 2:3"
 query_id = "Di Alkitab terjemahan baru, isi {} adalah".format(bible_id_book)
 
-@st.cache
 def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
     output = ""
 
