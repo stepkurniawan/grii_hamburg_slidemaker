@@ -66,7 +66,7 @@ def layout(*args):
 def footer():
     myargs = [
         " with ☁️ by ",
-        link("https://www.linkedin.com/in/stepkurniawan/", "Stepehen Kurniawan"),
+        link("https://www.linkedin.com/in/stepkurniawan/", "Stephen Kurniawan"),
         br(),
         # link("https://buymeacoffee.com/chrischross", image('https://i.imgur.com/thJhzOO.png')),
 
