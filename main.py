@@ -68,6 +68,11 @@ from pptx_creator import *
 # from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
+from Pujian import download_all_songs
+from Pujian import creds
+# from Pujian import service
+from google_auth import *
+from Pujian import *
 
 from footer import footer
 
@@ -171,15 +176,19 @@ def create_website():
     
     # subheading
     st.subheader("Where are the songs?")
-    st.write("The songs are downloaded from the database as a jpg into your computer.")
-    st.write("It is stored in the folder: " + SONGS_FOLDER)
-    st.write("If you have downloaded the songs before, then it will not be downloaded again.")
-    st.markdown("**Please make sure that you have space on your computer**")
+    st.write("The songs are downloaded from the database to the server.")
+    st.write("It is stored in the folder, in the server: " + SONGS_FOLDER)
+
+    # st.write("The button below can update the songs database. BUT it will take a long time to download all the songs. (couple of hours)")
+    # update_song_button = st.button("Update the songs database")
+    # if update_song_button:
+    #     connect_service_account_streamlit(creds)
+    #     download_all_songs()
 
     st.subheader("Where is the Slide?")
-    st.write("The slide is saved in the folder: " + OUTPUT_DIR)
+    st.markdown("After the main process is finished, the **Download Button** will appear on the **left sidebar**")
+    st.markdown("You can save the slide by clicking on the **Download Button**")
     st.markdown("The file name is the date of the **next Sunday** service")
-    st.write("Example: 20210718.pptx")
 
     # ask for user input as parameters on the side bar
     # ask for song numbers
@@ -365,6 +374,6 @@ def main():
 
 
 
-if __name__ == "__main__":
-    create_website()
+# if __name__ == "__main__":
+#     create_website()
 
