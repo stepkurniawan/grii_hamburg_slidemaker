@@ -262,16 +262,7 @@ def create_website():
                 st.sidebar.error("Something went wrong :cry:")
                 #print error message
                 
-    if "debug_string" in st.session_state:
-        st.markdown(
-            f'<div class="debug">{ st.session_state["debug_string"]}</div>',
-            unsafe_allow_html=True,
-        )
     footer()
-
-def debug_print(string):
-    d.debug(string)
-    print(string)
 
 
 @st.cache_data
