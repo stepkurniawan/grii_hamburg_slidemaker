@@ -119,13 +119,6 @@ TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
 ########################################### Functions ##########################################
 
-############################### st_debug ##################################
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-local_css(DEBUG_CSS_FILE)
-#########################################################################
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
