@@ -50,8 +50,10 @@ def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
     return output
 
 
-def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start, verse_end, language="ID"):
+def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end : int, language="ID"):
     output_dict = {}
+    verse_start = int(verse_start)
+    verse_end = int(verse_end)
 
     # calculate how many verses to get
     verse_count = verse_end - verse_start + 1
