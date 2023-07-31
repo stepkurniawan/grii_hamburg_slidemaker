@@ -60,7 +60,7 @@ import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
 import streamlit as st
-
+from io import BytesIO
 
 
 # from alkitab_scraper import *
@@ -95,6 +95,8 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 
 OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
+output_file = ""
+binary_output_file = BytesIO()
 
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
@@ -215,14 +217,7 @@ def create_website():
 
 
     # create a submit button
-    submit_button = st.sidebar.download_button(
-        label="Submit",
-        data="pptx",
-        file_name=sunday_date("filename") + ".pptx",
-        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        # on_click=processing_answers,
-        # args=[song_numbers, bible_verse, pastor_name, pastor_title_de]
-    )
+    submit_button = st.sidebar.button("Submit")
     # if submit button is clicked
     if submit_button:
         # send the data to main.py
@@ -235,10 +230,18 @@ def create_website():
         st.write(data_array)
         processing_answers(data_array)
         with st.spinner('Generating the slide...'):
-            main()
-            st.balloons()
-            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR)
+            try:
+                main()
+                st.balloons()
+                st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
 
+                st.sidebar.download_button(
+                    label="Download slide!",
+                    data=binary_output_file.getvalue(),
+                    file_name=sunday_date("filename")+ ".pptx",
+                )
+            except:
+                st.sidebar.error("Something went wrong :cry:")
 
     footer()
 
@@ -352,8 +355,11 @@ def main():
         print("cannot create output folder")
 
 
+    # save presentation as binary output
+    prs.save(binary_output_file)
     # save in output folder
-    prs.save(os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx"))
+    output_file = os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx")
+    prs.save(output_file)
     print("saved in " + OUTPUT_DIR)
 
 
