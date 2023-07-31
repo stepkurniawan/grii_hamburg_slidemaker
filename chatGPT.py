@@ -1,4 +1,5 @@
 import os
+import time
 import openai
 from dotenv import load_dotenv
 load_dotenv()
@@ -47,6 +48,8 @@ def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
 
     output = response.choices[0].message["content"]
 
+    print("get_content_of_bible_from_chatGPT with this {} was successful".format(ayat_alkitab))
+
     return output
 
 
@@ -64,6 +67,10 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end
         current_ayat_alkitab = book + " " + str(chapter) + ":" + str(verse_start + i)
         output_dict[current_ayat_alkitab] = get_content_of_bible_from_chatGPT(current_ayat_alkitab, language)
 
+        # add a timer to prevent block 1 second
+        time.sleep(1)
+
+    print("get_ayat_alkitab_one_by_one_dict with {} {}:{}-{} was successful".format(book, chapter, verse_start, verse_end))
     return output_dict
 
 # get_ayat_alkitab_one_by_one("Kejadian", 1, 1, 5, "ID")
