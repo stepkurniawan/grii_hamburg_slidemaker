@@ -65,4 +65,4 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start, verse_end, lang
     return output_dict
 
 # get_ayat_alkitab_one_by_one("Kejadian", 1, 1, 5, "ID")
-get_ayat_alkitab_one_by_one_dict("Galater", 4, 5, 7, "DE")
+# get_ayat_alkitab_one_by_one_dict("Galater", 4, 5, 7, "DE")
