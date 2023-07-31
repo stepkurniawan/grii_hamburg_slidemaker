@@ -1,5 +1,5 @@
 import os
-from alkitab_scraper import *
+# from alkitab_scraper import *
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
