@@ -4,6 +4,8 @@ from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
 
+from chatGPT import get_ayat_alkitab_one_by_one_dict
+
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
     key = int(''.join(filter(str.isdigit, file_name)))
@@ -102,8 +104,8 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     # get the bible verse in german
     bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
 
-    id_bible_verse = get_ayat_alkitab_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
-    de_bible_verse = get_ayat_alkitab_dict(bible_book_DE, bible_chapter, bible_verse_start, bible_verse_end, "DE")
+    id_bible_verse = get_ayat_alkitab_one_by_one_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
+    de_bible_verse = get_ayat_alkitab_one_by_one_dict(bible_book_DE, bible_chapter, bible_verse_start, bible_verse_end, "DE")
 
     # count how many verse 
     verse_count = len(id_bible_verse)
