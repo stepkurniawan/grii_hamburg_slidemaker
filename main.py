@@ -215,7 +215,14 @@ def create_website():
 
 
     # create a submit button
-    submit_button = st.sidebar.button("Submit")
+    submit_button = st.sidebar.download_button(
+        label="Submit",
+        data="pptx",
+        file_name=sunday_date("filename") + ".pptx",
+        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        # on_click=processing_answers,
+        # args=[song_numbers, bible_verse, pastor_name, pastor_title_de]
+    )
     # if submit button is clicked
     if submit_button:
         # send the data to main.py
@@ -235,7 +242,7 @@ def create_website():
 
     footer()
 
-
+@st.cache_data
 def main():
 
     """
@@ -343,6 +350,7 @@ def main():
             print("output folder created")
     except:
         print("cannot create output folder")
+
 
     # save in output folder
     prs.save(os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx"))

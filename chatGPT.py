@@ -27,6 +27,9 @@ def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
         
     print("chatGPT is querying: ", query)
 
+    # add a timer to prevent block 1 second
+    time.sleep(2)
+
     response = openai.ChatCompletion.create(
         engine="GPT35TURBO",
         messages=[{"role": "system", "content": "You are very introverted AI assistant that answers people questions promptly. You only answer the content of the bible asked, and provides no context nor comments. By default you reference Alkitab Terjemahan Baru if the quesion is in Indonesian, and refer Lutherbibel 1912 if the question is in German. "},
@@ -67,8 +70,7 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end
         current_ayat_alkitab = book + " " + str(chapter) + ":" + str(verse_start + i)
         output_dict[current_ayat_alkitab] = get_content_of_bible_from_chatGPT(current_ayat_alkitab, language)
 
-        # add a timer to prevent block 1 second
-        time.sleep(1)
+        
 
     print("get_ayat_alkitab_one_by_one_dict with {} {}:{}-{} was successful".format(book, chapter, verse_start, verse_end))
     return output_dict
