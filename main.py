@@ -73,6 +73,7 @@ from Pujian import creds
 # from Pujian import service
 from google_auth import *
 from Pujian import *
+import add_ons.st_debug as d
 
 from footer import footer
 
@@ -93,10 +94,12 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+ADD_ONS_DIR = os.path.join(CURRENT_DIR, "add_ons")
 
 HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
+DEBUG_CSS_FILE = os.path.join(ADD_ONS_DIR, "debug.css")
 
 OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
@@ -117,6 +120,14 @@ TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
 
 ########################################### Functions ##########################################
+
+############################### st_debug ##################################
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css(DEBUG_CSS_FILE)
+#########################################################################
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
@@ -251,8 +262,19 @@ def create_website():
                 )
             except:
                 st.sidebar.error("Something went wrong :cry:")
-
+                #print error message
+                
+    if "debug_string" in st.session_state:
+        st.markdown(
+            f'<div class="debug">{ st.session_state["debug_string"]}</div>',
+            unsafe_allow_html=True,
+        )
     footer()
+
+def debug_print(string):
+    d.debug(string)
+    print(string)
+
 
 @st.cache_data
 def main():
@@ -306,7 +328,7 @@ def main():
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
     print("Adding bible reading")
-    add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
+    # add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE) # TODO: uncomment this
 
     add_church_cover_page(prs, sunday_date("slide"))
 
