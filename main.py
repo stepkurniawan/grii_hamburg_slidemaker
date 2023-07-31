@@ -98,7 +98,6 @@ ADD_ONS_DIR = os.path.join(CURRENT_DIR, "add_ons")
 HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
-DEBUG_CSS_FILE = os.path.join(ADD_ONS_DIR, "debug.css")
 
 OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
