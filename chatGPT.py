@@ -2,13 +2,14 @@ import os
 import time
 import openai
 from dotenv import load_dotenv
+import streamlit as st
 load_dotenv()
 
 # Note: The openai-python library support for Azure OpenAI is in preview.
 openai.api_type = "azure"
 openai.api_base = "https://abcgenaidemo.openai.azure.com/"
 openai.api_version = "2023-03-15-preview"
-openai.api_key = os.getenv("OPENAI_API_KEY_AZURE")
+openai.api_key = st.secrets["OPENAI_API_KEY_AZURE"]
 
 
 bible_id_book = "Keluaran 2:3"
