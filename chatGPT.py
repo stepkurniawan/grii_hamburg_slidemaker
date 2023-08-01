@@ -27,8 +27,6 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         
     print("chatGPT is querying: ", query)
 
-    time.sleep(1)
-
     # wait for response for 5 seconds, otherwise try again
     for i in range(10):
         try:
@@ -51,14 +49,13 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
             break
         except:
             print("chatGPT is trying again...")
-            time.sleep(1)
 
 
     # print(response)
     # print("Isi alkitab" ,response.choices[0].message["content"])
     # output = response.choices[0].message["content"] # old version
     st.write("response", response)
-    output = response['choices'][0]['message']['content']
+    output = response['choices'][0]['message']['content'] or ""
     st.write("output", output)
 
     print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
