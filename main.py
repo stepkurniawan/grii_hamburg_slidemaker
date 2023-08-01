@@ -255,7 +255,6 @@ def create_website():
     footer()
 
 
-@st.cache_data
 def main():
 
     """
