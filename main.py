@@ -310,7 +310,7 @@ def main():
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
     print("Adding bible reading")
-    # add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE) # TODO: uncomment this
+    add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE) # TODO: uncomment this
 
     add_church_cover_page(prs, sunday_date("slide"))
 

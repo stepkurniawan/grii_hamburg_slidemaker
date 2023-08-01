@@ -7,7 +7,7 @@ load_dotenv()
 
 # Note: The openai-python library support for Azure OpenAI is in preview.
 openai.api_type = "azure"
-openai.api_base = "https://abcgenaidemo.openai.azure.com/"
+openai.api_base = st.secrets["AZURE_OPENAI_ENDPOINT"] 
 openai.api_version = "2023-03-15-preview"
 openai.api_key = st.secrets["OPENAI_API_KEY_AZURE"]
 
@@ -26,9 +26,6 @@ def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
             ayat_alkitab)
         
     print("chatGPT is querying: ", query)
-
-    # add a timer to prevent block 1 second
-    time.sleep(2)
 
     response = openai.ChatCompletion.create(
         engine="GPT35TURBO",
@@ -75,5 +72,5 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end
     print("get_ayat_alkitab_one_by_one_dict with {} {}:{}-{} was successful".format(book, chapter, verse_start, verse_end))
     return output_dict
 
-# get_ayat_alkitab_one_by_one("Kejadian", 1, 1, 5, "ID")
+get_ayat_alkitab_one_by_one_dict("Kejadian", 1, 1, 5, "ID")
 # get_ayat_alkitab_one_by_one_dict("Galater", 4, 5, 7, "DE")
