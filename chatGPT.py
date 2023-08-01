@@ -27,21 +27,32 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         
     print("chatGPT is querying: ", query)
 
-    response = openai.ChatCompletion.create(
-        engine="GPT35TURBO",
-        messages=[{"role": "system", "content": "You are very introverted AI assistant that answers people questions promptly. You only answer the content of the bible asked, and provides no context nor comments. By default you reference Alkitab Terjemahan Baru if the quesion is in Indonesian, and refer Lutherbibel 1912 if the question is in German. "},
-                  {"role": "user", "content": "Sebutkan di alkitab terjemahan baru, isi Kejadian 1:1\n"},
-                  {"role": "assistant",
-                      "content": "Pada mulanya Allah menciptakan langit dan bumi."},
-                  {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
-                  {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
-                  {"role": "user", "content": "{}".format(query)},],
-        temperature=0.7,
-        max_tokens=434,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None)
+    time.sleep(1)
+
+    # wait for response for 5 seconds, otherwise try again
+    for i in range(10):
+        try:
+            response = openai.ChatCompletion.create(
+                engine="GPT35TURBO",
+                messages=[{"role": "system", "content": "You are very introverted AI assistant that answers people questions promptly. You only answer the content of the bible asked, and provides no context nor comments. By default you reference Alkitab Terjemahan Baru if the quesion is in Indonesian, and refer Lutherbibel 1912 if the question is in German. "},
+                        {"role": "user", "content": "Sebutkan di alkitab terjemahan baru, isi Kejadian 1:1\n"},
+                        {"role": "assistant",
+                            "content": "Pada mulanya Allah menciptakan langit dan bumi."},
+                        {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
+                        {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
+                        {"role": "user", "content": "{}".format(query)},],
+                temperature=0.7,
+                max_tokens=434,
+                top_p=0.95,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=None)
+            
+            break
+        except:
+            print("chatGPT is trying again...")
+            time.sleep(1)
+
 
     # print(response)
     # print("Isi alkitab" ,response.choices[0].message["content"])
@@ -72,5 +83,5 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end
     print("get_ayat_alkitab_one_by_one_dict with {} {}:{}-{} was successful".format(book, chapter, verse_start, verse_end))
     return output_dict
 
-# get_ayat_alkitab_one_by_one_dict("Kejadian", 1, 1, 5, "ID")
+get_ayat_alkitab_one_by_one_dict("Kejadian", 1, 1, 5, "ID")
 # get_ayat_alkitab_one_by_one_dict("Galater", 4, 5, 7, "DE")
