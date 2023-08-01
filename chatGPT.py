@@ -55,7 +55,10 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
     # print("Isi alkitab" ,response.choices[0].message["content"])
     # output = response.choices[0].message["content"] # old version
     st.write("response", response)
-    output = response['choices'][0]['message']['content'] or ""
+    try:
+        output = response['choices'][0]['message']['content'] 
+    except:
+        output = ""
     st.write("output", output)
 
     print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
