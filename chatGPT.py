@@ -39,7 +39,7 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
                         {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
                         {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
                         {"role": "user", "content": "{}".format(query)},],
-                temperature=0.3,
+                temperature=0.0,
                 max_tokens=2800,
                 top_p=0.95,
                 frequency_penalty=0,
