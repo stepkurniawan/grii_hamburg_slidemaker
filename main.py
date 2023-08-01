@@ -241,19 +241,16 @@ def create_website():
         st.write(data_array)
         processing_answers(data_array)
         with st.spinner('Generating the slide...'):
-            try:
-                main()
-                st.balloons()
-                st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
+            main()
+            st.balloons()
+            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
 
-                st.sidebar.download_button(
-                    label="Download slide!",
-                    data=binary_output_file.getvalue(),
-                    file_name=sunday_date("filename")+ ".pptx",
-                )
-            except:
-                st.sidebar.error("Something went wrong :cry:")
-                #print error message
+            st.sidebar.download_button(
+                label="Download slide!",
+                data=binary_output_file.getvalue(),
+                file_name=sunday_date("filename")+ ".pptx",
+            )
+
                 
     footer()
 
