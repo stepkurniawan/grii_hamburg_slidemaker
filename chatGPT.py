@@ -9,21 +9,21 @@ load_dotenv()
 openai.api_type = "azure"
 openai.api_base = st.secrets["AZURE_OPENAI_ENDPOINT"] 
 openai.api_version = "2023-03-15-preview"
-openai.api_key = st.secrets["OPENAI_API_KEY_AZURE"]
+openai.api_key = st.secrets["OPENAI_API_KEY_AZURE2"]
 
 
 bible_id_book = "Keluaran 2:3"
 query_id = "Di Alkitab terjemahan baru, isi {} adalah".format(bible_id_book)
 
-def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
+def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
     output = ""
 
     if language == "ID":
         query = "Di Alkitab terjemahan baru, isi {} adalah".format(
-            ayat_alkitab)
+            bible_verses)
     elif language == "DE":
         query = "in Lutherbibel 1912, was ist in {} ? Bitte auf Deutsch".format(
-            ayat_alkitab)
+            bible_verses)
         
     print("chatGPT is querying: ", query)
 
@@ -48,7 +48,7 @@ def get_content_of_bible_from_chatGPT(ayat_alkitab, language="ID"):
 
     output = response.choices[0].message["content"]
 
-    print("get_content_of_bible_from_chatGPT with this {} was successful".format(ayat_alkitab))
+    print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
 
     return output
 
