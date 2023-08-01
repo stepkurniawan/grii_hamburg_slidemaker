@@ -57,7 +57,9 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
     # print(response)
     # print("Isi alkitab" ,response.choices[0].message["content"])
     # output = response.choices[0].message["content"] # old version
+    st.write("response", response)
     output = response['choices'][0]['message']['content']
+    st.write("output", output)
 
     print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
 
@@ -83,5 +85,5 @@ def get_ayat_alkitab_one_by_one_dict(book, chapter, verse_start : int, verse_end
     print("get_ayat_alkitab_one_by_one_dict with {} {}:{}-{} was successful".format(book, chapter, verse_start, verse_end))
     return output_dict
 
-get_ayat_alkitab_one_by_one_dict("Kejadian", 1, 1, 5, "ID")
+# get_ayat_alkitab_one_by_one_dict("Kejadian", 1, 1, 5, "ID")
 # get_ayat_alkitab_one_by_one_dict("Galater", 4, 5, 7, "DE")
