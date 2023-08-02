@@ -15,6 +15,25 @@ openai.api_key = st.secrets["OPENAI_API_KEY_AZURE2"]
 bible_id_book = "Keluaran 2:3"
 query_id = "Di Alkitab terjemahan baru, isi {} adalah".format(bible_id_book)
 
+
+def querry_chatGPT(query):
+    response = openai.ChatCompletion.create(
+        engine="GPT35TURBO",
+        messages=[{"role": "system", "content": "You are very introverted AI assistant that answers people questions promptly. You only answer the content of the bible asked, and provides no context nor comments. By default you reference Alkitab Terjemahan Baru if the quesion is in Indonesian, and refer Lutherbibel 1912 if the question is in German. "},
+                {"role": "user", "content": "Sebutkan di alkitab terjemahan baru, isi Kejadian 1:1\n"},
+                {"role": "assistant",
+                    "content": "Pada mulanya Allah menciptakan langit dan bumi."},
+                {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
+                {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
+                {"role": "user", "content": "{}".format(query)},],
+        temperature=0.0,
+        max_tokens=2800,
+        top_p=0.95,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=None)
+    return response
+
 def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
     output = ""
 
@@ -27,39 +46,22 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         
     print("chatGPT is querying: ", query)
 
-    # wait for response for 5 seconds, otherwise try again
-    for i in range(10):
+    for i in range(3):
         try:
-            response = openai.ChatCompletion.create(
-                engine="GPT35TURBO",
-                messages=[{"role": "system", "content": "You are very introverted AI assistant that answers people questions promptly. You only answer the content of the bible asked, and provides no context nor comments. By default you reference Alkitab Terjemahan Baru if the quesion is in Indonesian, and refer Lutherbibel 1912 if the question is in German. "},
-                        {"role": "user", "content": "Sebutkan di alkitab terjemahan baru, isi Kejadian 1:1\n"},
-                        {"role": "assistant",
-                            "content": "Pada mulanya Allah menciptakan langit dan bumi."},
-                        {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
-                        {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
-                        {"role": "user", "content": "{}".format(query)},],
-                temperature=0.0,
-                max_tokens=2800,
-                top_p=0.95,
-                frequency_penalty=0,
-                presence_penalty=0,
-                stop=None)
-            
+            response = querry_chatGPT(query)
+            output = response['choices'][0]['message']['content'] 
             break
-        except:
-            print("chatGPT is trying again...")
 
+        except:
+            print("chatGPT failed to query: ", query, "trying again in 3 seconds")
+            output = ""
+            time.sleep(3)
+            continue
 
     # print(response)
     # print("Isi alkitab" ,response.choices[0].message["content"])
     # output = response.choices[0].message["content"] # old version
     st.write("response", response)
-    try:
-        output = response['choices'][0]['message']['content'] 
-    except:
-        output = ""
-    st.write("output", output)
 
     print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
 
