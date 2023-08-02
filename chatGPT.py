@@ -55,7 +55,7 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         except:
             print("chatGPT failed to query: ", query, "trying again in 3 seconds")
             output = ""
-            time.sleep(3)
+            time.sleep(1)
             continue
 
     # print(response)
