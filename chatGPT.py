@@ -50,14 +50,14 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         try:
             response = querry_chatGPT(query)
             output = response['choices'][0]['message']['content'] 
-            st.write(bible_verses, "successfully retrieved from chatGPT")
+            st.write(bible_verses, language , "successfully retrieved from chatGPT")
             break
 
         except:
             print("chatGPT failed to query: ", query, "trying again in 3 seconds")
             output = ""
             if i == 2:
-                st.write("failed to retrieve",bible_verses)
+                st.write("failed to retrieve",bible_verses, language)
             # time.sleep(1)
             continue
 
