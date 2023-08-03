@@ -50,18 +50,21 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         try:
             response = querry_chatGPT(query)
             output = response['choices'][0]['message']['content'] 
+            st.write(bible_verses, "successfully retrieved from chatGPT")
             break
 
         except:
             print("chatGPT failed to query: ", query, "trying again in 3 seconds")
             output = ""
+            if i == 2:
+                st.write("failed to retrieve",bible_verses)
             # time.sleep(1)
             continue
 
     # print(response)
     # print("Isi alkitab" ,response.choices[0].message["content"])
     # output = response.choices[0].message["content"] # old version
-    st.write("response", response)
+    # st.write("response", response)
 
     print("get_content_of_bible_from_chatGPT with this {} was successful".format(bible_verses))
 
