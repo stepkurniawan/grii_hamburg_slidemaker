@@ -119,6 +119,9 @@ TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
 ########################################### Functions ##########################################
 
+def print_and_st_write(text):
+    print(text)
+    st.write(text)
 
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
@@ -278,6 +281,7 @@ def main():
         if not os.path.exists(song_folder_path):
             # download the song folder from google drive
             download_new_song_pipeline(song_number)
+            print_and_st_write("song number " + str(song_number) + " successfully downloaded")
 
     
     ########################################### CREATE SLIDES ##########################################
@@ -294,56 +298,56 @@ def main():
     # check_placeholders_in_slide_index(prs, 4)
 
     # add first song
-    print("Adding first song")
+    print_and_st_write("Adding first song")
     first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
     insert_slides_from_pict_folder(prs, first_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
-    print("Adding second song")
+    print_and_st_write("Adding second song")
     second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
-    print("Adding bible reading")
+    print_and_st_write("Adding bible reading")
     add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE) # TODO: uncomment this
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add third song
-    print("Adding third song")
+    print_and_st_write("Adding third song")
     third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
     insert_slides_from_pict_folder(prs, third_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Lord's Prayer")
+    print_and_st_write("Adding Lord's Prayer")
     add_doa_bapa_kami_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Preacher")
+    print_and_st_write("Adding Preacher")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Apostles' Creed")
+    print_and_st_write("Adding Apostles' Creed")
     add_appostle_creed_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Offerings")
+    print_and_st_write("Adding Offerings")
     secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
     add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
 
     # add fourth song
-    print("Adding fourth song")
+    print_and_st_write("Adding fourth song")
     fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
     insert_slides_from_pict_folder(prs, fourth_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Puji Allah Bapa Putra")
+    print_and_st_write("Adding Puji Allah Bapa Putra")
     add_doxology_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
@@ -352,6 +356,7 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
+    print_and_st_write("Adding Announcements")
     add_bekantmachung_page(prs)
 
     try:
