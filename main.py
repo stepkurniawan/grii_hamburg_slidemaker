@@ -131,7 +131,7 @@ def processing_answers(data_array):
     PASTOR_TITLE_ID = data_array[2].split(" ")[0]
     PASTOR_NAME = data_array[2].split(" ")[1] 
     # if there is a third word, then it is the last name
-    if len(data_array[1].split(" ")) > 2:
+    if len(data_array[2].split(" ")) > 2:
         PASTOR_NAME += " " + data_array[2].split(" ")[2]
     PASTOR_TITLE_DE = data_array[3]
 
