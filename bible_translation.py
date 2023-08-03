@@ -91,7 +91,7 @@ lai_abbre_to_full = {
     "Pen": "Pengkotbah",
     "Kid": "Kidung Agung",
     "Yes": "Yesaya",
-    "Jer": "Yeremia",
+    "Yer": "Yeremia",
     "Rat": "Ratapan",
     "Yeh": "Yehezkiel",
     "Dan": "Daniel",
