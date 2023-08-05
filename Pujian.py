@@ -56,7 +56,10 @@ master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 creds = None
 service = None
 
+# uncomment this line to for streamlit
 connect_service_account_streamlit(creds)
+
+# test_connection(creds)
 
 def get_list_folders(folder_id):
     try:
@@ -163,7 +166,59 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
 
     return folder_id, folder_name
     
+def folder_kenywn_way(song_number,folder_song_name_list):
+    """
+    folder_song_name_list = ["DE, "115"]
+    folder_song_name_inside = "DE"
 
+    """
+
+    # FOLDER SELECTION
+    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
+    # otherwise download the first folder 
+    if len(folder_song_name_list) > 0:
+        for folder in folder_song_name_list:
+            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
+                folder_song_name_inside = folder # master_lagu_ibadah / 115 / DE / 115-DE
+                break
+
+    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"]) # master_lagu_ibadah / 115 / DE / 115 DE
+    
+    if len(folder_song_name_inside_2_list) > 0:
+        for folder in folder_song_name_inside_2_list:
+            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
+                folder_song_name_inside_3 = folder # master_lagu_ibadah / 115 / DE / 115-DE
+                break
+
+    return folder_song_name_inside_3
+
+def folder_stephen_way(song_number):
+    
+    # FOLDER SELECTION
+    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
+    # otherwise download the first folder 
+    if len(folder_song_name_inside_list) > 1:
+        for folder in folder_song_name_inside_list:
+            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
+                folder_song_name_inside_list = folder
+                break
+
+        # if there is no folder with de or DE or de or De string in the name, then just download the first folder
+        if type(folder_song_name_inside_list) == list:
+            folder_song_name_inside_list = folder_song_name_inside_list[0]
+
+    # if there is only one folder, then just download that folder
+    elif len(folder_song_name_inside_list) == 1:
+        folder_song_name_inside_list = folder_song_name_inside_list[0]
+
+    # if there is no folder, then return
+    else:
+        print("DEBUG! Wrong folder structure, probably not a song folder, the folder name is: ", song_number)
+        return
+
+    print("folder song name inside: ", folder_song_name_inside_list)
+
+    return folder_song_name_inside_list
 
 
 ############### COMBINING ALL THE FUNCTIONS #####################
@@ -172,45 +227,23 @@ def download_new_song_pipeline(song_number):
     get_list_folders(master_lagu_ibadah_folder_id)
 
     # open song folder with the name: number 
-    folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
-    folder_song_name_inside = get_list_folders(folder_song_name)
-    print("folder song name inside: ", folder_song_name_inside)
+    folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id) # master_lagu_ibadah / 100
+    folder_song_name_inside_list = get_list_folders(folder_song_name) # master_lagu_ibadah / 115 / 115
+    print("folder song name inside: ", folder_song_name_inside_list)
 
 
     # if folder_song_name_inside is NoneType, then return
-    if folder_song_name_inside is None:
+    if folder_song_name_inside_list is None:
         print("Folder not found")
         return
 
-    # FOLDER SELECTION
-    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
-    # otherwise download the first folder 
-    if len(folder_song_name_inside) > 1:
-        for folder in folder_song_name_inside:
-            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
-                folder_song_name_inside = folder
-                break
-
-        # if there is no folder with de or DE or de or De string in the name, then just download the first folder
-        if type(folder_song_name_inside) == list:
-            folder_song_name_inside = folder_song_name_inside[0]
-
-    # if there is only one folder, then just download that folder
-    elif len(folder_song_name_inside) == 1:
-        folder_song_name_inside = folder_song_name_inside[0]
-
-    # if there is no folder, then return
-    else:
-        print("DEBUG! Wrong folder structure, probably not a song folder, the folder name is: ", song_number)
-        return
-
-    print("folder song name inside: ", folder_song_name_inside)
+    folder_song_name_inside_list = folder_kenywn_way(song_number,folder_song_name_inside_list)
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
     if not os.path.exists(song_folder_path):
         # download the song folder from google drive
-        download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+        download_folder(folder_song_name_inside_list, SONGS_FOLDER, song_number)
 
 ##################### download all songs ############################
 def download_all_songs():
@@ -230,3 +263,5 @@ def download_all_songs():
 
 
 # download_all_songs()
+
+# download_new_song_pipeline(115)
