@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 # from alkitab_scraper import *
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
@@ -14,8 +15,14 @@ def sort_by_number(file_name):
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
     # get all files in the folder
-    files = sorted(os.listdir(folder_path), key=sort_by_number)
-
+    try: 
+        files = sorted(os.listdir(folder_path), key=sort_by_number)
+    except:
+        # write in bold and red if the folder is not found
+        st.markdown(f"<p style='color:red;font-weight:bold;'>Folder {folder_path} not found</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color:red;'>It means, the song is not found. Please check the google drive of the song.</p>", unsafe_allow_html=True)
+        st.stop()
+        
     # loop through all files (picture only) can be png, jpg, jpeg, etc, or it can also be uppercase
     # it has to be sorted by name
     for file in files:

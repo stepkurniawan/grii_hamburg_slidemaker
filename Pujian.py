@@ -33,7 +33,8 @@ from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
  
-from google_auth import *
+import google_auth as ga
+import test_local_google_auth as test_ga
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,7 +58,7 @@ creds = None
 service = None
 
 # uncomment this line to for streamlit
-connect_service_account_streamlit(creds)
+test_ga.connect_service_account_streamlit(creds)
 
 # test_connection(creds)
 
