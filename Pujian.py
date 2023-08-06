@@ -34,7 +34,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
  
 import google_auth as ga
-import test_local_google_auth as test_ga
+# import test_local_google_auth as test_ga
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,8 +59,7 @@ service = None
 
 # uncomment this line to for streamlit
 ga.connect_service_account_streamlit(creds)
-
-# test_connection(creds)
+# test_ga.connect_service_account_streamlit(creds)
 
 def get_list_folders(folder_id):
     try:
