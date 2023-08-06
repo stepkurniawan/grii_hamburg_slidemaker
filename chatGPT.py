@@ -28,6 +28,7 @@ def querry_chatGPT(query):
                 {"role": "user", "content": "{}".format(query)},],
         temperature=0.0,
         max_tokens=2800,
+        request_timeout=10,
         top_p=0.95,
         frequency_penalty=0,
         presence_penalty=0,
@@ -58,7 +59,7 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
             output = ""
             if i == 2:
                 st.write("failed to retrieve",bible_verses, language)
-            # time.sleep(1)
+            time.sleep(3)
             continue
 
     # print(response)
