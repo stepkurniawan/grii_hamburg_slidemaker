@@ -42,7 +42,7 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
         query = "Di Alkitab terjemahan baru, isi {} adalah".format(
             bible_verses)
     elif language == "DE":
-        query = "in Lutherbibel 1912, was ist in {} ? Bitte auf Deutsch, und nur von in Lutherbibel 1912!".format(
+        query = "in Lutherbibel 1912, was ist in {} ? Bitte auf Deutsch, und nur von Lutherbibel 1912!".format(
             bible_verses)
         
     print("chatGPT is querying: ", query)
