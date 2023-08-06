@@ -23,8 +23,8 @@ def querry_chatGPT(query):
                 {"role": "user", "content": "Sebutkan di alkitab terjemahan baru, isi Kejadian 1:1\n"},
                 {"role": "assistant",
                     "content": "Pada mulanya Allah menciptakan langit dan bumi."},
-                {"role": "user", "content": "in Lutherbibel 1912, was ist Galaters 4 : 5 ? "},
-                {"role": "assistant", "content": "auf daß er die, so unter dem Gesetz waren, erlöste, daß wir die Kindschaft empfingen."},
+                {"role": "user", "content": "in Lutherbibel 1912, was ist Jeremia 1 : 2 ? "},
+                {"role": "assistant", "content": "zu welchem geschah das Wort des HERRN zur Zeit Josias, des Sohnes Amons, des Königs in Juda, im dreizehnten Jahr seines Königreichs,"},
                 {"role": "user", "content": "{}".format(query)},],
         temperature=0.0,
         max_tokens=2800,
@@ -54,7 +54,7 @@ def get_content_of_bible_from_chatGPT(bible_verses, language="ID"):
             break
 
         except:
-            print("chatGPT failed to query: ", query, "trying again in 3 seconds")
+            print("chatGPT failed to query: ", query, "trying again...")
             output = ""
             if i == 2:
                 st.write("failed to retrieve",bible_verses, language)
