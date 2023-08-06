@@ -76,10 +76,7 @@ def get_list_folders(folder_id):
 
         if not items:
             print('No folders found.')
-        # else:
-        #     print('Folders found in:', folder_id)
-        #     for item in items:
-        #         print(u'{0} ({1})'.format(item['name'], item['id']))
+
         return items
 
     except HttpError as error:
@@ -166,69 +163,57 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
 
     return folder_id, folder_name
     
-def folder_kenywn_way(song_number,folder_song_name_list):
+def folder_kenwyn_way(song_number, folder_song_name_list):
     """
+    This function selects the appropriate folder from the list based on the given criteria.
+
+    :param song_number: Not used in this function.
+    :param folder_song_name_list: A list of folders with their names and IDs.
+    :return: The selected folder or None if no suitable folder is found.
+
     folder_song_name_list = ["DE, "115"]
     folder_song_name_inside = "DE"
+    folder_song_name_inside_3 = "115 DE"
 
     """
 
     # FOLDER SELECTION
-    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
-    # otherwise download the first folder 
-    if len(folder_song_name_list) > 0:
-        for folder in folder_song_name_list:
-            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
-                folder_song_name_inside = folder # master_lagu_ibadah / 115 / DE / 115-DE
-                break
+    # Select the folder that contains "DE" or "de" or "De" in the name, otherwise, the first folder.
 
-    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"]) # master_lagu_ibadah / 115 / DE / 115 DE
-    
-    if len(folder_song_name_inside_2_list) > 0:
-        for folder in folder_song_name_inside_2_list:
-            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
-                folder_song_name_inside_3 = folder # master_lagu_ibadah / 115 / DE / 115-DE
-                break
+    for folder in folder_song_name_list:
+        if folder['name'] == "DE":
+            folder_song_name_inside = folder
+            break
+    else:
+        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
+        if folder_song_name_list:
+            folder_song_name_inside = folder_song_name_list[0]
+        else:
+            return None
+
+    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"])
+
+    for folder in folder_song_name_inside_2_list:
+        if "DE" in folder['name'].upper():
+            folder_song_name_inside_3 = folder
+            break
+    else:
+        folder_song_name_inside_3 = None
 
     return folder_song_name_inside_3
 
-def folder_stephen_way(song_number):
-    
-    # FOLDER SELECTION
-    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE or de or De string in the name
-    # otherwise download the first folder 
-    if len(folder_song_name_inside_list) > 1:
-        for folder in folder_song_name_inside_list:
-            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
-                folder_song_name_inside_list = folder
-                break
 
-        # if there is no folder with de or DE or de or De string in the name, then just download the first folder
-        if type(folder_song_name_inside_list) == list:
-            folder_song_name_inside_list = folder_song_name_inside_list[0]
-
-    # if there is only one folder, then just download that folder
-    elif len(folder_song_name_inside_list) == 1:
-        folder_song_name_inside_list = folder_song_name_inside_list[0]
-
-    # if there is no folder, then return
-    else:
-        print("DEBUG! Wrong folder structure, probably not a song folder, the folder name is: ", song_number)
-        return
-
-    print("folder song name inside: ", folder_song_name_inside_list)
-
-    return folder_song_name_inside_list
 
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
+    global folder_song_name_inside_list
     # test_connection()
     get_list_folders(master_lagu_ibadah_folder_id)
 
     # open song folder with the name: number 
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id) # master_lagu_ibadah / 100
-    folder_song_name_inside_list = get_list_folders(folder_song_name) # master_lagu_ibadah / 115 / 115
+    folder_song_name_inside_list = get_list_folders(folder_song_name) # master_lagu_ibadah / 115 / DE
     print("folder song name inside: ", folder_song_name_inside_list)
 
 
@@ -237,7 +222,10 @@ def download_new_song_pipeline(song_number):
         print("Folder not found")
         return
 
-    folder_song_name_inside_list = folder_kenywn_way(song_number,folder_song_name_inside_list)
+    folder_song_name_inside_list = folder_kenwyn_way(song_number,folder_song_name_inside_list)
+    if folder_song_name_inside_list is None:
+        print("Folder not found according to kenwyn path")
+        return
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
@@ -247,6 +235,9 @@ def download_new_song_pipeline(song_number):
 
 ##################### download all songs ############################
 def download_all_songs():
+    global num_songs_with_wrong_DE_path 
+
+    num_songs_with_wrong_DE_path = 0
     # test_connection()
     print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id)
