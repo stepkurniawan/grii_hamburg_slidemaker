@@ -58,7 +58,7 @@ creds = None
 service = None
 
 # uncomment this line to for streamlit
-test_ga.connect_service_account_streamlit(creds)
+ga.connect_service_account_streamlit(creds)
 
 # test_connection(creds)
 
