@@ -114,14 +114,16 @@ def get_list_folders(folder_id):
         results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
+        while 'nextPageToken' in results:
+            page_token = results['nextPageToken']
+            results = service.files().list(q=query, fields="nextPageToken, files(id, name)", pageToken=page_token).execute()
+            items.extend(results.get('files', []))
+
         if not items:
             print('No folders found.')
-        else:
-            print('Folders found in:', folder_id)
-            for item in items:
-                print(u'{0} ({1})'.format(item['name'], item['id']))
+
         return items
-    
+
     except HttpError as error:
         print(f'An error occurred: {error}')
 
@@ -201,6 +203,7 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
     # test_connection()
+    print("Downloading song number: " + str(song_number))
     print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id)
 
@@ -208,6 +211,11 @@ def download_new_song_pipeline(song_number):
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
     folder_song_name_inside = get_list_folders(folder_song_name)
     print(folder_song_name_inside)
+
+    # if folder_song_name_insight is None, throw error
+    if folder_song_name_inside is None:
+        print ("Folder inside is not found, song_name:" + song_number)
+        raise IndexError("Folder_song_name_inside is not found, it shouldnt be none")
 
     # FOLDER SELECTION
     # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE string in the name
@@ -221,3 +229,4 @@ def download_new_song_pipeline(song_number):
         folder_song_name_inside = folder_song_name_inside[0]
 
     download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+
