@@ -199,6 +199,46 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
 
     return folder_id, folder_name
 
+def folder_kenwyn_way(song_number, folder_song_name_list):
+    """
+    This function selects the appropriate folder from the list based on the given criteria.
+
+    :param song_number: Not used in this function.
+    :param folder_song_name_list: A list of folders with their names and IDs.
+    :return: The selected folder or None if no suitable folder is found.
+
+    folder_song_name_list = ["DE, "115"]
+    folder_song_name_inside = "DE"
+    folder_song_name_inside_3 = "115 DE"
+
+    """
+
+    # FOLDER SELECTION
+    # Select the folder that contains "DE" or "de" or "De" in the name, otherwise, the first folder.
+
+    for folder in folder_song_name_list:
+        if folder['name'] == "DE":
+            folder_song_name_inside = folder
+            break
+    else:
+        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
+        if folder_song_name_list:
+            folder_song_name_inside = folder_song_name_list[0]
+        else:
+            return None
+
+    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"])
+
+    for folder in folder_song_name_inside_2_list:
+        if "DE" in folder['name'].upper():
+            folder_song_name_inside_3 = folder
+            break
+    else:
+        folder_song_name_inside_3 = None
+
+    return folder_song_name_inside_3
+
+
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
@@ -217,16 +257,15 @@ def download_new_song_pipeline(song_number):
         print ("Folder inside is not found, song_name:" + song_number)
         raise IndexError("Folder_song_name_inside is not found, it shouldnt be none")
 
-    # FOLDER SELECTION
-    # if there are more than 1 folder in folder_song_name_inside, the download the one that have de or DE string in the name
-    # otherwise download the first folder 
-    if len(folder_song_name_inside) > 1:
-        for folder in folder_song_name_inside:
-            if "DE" in folder['name'] or "de" in folder['name'] or "De" in folder['name']:
-                folder_song_name_inside = folder
-                break
-    else:
-        folder_song_name_inside = folder_song_name_inside[0]
+    folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
+    if folder_song_name_inside is None:
+        print("Folder not found according to kenwyn path")
+        return
 
-    download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+    #### check if the song is available locally if not, download from google drive
+    song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
+    if not os.path.exists(song_folder_path):
+        # download the song folder from google drive
+        download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
 
+download_new_song_pipeline(231)
