@@ -16,8 +16,6 @@ if it found the folder
             import all the JPG files in the folder and add to the pptx file
         if it doesnt found the folder
             throw an error
-
-
 """
 
 
@@ -28,6 +26,7 @@ import sys
 from pptx import Presentation
 from pptx.util import Inches
 import stat
+import streamlit as st
 
 from pptx_creator import insert_slides_from_pict_folder
 
@@ -39,6 +38,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow # missing refresh_token
 from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
 import os
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -53,7 +53,7 @@ SONG_NUMBER = "141" # TODO: get from input
 # songs_folder = os.path.join(base_path, 'Songs' )
 SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
 # ID of the folder you want to download from Google Drive
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
@@ -64,6 +64,7 @@ with open(credentials_file, 'r') as f:
 
 # Define the required scopes for the Drive API
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+global creds, service
 creds = None
 service = None
 
@@ -88,6 +89,9 @@ def test_connection():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
+    try_build_drive_service(creds)
+
+def try_build_drive_service(creds):
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -106,7 +110,23 @@ def test_connection():
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
 
-def get_list_folders(folder_id):
+def connect_service_account_streamlit():
+    # service account doenst need to store user credentials
+    
+    global creds
+
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            creds = service_account.Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"],
+                scopes=SCOPES,
+            )
+    try_build_drive_service(creds)
+
+
+def get_list_folders(folder_id, creds):
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -227,7 +247,7 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
         else:
             return None
 
-    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"])
+    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"], creds)
 
     for folder in folder_song_name_inside_2_list:
         if "DE" in folder['name'].upper():
@@ -242,14 +262,14 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
-    # test_connection()
+
     print("Downloading song number: " + str(song_number))
     print("parent folder:")
-    get_list_folders(master_lagu_ibadah_folder_id)
+    get_list_folders(master_lagu_ibadah_folder_id, creds)
 
     # open song folder with the name: number 
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
-    folder_song_name_inside = get_list_folders(folder_song_name)
+    folder_song_name_inside = get_list_folders(folder_song_name, creds)
     print(folder_song_name_inside)
 
     # if folder_song_name_insight is None, throw error
@@ -267,3 +287,8 @@ def download_new_song_pipeline(song_number):
     if not os.path.exists(song_folder_path):
         # download the song folder from google drive
         download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+
+
+    
+connect_service_account_streamlit()
+# download_new_song_pipeline(111)

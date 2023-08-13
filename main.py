@@ -54,19 +54,21 @@ import collections
 import collections.abc
 
 import datetime
+from io import BytesIO
 import os
 import sys
+
+import streamlit as st
+
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-
-
-
 from alkitab_scraper import *
 from pptx_creator import *
 from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
+from footer import footer
 
 ########################################### INPUTS ##########################################
 # 1. 4 song's numbers
@@ -92,6 +94,9 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 
 OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 # OUTPUT_DIR = "C:\\Program Files"
+output_file = ""
+binary_output_file = BytesIO()
+
 ########################################### Functions ##########################################
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
@@ -138,6 +143,107 @@ def sunday_date(formatted):
         
     return next_sunday
 
+def create_website():
+    # website title
+    page_title = "MRII Europe Automatic Slide Maker"
+
+    st.set_page_config( page_icon=":church:", page_title=page_title)
+
+    # website description
+    # heading
+    st.title(page_title)
+    # subheading
+    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker")
+    st.write("This website is used to create a powerpoint presentation for Sunday service.")
+    st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
+
+    # subheading
+    st.subheader("How to use this website")
+    st.write("1. Enter the song numbers separated by comma on the left sidebar")
+    st.write("2. Enter the Bible verse. Feel free to use Indonesian abbreviation like Kej for Kejadian")
+    st.write("3. (Optional) Enter the pastor name ")
+    st.write("4. (Optional) Enter the pastor title in German ")
+    st.write("5. Click the submit button")
+    
+    # subheading
+    st.subheader("Where are the songs?")
+    st.write("The songs are downloaded from the database to the server.")
+    st.write("It is stored in the folder, in the server: " + SONGS_FOLDER)
+
+    # st.write("The button below can update the songs database. BUT it will take a long time to download all the songs. (couple of hours)")
+    # update_song_button = st.button("Update the songs database")
+    # if update_song_button:
+    #     connect_service_account_streamlit(creds)
+    #     download_all_songs()
+
+    st.subheader("Where is the Slide?")
+    st.markdown("After the main process is finished, the **Download Button** will appear on the **left sidebar**")
+    st.markdown("You can save the slide by clicking on the **Download Button**")
+    st.markdown("The file name is the date of the **next Sunday** service")
+
+    # ask for user input as parameters on the side bar
+    # ask for song numbers
+    st.sidebar.subheader("Song numbers")
+    st.sidebar.write("Please enter the song numbers separated by comma")
+    st.sidebar.write("Example: 161, 320, 93, 169")
+    song_numbers = st.sidebar.text_input("Song numbers")
+
+    # ask for Bible verse
+    st.sidebar.subheader("Bible verse")
+    st.sidebar.write("Please enter the Bible verse")
+    st.sidebar.write("Example: Keluaran 16:2-3")
+    bible_verse = st.sidebar.text_input("Bible verse")
+    
+    # ask for pastor name
+    st.sidebar.subheader("Pastor name")
+    st.sidebar.write("Please enter the pastor name")
+    st.sidebar.write("Default Example: Pdt. Billy Kristanto")
+    pastor_name = st.sidebar.text_input("Pastor name")
+
+    # if pastor_name is empty, then use default value
+    if pastor_name == "":
+        pastor_name = "Pdt. Billy Kristanto"
+
+    # ask for pastor title in German
+    st.sidebar.subheader("Pastor title in German")
+    st.sidebar.write("Please enter the pastor title in German")
+    st.sidebar.write("Default Example: Pfr.")
+    # default is Pfr.
+    pastor_title_de = st.sidebar.text_input("Pastor title in German")
+
+    # if pastor_title_de is empty, then use default value
+    if pastor_title_de == "":
+        pastor_title_de = "Pfr."
+
+
+    # create a submit button
+    submit_button = st.sidebar.button("Submit")
+    # if submit button is clicked
+    if submit_button:
+        # send the data to main.py
+        # 1. song numbers
+        # 2. Bible verse
+        # 3. pastor name
+        # 4. pastor title in German
+        data_array = [song_numbers, pastor_name, bible_verse, pastor_title_de] # switch the order because of the processing_answers
+        st.write("Data sent to main.py")
+        st.write(data_array)
+        processing_answers(data_array)
+        with st.spinner('Generating the slide...'):
+            main()
+            st.balloons()
+            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
+
+            st.sidebar.download_button(
+                label="Download slide!",
+                data=binary_output_file.getvalue(),
+                file_name=sunday_date("filename")+ ".pptx",
+            )
+
+                
+    footer()
+
+
 def main():
 
     """
@@ -146,8 +252,8 @@ def main():
     """
 
     ##### ask for input from the user UI
-    data = ask_for_input()
-    processing_answers(data)
+    # data = ask_for_input()
+    # processing_answers(data)
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
@@ -245,6 +351,6 @@ def main():
     print("saved in " + OUTPUT_DIR)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
