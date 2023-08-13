@@ -63,7 +63,6 @@ import streamlit as st
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-
 # from alkitab_scraper import *
 
 from pptx_creator import *
