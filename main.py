@@ -63,7 +63,9 @@ import streamlit as st
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-from alkitab_scraper import *
+
+# from alkitab_scraper import *
+
 from pptx_creator import *
 from user_input import *
 from Pujian import download_new_song_pipeline
@@ -97,7 +99,9 @@ OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 output_file = ""
 binary_output_file = BytesIO()
 
+
 ########################################### Functions ##########################################
+
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
         # Running from PyInstaller executable, use sys._MEIPASS
@@ -252,8 +256,13 @@ def main():
     """
 
     ##### ask for input from the user UI
+    # use this input if not using STREAMLIT
     # data = ask_for_input()
     # processing_answers(data)
+
+
+    ########################################### CHECKING SONGS ##########################################
+
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
@@ -352,5 +361,6 @@ def main():
 
 
 # if __name__ == "__main__":
-#     main()
+#     create_website()
+
 

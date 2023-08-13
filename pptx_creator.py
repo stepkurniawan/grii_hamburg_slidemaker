@@ -1,10 +1,11 @@
 import os
+import streamlit as st
+
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
 from Bible_API import get_verses_dict
-import streamlit as st
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
@@ -149,8 +150,8 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
-
-
+    
+    
 
 def add_appostle_creed_page(prs):
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"

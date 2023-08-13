@@ -263,7 +263,9 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
 
+
     print("Downloading song number: " + str(song_number))
+
     print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id, creds)
 
@@ -292,3 +294,4 @@ def download_new_song_pipeline(song_number):
     
 connect_service_account_streamlit()
 # download_new_song_pipeline(111)
+
