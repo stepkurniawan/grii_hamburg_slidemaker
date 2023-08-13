@@ -72,6 +72,3 @@ def footer():
 
     ]
     layout(*myargs)
-
-
-

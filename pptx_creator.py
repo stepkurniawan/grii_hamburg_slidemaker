@@ -1,11 +1,11 @@
 import os
 import streamlit as st
-# from alkitab_scraper import *
+
+# from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
-
-from chatGPT import get_ayat_alkitab_one_by_one_dict
+from Bible_API import get_verses_dict
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
@@ -15,14 +15,8 @@ def sort_by_number(file_name):
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
     # get all files in the folder
-    try: 
-        files = sorted(os.listdir(folder_path), key=sort_by_number)
-    except:
-        # write in bold and red if the folder is not found
-        st.markdown(f"<p style='color:red;font-weight:bold;'>Folder {folder_path} not found</p>", unsafe_allow_html=True)
-        st.markdown(f"<p style='color:red;'>It means, the song is not found. Please check the google drive of the song.</p>", unsafe_allow_html=True)
-        st.stop()
-        
+    files = sorted(os.listdir(folder_path), key=sort_by_number)
+
     # loop through all files (picture only) can be png, jpg, jpeg, etc, or it can also be uppercase
     # it has to be sorted by name
     for file in files:
@@ -99,20 +93,15 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     bible_book = bible_verse_text.split(" ")[0]
     bible_book_ID = get_full_book_name(bible_book)
 
-    try:
-        bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
-        bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
-        bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
-    except IndexError:
-        print("WOY! Invalid bible verse format", bible_verse_text)
-        raise IndexError
-    
+    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
+    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
+    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
 
     # get the bible verse in german
     bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
 
-    id_bible_verse = get_ayat_alkitab_one_by_one_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
-    de_bible_verse = get_ayat_alkitab_one_by_one_dict(bible_book_DE, bible_chapter, bible_verse_start, bible_verse_end, "DE")
+    id_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
+    de_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "DE")
 
     # count how many verse 
     verse_count = len(id_bible_verse)
@@ -161,8 +150,8 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
-
-
+    
+    
 
 def add_appostle_creed_page(prs):
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"
@@ -211,9 +200,65 @@ def add_amen_page(prs):
 
 
 def add_bekantmachung_page(prs):
-    for i in range(0,7): # 0,1,2,3,4,5,6
-        layout_name = "WARTA_" + str(i) 
-        add_slide_layout_from_layout_name(prs, layout_name)
+    for i in range(0,8): # 0,1,2,3,4,5,6,7
+        layout_name = str(i) + "_WARTA"  
+
+        slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+        if i == 2:
+            persekutuan_doa = slide_layout.placeholders[10]
+            persekutuan_doa.text = "Persekutuan Doa"
+
+            gebetkreis = slide_layout.placeholders[11]
+            gebetkreis.text = "Gebetkreis"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap minggu, 15:30 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Sonntags, 15:30 CEST \n Berner Heerweg 60"
+
+        elif i == 3:
+            seminar = slide_layout.placeholders[10]
+            seminar.text = "Seminar Pdt. Billy Kristanto"
+
+            seminary_de = slide_layout.placeholders[11]
+            seminary_de.text = "Seminary Pfr. Billy Kristanto"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Minggu 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Sonntag 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+
+        elif i == 4:
+            ibadah_minggu = slide_layout.placeholders[10]
+            ibadah_minggu.text = "Ibadah Minggu"
+
+            sonntagsgottesdienst = slide_layout.placeholders[11]
+            sonntagsgottesdienst.text = "Sonntagsgottesdienst"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
+            
+        elif i == 5:
+            sekolah_minggu = slide_layout.placeholders[10]
+            sekolah_minggu.text = "Sekolah Minggu"
+
+            sonntagsschule = slide_layout.placeholders[11]
+            sonntagsschule.text = "Sonntagsschule"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+            
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
+
+
+            
 
 
 
