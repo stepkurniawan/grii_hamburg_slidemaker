@@ -14,9 +14,6 @@ for german bible, use luther
 """
 
 import requests
-import json
-import os
-import re
 from bible_translation import indonesian_to_english_bible, indonesian_to_german_bible
 
 ######### GLOBAL VARIABLES #########
@@ -25,10 +22,7 @@ BASE_URL = "https://api.biblesupersearch.com/api"
 LANG = "de"
 BIBLE_VERSION = ""
 
-
-
 reference = "Genesis 1:1-2"
-
 
 ######### FUNCTIONS #########
 
@@ -59,7 +53,7 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
 
     """
     verses_dict = {}
-    
+
     if language == "EN":
         BIBLE_VERSION = "kjv"
     elif language == "ID":
@@ -94,8 +88,6 @@ def translate_ind_to_eng(bible_book_full_indo):
     parameter: bible_book_full_indo (string), ex: "Kejadian"
     """
     return indonesian_to_english_bible[bible_book_full_indo]
-
-
 
 
 
