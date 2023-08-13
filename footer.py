@@ -71,4 +71,6 @@ def footer():
         # link("https://buymeacoffee.com/chrischross", image('https://i.imgur.com/thJhzOO.png')),
 
     ]
+
     layout(*myargs)
+

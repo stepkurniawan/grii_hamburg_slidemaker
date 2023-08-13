@@ -63,11 +63,14 @@ import streamlit as st
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-from alkitab_scraper import *
+
+# from alkitab_scraper import *
+
 from pptx_creator import *
-from user_input import *
+# from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
+
 from footer import footer
 
 ########################################### INPUTS ##########################################
@@ -87,6 +90,7 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+ADD_ONS_DIR = os.path.join(CURRENT_DIR, "add_ons")
 
 HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
@@ -97,7 +101,9 @@ OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
 output_file = ""
 binary_output_file = BytesIO()
 
+
 ########################################### Functions ##########################################
+
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
         # Running from PyInstaller executable, use sys._MEIPASS
@@ -110,6 +116,13 @@ def get_resource_path(relative_path):
 
 TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
+
+########################################### Functions ##########################################
+
+def print_and_st_write(text):
+    print(text)
+    st.write(text)
+
 def processing_answers(data_array):
     # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
     global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE, PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
@@ -117,12 +130,12 @@ def processing_answers(data_array):
     SONG_NUMBERS = data_array[0].split(",")
     # remove whitespace
     SONG_NUMBERS = [song_number.strip() for song_number in SONG_NUMBERS]
-    PASTOR_TITLE_ID = data_array[1].split(" ")[0]
-    PASTOR_NAME = data_array[1].split(" ")[1] 
+    OPEN_BIBLE_FULL_VERSE = data_array[1]
+    PASTOR_TITLE_ID = data_array[2].split(" ")[0]
+    PASTOR_NAME = data_array[2].split(" ")[1] 
     # if there is a third word, then it is the last name
-    if len(data_array[1].split(" ")) > 2:
-        PASTOR_NAME += " " + data_array[1].split(" ")[2]
-    OPEN_BIBLE_FULL_VERSE = data_array[2]
+    if len(data_array[2].split(" ")) > 2:
+        PASTOR_NAME += " " + data_array[2].split(" ")[2]
     PASTOR_TITLE_DE = data_array[3]
 
 def sunday_date(formatted):
@@ -225,7 +238,9 @@ def create_website():
         # 2. Bible verse
         # 3. pastor name
         # 4. pastor title in German
+
         data_array = [song_numbers, pastor_name, bible_verse, pastor_title_de] # switch the order because of the processing_answers
+
         st.write("Data sent to main.py")
         st.write(data_array)
         processing_answers(data_array)
@@ -251,9 +266,15 @@ def main():
     Presentation -> Layout name -> slide layout -> slide -> shapes -> placeholders
     """
 
+    ########################################### ASKING USER DATA ##########################################
     ##### ask for input from the user UI
+    # use this input if not using STREAMLIT
     # data = ask_for_input()
     # processing_answers(data)
+
+
+    ########################################### CHECKING SONGS ##########################################
+
 
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
@@ -262,8 +283,10 @@ def main():
         if not os.path.exists(song_folder_path):
             # download the song folder from google drive
             download_new_song_pipeline(song_number)
+            print_and_st_write("song number " + str(song_number) + " successfully downloaded")
 
     
+    ########################################### CREATE SLIDES ##########################################
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
 
@@ -277,56 +300,56 @@ def main():
     # check_placeholders_in_slide_index(prs, 4)
 
     # add first song
-    print("Adding first song")
+    print_and_st_write("Adding first song")
     first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
     insert_slides_from_pict_folder(prs, first_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
-    print("Adding second song")
+    print_and_st_write("Adding second song")
     second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
-    print("Adding bible reading")
-    add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
+    print_and_st_write("Adding bible reading")
+    add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE) # TODO: uncomment this
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add third song
-    print("Adding third song")
+    print_and_st_write("Adding third song")
     third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
     insert_slides_from_pict_folder(prs, third_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Lord's Prayer")
+    print_and_st_write("Adding Lord's Prayer")
     add_doa_bapa_kami_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Preacher")
+    print_and_st_write("Adding Preacher")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Apostles' Creed")
+    print_and_st_write("Adding Apostles' Creed")
     add_appostle_creed_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Offerings")
+    print_and_st_write("Adding Offerings")
     secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
     add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
 
     # add fourth song
-    print("Adding fourth song")
+    print_and_st_write("Adding fourth song")
     fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
     insert_slides_from_pict_folder(prs, fourth_song_folder_path)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Puji Allah Bapa Putra")
+    print_and_st_write("Adding Puji Allah Bapa Putra")
     add_doxology_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
@@ -335,6 +358,7 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
+    print_and_st_write("Adding Announcements")
     add_bekantmachung_page(prs)
 
     try:
@@ -346,11 +370,16 @@ def main():
     except:
         print("cannot create output folder")
 
+
+    # save presentation as binary output
+    prs.save(binary_output_file)
     # save in output folder
-    prs.save(os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx"))
+    output_file = os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx")
+    prs.save(output_file)
     print("saved in " + OUTPUT_DIR)
 
 
 # if __name__ == "__main__":
-#     main()
+#     create_website()
+
 

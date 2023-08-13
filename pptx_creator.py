@@ -1,10 +1,11 @@
 import os
+import streamlit as st
+
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
 from Bible_API import get_verses_dict
-import streamlit as st
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
@@ -14,8 +15,14 @@ def sort_by_number(file_name):
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
 def insert_slides_from_pict_folder(prs, folder_path):
     # get all files in the folder
-    files = sorted(os.listdir(folder_path), key=sort_by_number)
-
+    try: 
+        files = sorted(os.listdir(folder_path), key=sort_by_number)
+    except:
+        # write in bold and red if the folder is not found
+        st.markdown(f"<p style='color:red;font-weight:bold;'>Folder {folder_path} not found</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color:red;'>It means, the song is not found. Please check the google drive of the song.</p>", unsafe_allow_html=True)
+        st.stop()
+        
     # loop through all files (picture only) can be png, jpg, jpeg, etc, or it can also be uppercase
     # it has to be sorted by name
     for file in files:
@@ -92,9 +99,14 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     bible_book = bible_verse_text.split(" ")[0]
     bible_book_ID = get_full_book_name(bible_book)
 
-    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
-    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
-    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+    try:
+        bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
+        bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
+        bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+    except IndexError:
+        print("WOY! Invalid bible verse format", bible_verse_text)
+        raise IndexError
+    
 
     # get the bible verse in german
     bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
@@ -149,8 +161,8 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
-
-
+    
+    
 
 def add_appostle_creed_page(prs):
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"

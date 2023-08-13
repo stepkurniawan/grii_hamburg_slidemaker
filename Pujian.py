@@ -28,12 +28,10 @@ from pptx.util import Inches
 import stat
 import streamlit as st
 
-from pptx_creator import insert_slides_from_pict_folder
-
-
-# pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
+
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow # missing refresh_token
 from google.auth.transport.requests import Request
@@ -41,8 +39,8 @@ from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 import os
 
+
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
 
 
 # INPUT
@@ -50,19 +48,18 @@ HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
-# songs_folder = os.path.join(base_path, 'Songs' )
-SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
+SONGS_FOLDER = os.path.join(base_path, 'Songs' )
+# SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
+
 
 # ID of the folder you want to download from Google Drive
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 
-# Read the credentials from the credentials.json file and parse it as a dictionary
-with open(credentials_file, 'r') as f:
-    credentials_data = json.load(f)
 
 # Define the required scopes for the Drive API
+
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 global creds, service
 creds = None
@@ -109,6 +106,7 @@ def try_build_drive_service(creds):
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
+
 
 def connect_service_account_streamlit():
     # service account doenst need to store user credentials
@@ -189,8 +187,10 @@ def download_folder(google_folder_item, destination_folder, song_number):
             print(u'{0} ({1})'.format(item['name'], item['id']))
             if item['mimeType'] == 'application/vnd.google-apps.folder':
                 download_folder(item, destination_folder, song_number)
+                print("downloaded folder: " + item['name'])
             else:
                 download_file(item, destination_folder)
+                print("downloaded file: " + item['name'])
 
 def download_file(item, destination_folder):
     service = build('drive', 'v3', credentials=creds)
@@ -206,8 +206,15 @@ def download_file(item, destination_folder):
         status, done = downloader.next_chunk()
 
 def make_local_folder_based_on_google_folder_name(item, destination_folder, song_number=None):
-    folder_id = item['id']
-    folder_name = item['name']
+    try: 
+        folder_id = item['id']
+        folder_name = item['name']
+
+        #some weird folder structure, just use the first folder  
+    except:
+        folder_id = item[0]['id']
+        folder_name = item[0]['name']
+        
     song_number = str(song_number) # convert to string
     # change the folder name to the song number if it is not None
     temp_destination_folder = os.path.join(destination_folder, song_number) 
@@ -218,6 +225,47 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
         os.chmod(temp_destination_folder, stat.S_IWGRP | stat.S_IWOTH | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IRUSR)
 
     return folder_id, folder_name
+    
+def folder_kenwyn_way(song_number, folder_song_name_list):
+    """
+    This function selects the appropriate folder from the list based on the given criteria.
+
+    :param song_number: Not used in this function.
+    :param folder_song_name_list: A list of folders with their names and IDs.
+    :return: The selected folder or None if no suitable folder is found.
+
+    folder_song_name_list = ["DE, "115"]
+    folder_song_name_inside = "DE"
+    folder_song_name_inside_3 = "115 DE"
+
+    """
+
+    # FOLDER SELECTION
+    # Select the folder that contains "DE" or "de" or "De" in the name, otherwise, the first folder.
+
+    for folder in folder_song_name_list:
+        if folder['name'] == "DE":
+            folder_song_name_inside = folder
+            break
+    else:
+        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
+        if folder_song_name_list:
+            folder_song_name_inside = folder_song_name_list[0]
+        else:
+            return None
+
+    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"])
+
+    for folder in folder_song_name_inside_2_list:
+        if "DE" in folder['name'].upper():
+            folder_song_name_inside_3 = folder
+            break
+    else:
+        folder_song_name_inside_3 = None
+
+    return folder_song_name_inside_3
+
+
 
 def folder_kenwyn_way(song_number, folder_song_name_list):
     """
@@ -263,11 +311,14 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
 
+
     print("Downloading song number: " + str(song_number))
+
     print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id, creds)
 
     # open song folder with the name: number 
+
     folder_song_name = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
     folder_song_name_inside = get_list_folders(folder_song_name, creds)
     print(folder_song_name_inside)
@@ -292,3 +343,4 @@ def download_new_song_pipeline(song_number):
     
 connect_service_account_streamlit()
 # download_new_song_pipeline(111)
+
