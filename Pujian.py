@@ -267,5 +267,3 @@ def download_new_song_pipeline(song_number):
     if not os.path.exists(song_folder_path):
         # download the song folder from google drive
         download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
-
-download_new_song_pipeline(231)
