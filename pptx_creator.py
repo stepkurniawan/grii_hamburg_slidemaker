@@ -200,9 +200,65 @@ def add_amen_page(prs):
 
 
 def add_bekantmachung_page(prs):
-    for i in range(0,7): # 0,1,2,3,4,5,6
-        layout_name = "WARTA_" + str(i) 
-        add_slide_layout_from_layout_name(prs, layout_name)
+    for i in range(0,8): # 0,1,2,3,4,5,6,7
+        layout_name = str(i) + "_WARTA"  
+
+        slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+        if i == 2:
+            persekutuan_doa = slide_layout.placeholders[10]
+            persekutuan_doa.text = "Persekutuan Doa"
+
+            gebetkreis = slide_layout.placeholders[11]
+            gebetkreis.text = "Gebetkreis"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap minggu, 15:30 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Sonntags, 15:30 CEST \n Berner Heerweg 60"
+
+        elif i == 3:
+            seminar = slide_layout.placeholders[10]
+            seminar.text = "Seminar Pdt. Billy Kristanto"
+
+            seminary_de = slide_layout.placeholders[11]
+            seminary_de.text = "Seminary Pfr. Billy Kristanto"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Minggu 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Sonntag 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+
+        elif i == 4:
+            ibadah_minggu = slide_layout.placeholders[10]
+            ibadah_minggu.text = "Ibadah Minggu"
+
+            sonntagsgottesdienst = slide_layout.placeholders[11]
+            sonntagsgottesdienst.text = "Sonntagsgottesdienst"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
+            
+        elif i == 5:
+            sekolah_minggu = slide_layout.placeholders[10]
+            sekolah_minggu.text = "Sekolah Minggu"
+
+            sonntagsschule = slide_layout.placeholders[11]
+            sonntagsschule.text = "Sonntagsschule"
+
+            waktu_tempat = slide_layout.placeholders[12]
+            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+            
+            zeit_ort = slide_layout.placeholders[13]
+            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
+
+
+            
 
 
 

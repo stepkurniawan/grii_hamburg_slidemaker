@@ -297,6 +297,8 @@ def main():
     second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
     insert_slides_from_pict_folder(prs, second_song_folder_path)
 
+    add_church_cover_page(prs, sunday_date("slide"))
+
     print("Adding bible reading")
     add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
 
