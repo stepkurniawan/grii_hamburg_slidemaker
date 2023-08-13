@@ -59,8 +59,8 @@ SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 
 # Read the credentials from the credentials.json file and parse it as a dictionary
-with open(credentials_file, 'r') as f:
-    credentials_data = json.load(f)
+# with open(credentials_file, 'r') as f:
+#     credentials_data = json.load(f)
 
 # Define the required scopes for the Drive API
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
