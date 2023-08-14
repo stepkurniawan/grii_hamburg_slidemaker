@@ -1,5 +1,8 @@
-python-pptx
-selenium
-google-api-python-client
-google-auth-httplib2
-google-auth-oauthlib
+google_api_python_client==2.94.0
+google_auth_oauthlib==1.0.0
+htbuilder==0.6.1
+protobuf==4.24.0
+python_pptx==0.6.21
+Requests==2.31.0
+selenium==3.141.0
+streamlit==1.25.0
