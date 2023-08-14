@@ -51,7 +51,7 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
 # songs_folder = os.path.join(base_path, 'Songs' )
-SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
+SONGS_FOLDER = os.path.join(base_path, 'Songs' )
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
@@ -240,6 +240,8 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
         if folder['name'] == "DE":
             folder_song_name_inside = folder
             break
+        else:
+            print("No folder with kenwyn path found. (in folder named DE)")
     else:
         # If no folder contains "DE" or "de" or "De", select the first folder in the list.
         if folder_song_name_list:
