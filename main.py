@@ -159,7 +159,7 @@ def main():
             try:
                 download_new_song_pipeline(song_number)
             except:
-                messagebox.showwarning("Warning", "This is a warning message.")
+                messagebox.showwarning("Warning", "Cannot download song number " + str(song_number))
 
     
     # create a test presentation file

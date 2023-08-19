@@ -25,7 +25,7 @@ import json
 import os
 import io
 import sys
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from pptx import Presentation
 from pptx.util import Inches
 import stat
@@ -239,6 +239,60 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
 
     return folder_song_name_inside_3
 
+def folder_english_way(song_number, folder_song_name_list):
+    """
+    This function selects the appropriate folder from the list based on the given criteria.
+
+    :param song_number: Not used in this function.
+    :param folder_song_name_list: A list of folders with their names and IDs.
+    :return: The selected folder or None if no suitable folder is found.
+
+    example: Master Lagu Ibadah > 262 > 262 > Slide1.JPG...SlideN.JPG
+
+    folder_song_name_list = ["262"]
+    folder_song_name_inside = ["262"]
+    """
+    for folder in folder_song_name_list:
+        if folder['name'] == song_number:
+            folder_song_name_inside = folder
+            break
+    else:
+        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
+        if folder_song_name_list:
+            folder_song_name_inside = folder_song_name_list[0]
+        else:
+            return None
+
+    # folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"])
+
+    # for folder in folder_song_name_inside_2_list:
+    #     if str(song_number) in folder['name'].upper():
+    #         folder_song_name_inside_3 = folder
+    #         break
+    # else:
+    #     folder_song_name_inside_3 = None
+
+    return folder_song_name_inside
+
+
+
+
+def english_choice_dialog(song_number, folder_song_name_inside):
+    """
+    This function asks the user to choose between English and German.
+    :return: path to folder_song_name_inside
+    """
+    language_choice = simpledialog.messagebox.askquestion("German folder is not detected", "Do you want to skip the song (yes), or use English folder instead? (no)",
+                                    icon='question', type='yesno')
+    if language_choice == "yes":
+        print("Skipping the song")
+        return folder_song_name_inside
+    
+    elif language_choice == "no":
+        print("Using English folder instead")
+        folder_song_name_inside = folder_english_way(song_number, folder_song_name_inside)
+        return folder_song_name_inside
+    
 
 
 ############### COMBINING ALL THE FUNCTIONS #####################
@@ -259,14 +313,14 @@ def download_new_song_pipeline(song_number):
         messagebox.showinfo("Info: Folder not found", "Folder inside is not found, song_name:" + song_number)
         return None
 
-    folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
-    if folder_song_name_inside is None:
+    folder_song_name_inside2 = folder_kenwyn_way(song_number,folder_song_name_inside)
+    if folder_song_name_inside2 is None:
         print("Folder not found according to kenwyn path")
         messagebox.showinfo("Info: Kenwyn path Folder not found", "Folder not found according to kenwyn path")
-        return None
+        folder_song_name_inside2 = english_choice_dialog(song_number, folder_song_name_inside)
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
     if not os.path.exists(song_folder_path):
         # download the song folder from google drive
-        download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
+        download_folder(folder_song_name_inside2, SONGS_FOLDER, song_number)

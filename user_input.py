@@ -8,8 +8,9 @@ def ask_for_input():
 
     # Create the main Tkinter window
     # V1.4 : using bible API to get bible verses
+    # V2.0 : adding choice for english or german song
     root = tk.Tk()
-    root.title("Awan GRII Slide Maker V1.4") 
+    root.title("GRII Slide Maker - A1 V2.0") 
 
     root.option_add("*Font", "Helvetica 24")
 
