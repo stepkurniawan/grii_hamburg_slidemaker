@@ -65,6 +65,7 @@ def add_church_cover_page(prs, sunday_date):
 def get_full_book_name(book_name):
     # if bible_book has less than 4 characters, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
     output = ""
+
     if len(book_name) < 4:
         output = lai_abbre_to_full[book_name]
     # if bible_book has 4 characters, but the first one is a number, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
@@ -88,15 +89,34 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     except IndexError:
         print("Invalid placeholder index.")
 
-    bible_book = bible_verse_text.split(" ")[0]
+    # if bible_verse is started with a number, ex: 2 Sam 1:1, then the bible_book is "2 Sam", and not just "2"
+    # normal example: Kej 1:1
+    # bible_book = kej
+    # bible_chapter = 1
+    # bible_verse_start = 1
+    # bible_verse_end = 1
+
+    # special example: 2 Sam 1:1
+    # bible_book = 2 Sam
+    # bible_chapter = 1
+    # bible_verse_start = 1
+    # bible_verse_end = 1
+
+    if bible_verse_text.split(" ")[0].isdigit():
+        bible_book = bible_verse_text.split(" ")[0] + " " + bible_verse_text.split(" ")[1]
+        bible_chapter = bible_verse_text.split(" ")[2].split(":")[0]
+        bible_verse_start = bible_verse_text.split(" ")[2].split(":")[1].split("-")[0]
+        bible_verse_end = bible_verse_text.split(" ")[2].split(":")[1].split("-")[1]
+    else:
+        bible_book = bible_verse_text.split(" ")[0]
+        bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
+        bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
+        bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+
     bible_book_ID = get_full_book_name(bible_book)
 
-    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
-    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
-    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
-
     # get the bible verse in german
-    bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
+    # bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
 
     id_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
     de_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "DE")

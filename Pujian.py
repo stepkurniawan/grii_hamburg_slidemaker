@@ -25,6 +25,7 @@ import json
 import os
 import io
 import sys
+from tkinter import messagebox
 from pptx import Presentation
 from pptx.util import Inches
 import stat
@@ -255,12 +256,14 @@ def download_new_song_pipeline(song_number):
     # if folder_song_name_insight is None, throw error
     if folder_song_name_inside is None:
         print ("Folder inside is not found, song_name:" + song_number)
-        raise IndexError("Folder_song_name_inside is not found, it shouldnt be none")
+        messagebox.showinfo("Info: Folder not found", "Folder inside is not found, song_name:" + song_number)
+        return None
 
     folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
     if folder_song_name_inside is None:
         print("Folder not found according to kenwyn path")
-        return
+        messagebox.showinfo("Info: Kenwyn path Folder not found", "Folder not found according to kenwyn path")
+        return None
 
     #### check if the song is available locally if not, download from google drive
     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))

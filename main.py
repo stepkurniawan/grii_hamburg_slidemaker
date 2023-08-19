@@ -56,6 +56,7 @@ import collections.abc
 import datetime
 import os
 import sys
+from tkinter import messagebox
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
@@ -155,7 +156,10 @@ def main():
         song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
         if not os.path.exists(song_folder_path):
             # download the song folder from google drive
-            download_new_song_pipeline(song_number)
+            try:
+                download_new_song_pipeline(song_number)
+            except:
+                messagebox.showwarning("Warning", "This is a warning message.")
 
     
     # create a test presentation file
@@ -172,15 +176,23 @@ def main():
 
     # add first song
     print("Adding first song")
-    first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
-    insert_slides_from_pict_folder(prs, first_song_folder_path)
+    try: 
+        first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
+        insert_slides_from_pict_folder(prs, first_song_folder_path)
+    except:
+        print("cannot insert first song")
+        messagebox.showwarning("Warning", "Cannot insert first song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
     print("Adding second song")
-    second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
-    insert_slides_from_pict_folder(prs, second_song_folder_path)
+    try:
+        second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
+        insert_slides_from_pict_folder(prs, second_song_folder_path)
+    except:
+        print("cannot insert second song")
+        messagebox.showwarning("Warning", "Cannot insert second song")
 
     print("Adding bible reading")
     add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
@@ -189,8 +201,12 @@ def main():
 
     # add third song
     print("Adding third song")
-    third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
-    insert_slides_from_pict_folder(prs, third_song_folder_path)
+    try:
+        third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
+        insert_slides_from_pict_folder(prs, third_song_folder_path)
+    except:
+        print("cannot insert third song")
+        messagebox.showwarning("Warning", "Cannot insert third song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
@@ -215,8 +231,12 @@ def main():
 
     # add fourth song
     print("Adding fourth song")
-    fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
-    insert_slides_from_pict_folder(prs, fourth_song_folder_path)
+    try:
+        fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
+        insert_slides_from_pict_folder(prs, fourth_song_folder_path)
+    except:
+        print("cannot insert fourth song")
+        messagebox.showwarning("Warning", "Cannot insert fourth song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 

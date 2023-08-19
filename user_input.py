@@ -7,8 +7,9 @@ def ask_for_input():
     global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, data_array
 
     # Create the main Tkinter window
+    # V1.4 : using bible API to get bible verses
     root = tk.Tk()
-    root.title("Awan GRII Slide Maker V1.4")
+    root.title("Awan GRII Slide Maker V1.4") 
 
     root.option_add("*Font", "Helvetica 24")
 
@@ -16,7 +17,7 @@ def ask_for_input():
     label_song_numbers = tk.Label(root, text="4 song numbers or name: [161, 320, 93, 169]")
     entry_song_numbers = tk.Entry(root, width=30)
 
-    label_votum_bible_verse = tk.Label(root, text="votum bible verse: [Keluaran 16:2-3]")
+    label_votum_bible_verse = tk.Label(root, text="votum bible verse: [2Sam 1:2-3]")
     entry_votum_bible_verse = tk.Entry(root, width=30)
 
     label_pastor_name = tk.Label(root, text="pastor name: [Pdt. Billy Kristanto]")
