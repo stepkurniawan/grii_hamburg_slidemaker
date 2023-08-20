@@ -1,15 +1,26 @@
 import os
 import streamlit as st
+from PIL import Image
 
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
 from bible_translation import indonesian_to_german_bible
 from bible_translation import lai_abbre_to_full
 from Bible_API import get_verses_dict
+from Pujian import *
+
+
+def st_print(text):
+    st.write(text)
+    print(text)
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
-    key = int(''.join(filter(str.isdigit, file_name)))
+    try:
+        key = int(''.join(filter(str.isdigit, file_name)))
+    except ValueError:
+        key = 99
+        st_print("Error: file name does not contain any number: ", file_name)
     return key
 
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
@@ -21,7 +32,7 @@ def insert_slides_from_pict_folder(prs, folder_path):
     # it has to be sorted by name
     for file in files:
         # check if the file is a picture
-        if file.endswith(".jpg") or file.endswith(".png") or file.endswith(".jpeg") or file.endswith(".JPG") or file.endswith(".PNG") or file.endswith(".JPEG"):
+        if file.lower().endswith((".jpg", ".png", ".jpeg")):
             # create a new slide
             slide = prs.slides.add_slide(prs.slide_layouts[6])
             # add the picture to the slide
@@ -61,8 +72,6 @@ def add_church_cover_page(prs, sunday_date):
     sundays_date_placeholder = slide_layout.placeholders[10]
     sundays_date_placeholder.text = sunday_date
     
-
-
 
 def get_full_book_name(book_name):
     # if bible_book has less than 4 characters, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
@@ -258,8 +267,50 @@ def add_bekantmachung_page(prs):
             zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
 
 
-            
 
+
+
+#################### IN MEMORY SONG SAVING #########################################
+
+
+def insert_slides_from_google_drive_folder(prs, song_number):
+    """
+    prs: Presentation object
+    song_slides: list of song_slide objects, ex: [song_slide1, song_slide2, song_slide3]
+    """
+    song_images_byte = []
+    song_images = []
+    
+    song_images_byte = download_new_song_pipeline(song_number).values()
+    song_images_byte = list(song_images_byte)
+    make_song_slides_from_song_imgs(prs, song_images_byte)
+
+
+
+def make_song_slides_from_song_imgs(prs, song_images_byte):
+    """
+    song_imgs: list of song_img objects, ex: [song_img1, song_img2, song_img3] (from Pujian.py)
+    the somg_img object we get from google drives
+    """
+    song_slides = []
+    for song_image_byte in song_images_byte:
+        # create a new slide
+        slide = prs.slides.add_slide(prs.slide_layouts[6])
+        # add the picture to the slide
+        pic = slide.shapes.add_picture(song_image_byte, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width) # i dont need song_image_byte.getvalue() because we are using the BytesIO directly
+
+
+def make_song_slide_from_song_img(prs, song_img):
+    """
+    song_img: song_img object, ex: song_img1 (from Pujian.py)
+    the somg_img object we get from google drives
+    """
+    # create a new slide
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    # add the picture to the slide
+    pic = slide.shapes.add_picture(song_img, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
+    
+    
 
 
 

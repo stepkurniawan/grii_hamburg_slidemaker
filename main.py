@@ -49,6 +49,10 @@ The slide will be generated based on this structure:
     
 """
 
+####### Versioning
+# 3.0.0 implement in memory song download
+
+
 # Importing libraries
 import collections
 import collections.abc
@@ -66,7 +70,7 @@ from pptx.util import Inches
 # from alkitab_scraper import *
 
 from pptx_creator import *
-# from user_input import *
+from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
@@ -95,7 +99,6 @@ DOWNLOAD_FOLDER = os.path.join(CURRENT_DIR, "Downloads")
 GRII_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII")
 OUTPUT_DIR = os.path.join(GRII_FOLDER,"GRII_Slides")
 NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR,"Output")
-# OUTPUT_DIR = "C:\\Program Files"
 output_file = ""
 binary_output_file = BytesIO()
 
@@ -161,7 +164,7 @@ def create_website():
     # heading
     st.title(page_title)
     # subheading
-    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker")
+    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker V3.0.0 A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
     st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
 
@@ -240,7 +243,7 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main()
             st.balloons()
-            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
+            st.sidebar.success("Slide generated successfully in " + NEW_OUTPUT_DIR + ":tada:")
 
             st.sidebar.download_button(
                 label="Download slide!",
@@ -260,28 +263,15 @@ def main():
     """
 
     ##### ask for input from the user UI
-    # use this input if not using STREAMLIT
+    ## use this input if not using STREAMLIT
     # data = ask_for_input()
     # processing_answers(data)
 
 
     ########################################### CHECKING SONGS ##########################################
 
-    #### check if all the songs are available locally if not, download from google drive
-    for song_number in SONG_NUMBERS:
-        # check if the song folder exists
-        song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
-        if not os.path.exists(song_folder_path):
-            # download the song folder from google drive
-            download_new_song_pipeline(song_number)
-
-    
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
-
-    ##### TESTING PURPOSE test create_slides_from_folder
-    # folder_path = os.path.join(CURRENT_DIR, 'Sample', '2', '2')
-    # test_insert_slides_from_pict_folder(prs, folder_path)
 
     #### Slide creation starts here ####
     add_beginning_slide(prs)
@@ -289,58 +279,66 @@ def main():
     # check_placeholders_in_slide_index(prs, 4)
 
     # add first song
-    print("Adding first song")
-    first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
-    insert_slides_from_pict_folder(prs, first_song_folder_path)
+    st_print("Adding first song")
+    try:
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
+    except:
+        st_print("Error: Cannot add the 1st song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
-    print("Adding second song")
-    second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
-    insert_slides_from_pict_folder(prs, second_song_folder_path)
+    st_print("Adding second song")
+    try: 
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[1]))
+    except:
+        st_print("Error: Cannot add the 2nd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding bible reading")
+    st_print("Adding bible reading")
     add_bible_reading_page(prs, OPEN_BIBLE_FULL_VERSE)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add third song
-    print("Adding third song")
-    third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
-    insert_slides_from_pict_folder(prs, third_song_folder_path)
+    st_print("Adding third song")
+    try: 
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[2]))
+    except:
+        st_print("Error: Cannot add the 3rd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Lord's Prayer")
+    st_print("Adding Lord's Prayer")
     add_doa_bapa_kami_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Preacher")
+    st_print("Adding Preacher")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Apostles' Creed")
+    st_print("Adding Apostles' Creed")
     add_appostle_creed_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Offerings")
+    st_print("Adding Offerings")
     secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
     add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
 
     # add fourth song
-    print("Adding fourth song")
-    fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
-    insert_slides_from_pict_folder(prs, fourth_song_folder_path)
+    st_print("Adding fourth song")
+    try:
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[3]))
+    except:
+        st_print("Error: Cannot add the 4th song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    print("Adding Puji Allah Bapa Putra")
+    st_print("Adding Puji Allah Bapa Putra until closings")
     add_doxology_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
@@ -352,12 +350,13 @@ def main():
     add_bekantmachung_page(prs)
     
     # save in output folder
+    prs.save(binary_output_file) # so it is downloadable using button
     st_print("Saving the slide in " + NEW_OUTPUT_DIR)
     prs.save(os.path.join(NEW_OUTPUT_DIR, sunday_date("filename") + ".pptx"))
     st_print("saved in " + NEW_OUTPUT_DIR)
 
 
-# if __name__ == "__main__":
-#     create_website()
+if __name__ == "__main__":
+    main()
 
 
