@@ -272,6 +272,39 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
     return folder_song_name_inside_3
 
 
+##### adding fall back plan to take english songs if german songs are not found
+
+def folder_english_way(song_number, folder_song_name_list):
+    """
+    This function selects the appropriate folder from the list based on the given criteria.
+
+    :param song_number: Not used in this function.
+    :param folder_song_name_list: A list of folders with their names and IDs.
+    :return: The selected folder or None if no suitable folder is found.
+
+    example: Master Lagu Ibadah > 262 > 262 > Slide1.JPG...SlideN.JPG
+
+    folder_song_name_list = ["262"]
+    folder_song_name_inside = ["262"]
+    """
+    for folder in folder_song_name_list:
+        if folder['name'] == song_number:
+            folder_song_name_inside = folder
+            break
+    else:
+        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
+        if folder_song_name_list:
+            folder_song_name_inside = folder_song_name_list[0]
+        else:
+            return None
+
+    return folder_song_name_inside
+
+
+
+
+
+
 ################## IN MEMORY IMAGE SAVING ##################
 def save_images_from_google_folder_to_memory(folder_id):
     # folder_id is the ID of the Google Drive folder containing the images
@@ -334,18 +367,22 @@ def download_new_song_pipeline(song_number):
         st.error("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
         raise IndexError("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
 
-    folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
-    if folder_song_name_inside is None:
+    folder_song_name_inside2 = folder_kenwyn_way(song_number,folder_song_name_inside)
+    if folder_song_name_inside2 is None:
         print("Folder not found according to kenwyn path (German folder not found)")
-        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended")
-        return
+        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended, song: ", song_number)
+        folder_song_name_inside2 = folder_english_way(song_number,folder_song_name_inside)
+        st.warning("Using English folder instead, please check if its the correct song: ", song_number)
+        
+    if folder_song_name_inside2 is None:
+        return None
 
     #### download from google drive
     st_print("Downloading from google drive song number: " + str(song_number))
-    song_images = save_images_from_google_folder_to_memory(folder_song_name_inside['id'])
+    song_images = save_images_from_google_folder_to_memory(folder_song_name_inside2['id'])
     return song_images
 
     
 connect_service_account_streamlit()
-# download_new_song_pipeline(115)
+# download_new_song_pipeline(1)
 

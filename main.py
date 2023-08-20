@@ -51,7 +51,9 @@ The slide will be generated based on this structure:
 
 ####### Versioning
 # 3.0.0 implement in memory song download
+# 3.1.0 implement english if german cant be found
 
+VERSION = "3.1.0"
 
 # Importing libraries
 import collections
@@ -168,7 +170,7 @@ def create_website():
     # heading
     st.title(page_title)
     # subheading
-    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker V3.0.0 A1")
+    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker V" + VERSION + " A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
     st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
 
@@ -206,7 +208,7 @@ def create_website():
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
     st.sidebar.write("Please enter the Bible verse")
-    st.sidebar.write("Example: Keluaran 16:2-3")
+    st.sidebar.write("Example: 2Sam 1:2-3")
     bible_verse = st.sidebar.text_input("Bible verse")
     
     # ask for pastor name
@@ -284,7 +286,6 @@ def main():
 
     #### add first song
     st_print("Adding first song")
-    st.write("test print")
     try:
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
     except:
