@@ -331,11 +331,13 @@ def download_new_song_pipeline(song_number):
     # if folder_song_name_insight is None, throw error
     if folder_song_name_inside is None:
         st_print ("Folder inside is not found, song_name:" + song_number)
-        raise IndexError("Folder_song_name_inside is not found, it shouldnt be none")
+        st.error("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
+        raise IndexError("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
 
     folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
     if folder_song_name_inside is None:
-        st_print("Folder not found according to kenwyn path")
+        print("Folder not found according to kenwyn path (German folder not found)")
+        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended")
         return
 
     #### download from google drive
