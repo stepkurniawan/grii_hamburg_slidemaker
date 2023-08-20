@@ -284,6 +284,7 @@ def main():
 
     #### add first song
     st_print("Adding first song")
+    st.write("test print")
     try:
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
     except:
