@@ -1,1 +1,1 @@
-pyinstaller --onefile --name grii-slide-maker --distpath ./GRII_Europe_Slide_Maker_Release --add-data "mrii-automated-slides-service-accn-private-key.json;." --add-data "master_slide_template.pptx;." entry_point.py
+pyinstaller --upx-dir=upx-4.1.0-win64 --exclude-module unnecessary_module --onefile --name grii-slide-maker --distpath ./GRII_Europe_Slide_Maker_Release --add-data "mrii-automated-slides-service-accn-private-key.json;." --add-data "master_slide_template.pptx;." entry_point.py
