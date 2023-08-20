@@ -99,7 +99,6 @@ DOWNLOAD_FOLDER = os.path.join(CURRENT_DIR, "Downloads")
 GRII_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII")
 OUTPUT_DIR = os.path.join(GRII_FOLDER,"GRII_Slides")
 NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR,"Output")
-# OUTPUT_DIR = "C:\\Program Files"
 output_file = ""
 binary_output_file = BytesIO()
 
@@ -264,9 +263,9 @@ def main():
     """
 
     ##### ask for input from the user UI
-    # use this input if not using STREAMLIT
-    data = ask_for_input()
-    processing_answers(data)
+    ## use this input if not using STREAMLIT
+    # data = ask_for_input()
+    # processing_answers(data)
 
 
     ########################################### CHECKING SONGS ##########################################
@@ -339,7 +338,7 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    st_print("Adding Puji Allah Bapa Putra")
+    st_print("Adding Puji Allah Bapa Putra until closings")
     add_doxology_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
@@ -351,6 +350,7 @@ def main():
     add_bekantmachung_page(prs)
     
     # save in output folder
+    prs.save(binary_output_file) # so it is downloadable using button
     st_print("Saving the slide in " + NEW_OUTPUT_DIR)
     prs.save(os.path.join(NEW_OUTPUT_DIR, sunday_date("filename") + ".pptx"))
     st_print("saved in " + NEW_OUTPUT_DIR)
