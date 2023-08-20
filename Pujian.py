@@ -42,7 +42,7 @@ from google.oauth2 import service_account
 import os
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
+# credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
 
 
 # INPUT
@@ -51,7 +51,7 @@ DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONG_NUMBER = "141" # TODO: get from input  
 # Replace with the path to the destination folder on your local machine
 # songs_folder = os.path.join(base_path, 'Songs' )
-SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
+SONGS_FOLDER = os.path.join(base_path, 'Songs' )
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
@@ -59,14 +59,22 @@ SONGS_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII" ,'GRII_Songs' )
 master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
 
 # Read the credentials from the credentials.json file and parse it as a dictionary
-with open(credentials_file, 'r') as f:
-    credentials_data = json.load(f)
+# with open(credentials_file, 'r') as f:
+#     credentials_data = json.load(f)
 
 # Define the required scopes for the Drive API
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 global creds, service
 creds = None
 service = None
+
+############################## FUNCTIONS ##############################
+
+def st_print(text):
+    st.write(text)
+    print(text)
+
+
 
 def test_connection():
     """Shows basic usage of the Drive v3 API.
@@ -171,6 +179,7 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
     
 
 def download_folder(google_folder_item, destination_folder, song_number):
+    st_print("Downloading folder: " + google_folder_item['name'])
     service = build('drive', 'v3', credentials=creds)
 
     g_folder_id, folder_name = make_local_folder_based_on_google_folder_name(google_folder_item, destination_folder, song_number)
@@ -204,6 +213,7 @@ def download_file(item, destination_folder):
     done = False
     while done is False:
         status, done = downloader.next_chunk()
+    st_print("Downloaded file: " + file_name)
 
 def make_local_folder_based_on_google_folder_name(item, destination_folder, song_number=None):
     folder_id = item['id']
@@ -240,6 +250,8 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
         if folder['name'] == "DE":
             folder_song_name_inside = folder
             break
+        else:
+            print("No folder with kenwyn path found. (in folder named DE)")
     else:
         # If no folder contains "DE" or "de" or "De", select the first folder in the list.
         if folder_song_name_list:
@@ -262,11 +274,8 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
+    st_print("Downloading song number: " + str(song_number))
 
-
-    print("Downloading song number: " + str(song_number))
-
-    print("parent folder:")
     get_list_folders(master_lagu_ibadah_folder_id, creds)
 
     # open song folder with the name: number 
@@ -276,12 +285,12 @@ def download_new_song_pipeline(song_number):
 
     # if folder_song_name_insight is None, throw error
     if folder_song_name_inside is None:
-        print ("Folder inside is not found, song_name:" + song_number)
+        st_print ("Folder inside is not found, song_name:" + song_number)
         raise IndexError("Folder_song_name_inside is not found, it shouldnt be none")
 
     folder_song_name_inside = folder_kenwyn_way(song_number,folder_song_name_inside)
     if folder_song_name_inside is None:
-        print("Folder not found according to kenwyn path")
+        st_print("Folder not found according to kenwyn path")
         return
 
     #### check if the song is available locally if not, download from google drive

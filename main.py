@@ -63,11 +63,10 @@ import streamlit as st
 import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-
 # from alkitab_scraper import *
 
 from pptx_creator import *
-from user_input import *
+# from user_input import *
 from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
@@ -91,16 +90,21 @@ MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 
 HOME_DIR = os.path.expanduser("~")
-DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
+DOWNLOAD_FOLDER = os.path.join(CURRENT_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
-
-OUTPUT_DIR = os.path.join(DOWNLOAD_FOLDER, "GRII" ,"GRII_Slides")
+GRII_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII")
+OUTPUT_DIR = os.path.join(GRII_FOLDER,"GRII_Slides")
+NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR,"Output")
 # OUTPUT_DIR = "C:\\Program Files"
 output_file = ""
 binary_output_file = BytesIO()
 
 
 ########################################### Functions ##########################################
+
+def st_print(text):
+    st.write(text)
+    print(text)
 
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
@@ -263,7 +267,6 @@ def main():
 
     ########################################### CHECKING SONGS ##########################################
 
-
     #### check if all the songs are available locally if not, download from google drive
     for song_number in SONG_NUMBERS:
         # check if the song folder exists
@@ -347,19 +350,11 @@ def main():
     add_church_cover_page(prs, sunday_date("slide"))
 
     add_bekantmachung_page(prs)
-
-    try:
-
-        # create the output folder if it doesnt exist
-        if not os.path.exists(OUTPUT_DIR):
-            os.makedirs(OUTPUT_DIR)
-            print("output folder created")
-    except:
-        print("cannot create output folder")
-
+    
     # save in output folder
-    prs.save(os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx"))
-    print("saved in " + OUTPUT_DIR)
+    st_print("Saving the slide in " + NEW_OUTPUT_DIR)
+    prs.save(os.path.join(NEW_OUTPUT_DIR, sunday_date("filename") + ".pptx"))
+    st_print("saved in " + NEW_OUTPUT_DIR)
 
 
 # if __name__ == "__main__":
