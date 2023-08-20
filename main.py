@@ -109,6 +109,10 @@ def st_print(text):
     st.write(text)
     print(text)
 
+def st_error_print(text):
+    st.error(text)
+    print(text)
+
 def get_resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
         # Running from PyInstaller executable, use sys._MEIPASS
@@ -278,21 +282,23 @@ def main():
     add_church_cover_page(prs, sunday_date("slide"))
     # check_placeholders_in_slide_index(prs, 4)
 
-    # add first song
+    #### add first song
     st_print("Adding first song")
     try:
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
     except:
-        st_print("Error: Cannot add the 1st song")
+        print("Error: Cannot add the 1st song")
+        st_error_print("Error: Cannot add the 1st song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    # add second song
+    #### add second song
     st_print("Adding second song")
     try: 
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[1]))
     except:
-        st_print("Error: Cannot add the 2nd song")
+        print("Error: Cannot add the 2nd song")
+        st_error_print("Error: Cannot add the 2nd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
@@ -301,12 +307,13 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    # add third song
+    #### add third song
     st_print("Adding third song")
     try: 
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[2]))
     except:
-        st_print("Error: Cannot add the 3rd song")
+        print("Error: Cannot add the 3rd song")
+        st_error_print("Error: Cannot add the 3rd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
@@ -329,12 +336,13 @@ def main():
     secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
     add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
 
-    # add fourth song
+    #### add fourth song
     st_print("Adding fourth song")
     try:
         insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[3]))
     except:
-        st_print("Error: Cannot add the 4th song")
+        print("Error: Cannot add the 4th song")
+        st_error_print("Error: Cannot add the 4th song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 

@@ -307,7 +307,7 @@ def save_images_from_google_folder_to_memory(folder_id):
             # Add the file data to the dictionary entry
             song_images_dict[file_name] = fh
 
-            st_print("Downloaded file: " + file_name)
+            print("Downloaded file: " + file_name)
 
     # sort the dictionary by the key
     # song_images_dict = dict(sorted(song_images_dict.items()))
