@@ -22,13 +22,14 @@ if it found the folder
 import json
 import os
 import io
+import re
 import sys
 from pptx import Presentation
 from pptx.util import Inches
 import stat
 import streamlit as st
 
-from pptx_creator import insert_slides_from_pict_folder
+# from pptx_creator import insert_slides_from_pict_folder
 
 
 # pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
@@ -271,6 +272,50 @@ def folder_kenwyn_way(song_number, folder_song_name_list):
     return folder_song_name_inside_3
 
 
+################## IN MEMORY IMAGE SAVING ##################
+def save_images_from_google_folder_to_memory(folder_id):
+    # folder_id is the ID of the Google Drive folder containing the images
+    drive_service = build('drive', 'v3', credentials=creds)
+
+    # Retrieve a list of files in the folder
+    response = drive_service.files().list(q=f"'{folder_id}' in parents").execute()
+    files = response.get('files', [])
+
+    # Create a dictionary to store the image data
+    song_images_dict = {}
+
+    # Loop through files and add image data to the dictionary
+    for file in files:
+        if file['mimeType'].startswith('image/'):
+            # Get the file ID
+            file_id = file['id']
+
+            # Get the file name
+            file_name = file['name']
+
+            # Create a list entry for the file name
+            song_images_dict[file_name] = {}
+
+            # Get the file data
+            request = drive_service.files().get_media(fileId=file_id)
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+
+            # Add the file data to the dictionary entry
+            song_images_dict[file_name] = fh
+
+            st_print("Downloaded file: " + file_name)
+
+    # sort the dictionary by the key
+    # song_images_dict = dict(sorted(song_images_dict.items()))
+    song_images_dict = dict(sorted(song_images_dict.items(), key=lambda x: int(re.findall(r'\d+', x[0])[0]) if re.findall(r'\d+', x[0]) else 0))
+
+    return song_images_dict
+
+
 
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
@@ -293,14 +338,12 @@ def download_new_song_pipeline(song_number):
         st_print("Folder not found according to kenwyn path")
         return
 
-    #### check if the song is available locally if not, download from google drive
-    song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
-    if not os.path.exists(song_folder_path):
-        # download the song folder from google drive
-        download_folder(folder_song_name_inside, SONGS_FOLDER, song_number)
-
+    #### download from google drive
+    st_print("Downloading from google drive song number: " + str(song_number))
+    song_images = save_images_from_google_folder_to_memory(folder_song_name_inside['id'])
+    return song_images
 
     
 connect_service_account_streamlit()
-# download_new_song_pipeline(111)
+# download_new_song_pipeline(115)
 
