@@ -206,7 +206,7 @@ def create_website():
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
     st.sidebar.write("Please enter the Bible verse")
-    st.sidebar.write("Example: Keluaran 16:2-3")
+    st.sidebar.write("Example: 2Sam 1:2-3")
     bible_verse = st.sidebar.text_input("Bible verse")
     
     # ask for pastor name
