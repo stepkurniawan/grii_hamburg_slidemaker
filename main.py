@@ -49,6 +49,10 @@ The slide will be generated based on this structure:
     
 """
 
+####### Versioning
+# 3.0.0 implement in memory song download
+
+
 # Importing libraries
 import collections
 import collections.abc
@@ -161,7 +165,7 @@ def create_website():
     # heading
     st.title(page_title)
     # subheading
-    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker")
+    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker V3.0.0 A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
     st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
 
@@ -240,7 +244,7 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main()
             st.balloons()
-            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:")
+            st.sidebar.success("Slide generated successfully in " + NEW_OUTPUT_DIR + ":tada:")
 
             st.sidebar.download_button(
                 label="Download slide!",
@@ -267,15 +271,6 @@ def main():
 
     ########################################### CHECKING SONGS ##########################################
 
-    # #### check if all the songs are available locally if not, download from google drive
-    # for song_number in SONG_NUMBERS:
-    #     # check if the song folder exists
-    #     song_folder_path = os.path.join(SONGS_FOLDER, str(song_number))
-    #     if not os.path.exists(song_folder_path):
-    #         # download the song folder from google drive
-    #         download_new_song_pipeline(song_number)
-
-    
     # create a test presentation file
     prs = Presentation(TEMPLATE_FILE)
 
@@ -286,22 +281,19 @@ def main():
 
     # add first song
     st_print("Adding first song")
-    # try:
-        # first_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[0]))
-        # insert_slides_from_pict_folder(prs, first_song_folder_path)
-    insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
-    # except:
-    #     st_print("Error: Cannot add the 1st song")
+    try:
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
+    except:
+        st_print("Error: Cannot add the 1st song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
     # add second song
     st_print("Adding second song")
-    # try: 
-    #     second_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[1]))
-        # insert_slides_from_pict_folder(prs, second_song_folder_path)
-    # except:
-    #     st_print("Error: Cannot add the 2nd song")
+    try: 
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[1]))
+    except:
+        st_print("Error: Cannot add the 2nd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
@@ -312,11 +304,10 @@ def main():
 
     # add third song
     st_print("Adding third song")
-    # try: 
-    #     third_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[2]))
-    #     insert_slides_from_pict_folder(prs, third_song_folder_path)
-    # except:
-    #     st_print("Error: Cannot add the 3rd song")
+    try: 
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[2]))
+    except:
+        st_print("Error: Cannot add the 3rd song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
@@ -341,11 +332,10 @@ def main():
 
     # add fourth song
     st_print("Adding fourth song")
-    # try:
-    #     fourth_song_folder_path = os.path.join(SONGS_FOLDER, str(SONG_NUMBERS[3]))
-    #     insert_slides_from_pict_folder(prs, fourth_song_folder_path)
-    # except:
-    #     st_print("Error: Cannot add the 4th song")
+    try:
+        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[3]))
+    except:
+        st_print("Error: Cannot add the 4th song")
 
     add_church_cover_page(prs, sunday_date("slide"))
 
