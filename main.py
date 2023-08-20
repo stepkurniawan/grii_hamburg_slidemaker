@@ -70,8 +70,8 @@ from pptx.util import Inches
 # from alkitab_scraper import *
 
 from pptx_creator import *
-from user_input import *
-from Pujian import download_new_song_pipeline
+# from user_input import *
+# from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
 
