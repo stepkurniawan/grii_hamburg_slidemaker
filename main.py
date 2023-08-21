@@ -366,7 +366,7 @@ def main():
     st_print("saved in " + NEW_OUTPUT_DIR)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
