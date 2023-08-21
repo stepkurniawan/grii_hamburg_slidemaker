@@ -53,7 +53,7 @@ The slide will be generated based on this structure:
 # 3.0.0 implement in memory song download
 # 3.1.0 implement english if german cant be found
 
-VERSION = "3.1.0"
+VERSION = "3.1.2"
 
 # Importing libraries
 import collections
@@ -170,7 +170,7 @@ def create_website():
     # heading
     st.title(page_title)
     # subheading
-    st.subheader("Welcome to ☁️ MRII Europe Automatic Slide Maker V" + VERSION + " A1")
+    st.subheader("Welcome to ☁️ MRII Europe SlideMaker V" + VERSION + " A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
     st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
 
@@ -184,14 +184,8 @@ def create_website():
     
     # subheading
     st.subheader("Where are the songs?")
-    st.write("The songs are downloaded from the database to the server.")
+    st.write("The songs are downloaded from the database to the in-memory, since we don't have permission to store it in the server.")
     st.write("It is stored in the folder, in the server: " + SONGS_FOLDER)
-
-    # st.write("The button below can update the songs database. BUT it will take a long time to download all the songs. (couple of hours)")
-    # update_song_button = st.button("Update the songs database")
-    # if update_song_button:
-    #     connect_service_account_streamlit(creds)
-    #     download_all_songs()
 
     st.subheader("Where is the Slide?")
     st.markdown("After the main process is finished, the **Download Button** will appear on the **left sidebar**")
@@ -256,8 +250,6 @@ def create_website():
                 data=binary_output_file.getvalue(),
                 file_name=sunday_date("filename")+ ".pptx",
             )
-
-                
     footer()
 
 
