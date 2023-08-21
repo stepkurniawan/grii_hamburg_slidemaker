@@ -375,6 +375,7 @@ def download_new_song_pipeline(song_number):
         st.warning("Using English folder instead, please check if its the correct song: ", song_number)
         
     if folder_song_name_inside2 is None:
+        st.error("English folder not found, please check google drive path to make sure this is intended, song: ", song_number)
         return None
 
     #### download from google drive
