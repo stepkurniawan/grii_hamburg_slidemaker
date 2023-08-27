@@ -162,7 +162,7 @@ def sunday_date(formatted):
 
 def create_website():
     # website title
-    page_title = "MRII Europe Automatic Slide Maker"
+    page_title = "☁️ MRII Europe SlideMaker"
 
     st.set_page_config( page_icon=":church:", page_title=page_title)
 
@@ -170,7 +170,7 @@ def create_website():
     # heading
     st.title(page_title)
     # subheading
-    st.subheader("Welcome to ☁️ MRII Europe SlideMaker V" + VERSION + " A1")
+    st.subheader(" 📜 Welcome to MRII Europe SlideMaker V" + VERSION + " A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
     st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
 

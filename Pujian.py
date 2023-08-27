@@ -364,18 +364,18 @@ def download_new_song_pipeline(song_number):
     # if folder_song_name_insight is None, throw error
     if folder_song_name_inside is None:
         st_print ("Folder inside is not found, song_name:" + song_number)
-        st.error("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
-        raise IndexError("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: ", song_number)
+        st.error("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: " + str(song_number))
+        raise IndexError("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: " + str(song_number))
 
     folder_song_name_inside2 = folder_kenwyn_way(song_number,folder_song_name_inside)
     if folder_song_name_inside2 is None:
         print("Folder not found according to kenwyn path (German folder not found)")
-        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended, song: ", song_number)
+        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended, song: " + str(song_number))
         folder_song_name_inside2 = folder_english_way(song_number,folder_song_name_inside)
-        st.warning("Using English folder instead, please check if its the correct song: ", song_number)
+        st.warning("Using English folder instead, please check if its the correct song: " + str(song_number))
         
     if folder_song_name_inside2 is None:
-        st.error("English folder not found, please check google drive path to make sure this is intended, song: ", song_number)
+        st.error("English folder not found, please check google drive path to make sure this is intended, song: " + str(song_number))
         return None
 
     #### download from google drive
@@ -385,5 +385,8 @@ def download_new_song_pipeline(song_number):
 
     
 connect_service_account_streamlit()
-# download_new_song_pipeline(1)
+
+
+##### TEST #####
+# download_new_song_pipeline(5)
 
