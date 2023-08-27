@@ -52,6 +52,7 @@ The slide will be generated based on this structure:
 ####### Versioning
 # 3.0.0 implement in memory song download
 # 3.1.0 implement english if german cant be found
+# "3.1.2 bug fix english path
 
 VERSION = "3.1.2"
 
