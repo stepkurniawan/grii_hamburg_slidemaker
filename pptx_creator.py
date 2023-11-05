@@ -99,8 +99,10 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     except IndexError:
         print("Invalid placeholder index.")
 
-    bible_book = bible_verse_text.split(" ")[0]
-    bible_book_ID = get_full_book_name(bible_book)
+    print("bible verse text: ", bible_verse_text)
+    bible_book = bible_verse_text.split(" ")[0] # 2Sam
+    print("bible_book: ", bible_book)
+    bible_book_ID = get_full_book_name(bible_book) # 2 Samuel
 
     bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
     bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
