@@ -75,29 +75,21 @@ def add_church_cover_page(prs, sunday_date):
 
 def get_full_book_name(book_name):
     # if bible_book has less than 4 characters, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
-    output = ""
+    output = book_name
     if len(book_name) < 4:
         output = lai_abbre_to_full[book_name]
     # if bible_book has 4 characters, but the first one is a number, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
     elif book_name[0].isdigit() & (len(book_name) == 4):
         output = lai_abbre_to_full[book_name]
-    else:
-        output = book_name
+    
     return output
 
 def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     # Find the layout with the specified name
-    layout_name_cover = "BIBLE_READING" # renamed in the master template pptx file
+    layout_name_cover = "BIBLE_READING" # Bible reading cover
     slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
     bible_book_ID = ""
     bible_book_DE = ""
-
-    try: 
-        # check_placeholders_in_slide(prs,slide_layout_cover)
-        bible_verse = slide_layout_cover.placeholders[10]
-        bible_verse.text = bible_verse_text 
-    except IndexError:
-        print("Invalid placeholder index.")
 
     print("bible verse text: ", bible_verse_text)
     bible_book = bible_verse_text.split(" ")[0] # 2Sam
@@ -107,6 +99,18 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
     bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
     bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+
+    
+    ## ADD BIBLE RADING COVER PAGE
+    try: 
+        # check_placeholders_in_slide(prs,slide_layout_cover)
+        bible_verse = slide_layout_cover.placeholders[10]
+        bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end
+        bible_verse.text = bible_cover_text 
+    except IndexError:
+        print("Invalid placeholder index.")
+
+
 
     # get the bible verse in german
     bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
