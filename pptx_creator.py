@@ -105,7 +105,7 @@ def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
         bible_verse = slide_layout_cover.placeholders[10]
-        bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end
+        bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
         bible_verse.text = bible_cover_text 
     except IndexError:
         print("Invalid placeholder index.")
