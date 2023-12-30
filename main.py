@@ -185,7 +185,7 @@ def create_website():
     # subheading
     st.subheader("How to use this website")
     st.write("1. Enter the song numbers separated by comma on the left sidebar")
-    st.write("2. Enter the Bible verse. Feel free to use Indonesian abbreviation like Kej for Kejadian")
+    st.write("2. Enter the Bible verse. Feel free to use Indonesian abbreviation like Kej for Kejadian. But you can also use the full name: Kejadian.")
     st.write("3. (Optional) Enter the pastor name ")
     st.write("4. (Optional) Enter the pastor title in German ")
     st.write("5. Click the submit button")
@@ -210,7 +210,7 @@ def create_website():
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
     st.sidebar.write("Please enter the Bible verse")
-    st.sidebar.write("Example: 2Sam 1:2-3, Kej 1:2-3")
+    st.sidebar.write("Example: 2Sam 1:2-3, Kej 1:2-3, Kejadian 1:2-3")
     bible_verses = st.sidebar.text_input("Bible verse(s)")
     
     # ask for pastor name
