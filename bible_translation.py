@@ -88,7 +88,7 @@ lai_abbre_to_full = {
     "Ayu": "Ayub",
     "Maz": "Mazmur",
     "Ams": "Amsal",
-    "Pen": "Pengkotbah",
+    "Pen": "Pengkhotbah",
     "Kid": "Kidung Agung",
     "Yes": "Yesaya",
     "Yer": "Yeremia",
