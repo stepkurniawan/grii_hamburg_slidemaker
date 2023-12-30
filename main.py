@@ -54,8 +54,9 @@ The slide will be generated based on this structure:
 # 3.1.0 implement english if german cant be found
 # "3.1.2 bug fix english path
 # 3.2.0 implement multi ayat alkitab
+# 3.2.1 bug fix Pengkothbah typo, add better bible verse cover
 
-VERSION = "3.2.0"
+VERSION = "3.2.1"
 
 # Importing libraries
 import collections
