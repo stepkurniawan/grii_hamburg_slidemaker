@@ -84,7 +84,19 @@ def get_full_book_name(book_name):
     
     return output
 
-def add_bible_reading_page(prs, bible_verse_text = "Kejadian 1:2-3"):
+def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
+    # clean bible_verse_text 
+    bible_verse_text = bible_verse_text.replace(".", "")
+    # capitalize the first letter if its not number like 1Sam
+    if not bible_verse_text[0].isdigit():
+        bible_verse_text = bible_verse_text[0].upper() + bible_verse_text[1:]
+    elif bible_verse_text[0].isdigit() & (len(bible_verse_text) == 4):
+        # capitalize the second letter, ex: 1sam -> 1Sam
+        bible_verse_text = bible_verse_text[0] + bible_verse_text[1].upper() + bible_verse_text[2:]
+
+        
+    
+    
     # Find the layout with the specified name
     layout_name_cover = "BIBLE_READING" # Bible reading cover
     slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
