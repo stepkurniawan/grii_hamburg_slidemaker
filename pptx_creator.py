@@ -227,65 +227,220 @@ def add_amen_page(prs):
 
 
 def add_bekantmachung_page(prs):
-    for i in range(0,8): # 0,1,2,3,4,5,6,7
-        layout_name = str(i) + "_WARTA"  
+    try: 
+        for i in range(0,20): # 0,1,2,3,4,5,6,7
+            layout_name = str(i) + "_WARTA"  
 
-        slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+            slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
 
-        if i == 2:
-            persekutuan_doa = slide_layout.placeholders[10]
-            persekutuan_doa.text = "Persekutuan Doa"
+            if i == 3:
+                # preparing texts and placeholders
+                texts=["Makan Malam & \n Persekutuan Doa", 
+                       "Abendessen & Gebetkreis", 
+                       "Setiap Jumat di Minggu Ganjil \n 18:30 ", 
+                       "Freitags der ungeraden Woche \n 18:30 "]
+                placeholders = get_placeholders_in_slide(prs, slide_layout)
+                index = 0
 
-            gebetkreis = slide_layout.placeholders[11]
-            gebetkreis.text = "Gebetkreis"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-            waktu_tempat = slide_layout.placeholders[12]
-            waktu_tempat.text = "Setiap minggu, 15:30 CEST \n Berner Heerweg 60"
+            elif i == 4:
+                # preparing texts and placeholders
+                texts=["Pemahaman Alkitab", 
+                       "Sabtu, 15:00  \n Berner Heerweg 60", 
+                       "Bibelstunde", 
+                       "Samstags, 15:00  \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
 
-            zeit_ort = slide_layout.placeholders[13]
-            zeit_ort.text = "Sonntags, 15:30 CEST \n Berner Heerweg 60"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-        elif i == 3:
-            seminar = slide_layout.placeholders[10]
-            seminar.text = "Seminar Pdt. Billy Kristanto"
+            elif i == 5:
+                # preparing texts and placeholders
+                texts=["Katekisasi Online", 
+                       "Sabtu, setiap 2 minggu, 13:00 "]
+                placeholders = get_placeholders_in_slide(prs, slide_layout)
+                index = 0
 
-            seminary_de = slide_layout.placeholders[11]
-            seminary_de.text = "Seminary Pfr. Billy Kristanto"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-            waktu_tempat = slide_layout.placeholders[12]
-            waktu_tempat.text = "Minggu 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+            elif i == 6:
+                # preparing texts and placeholders
+                texts=["Master Class", 
+                       "Setiap Sabtu minggu genap \n 14:00 "]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
 
-            zeit_ort = slide_layout.placeholders[13]
-            zeit_ort.text = "Sonntag 13.08.2023, 15:30 CEST \n Berner Heerweg 60"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-        elif i == 4:
-            ibadah_minggu = slide_layout.placeholders[10]
-            ibadah_minggu.text = "Ibadah Minggu"
+            elif i == 7:
+                # preparing texts and placeholders
+                texts=["Katekisasi Nikah", 
+                       "Pendaftaran: Thomas"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
 
-            sonntagsgottesdienst = slide_layout.placeholders[11]
-            sonntagsgottesdienst.text = "Sonntagsgottesdienst"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-            waktu_tempat = slide_layout.placeholders[12]
-            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+            elif i == 8:
+                # preparing texts and placeholders
+                texts=["Latihan Koor", 
+                       "Minggu, 14:00 - 15:00 \n Berner Heerweg 60", 
+                       "Chorübung", 
+                       "Sonntags, 14:00 - 15:00 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
 
-            zeit_ort = slide_layout.placeholders[13]
-            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 9:
+                # preparing texts and placeholders
+                texts=["Persekutuan Doa", 
+                       "Setiap Minggu, 15:30  \n Berner Heerweg 60", 
+                       "Gebetkreis", 
+                       "Sonntags, 15:30 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
             
-        elif i == 5:
-            sekolah_minggu = slide_layout.placeholders[10]
-            sekolah_minggu.text = "Sekolah Minggu"
+            elif i == 10:
+                # preparing texts and placeholders
+                texts=["Ibadah Minggu", 
+                       "Minggu, 14:00 \n Berner Heerweg 60", 
+                       "Sonntagsgottesdienst", 
+                       "Sonntag, 14:00  \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
 
-            sonntagsschule = slide_layout.placeholders[11]
-            sonntagsschule.text = "Sonntagsschule"
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
 
-            waktu_tempat = slide_layout.placeholders[12]
-            waktu_tempat.text = "Setiap Minggu, 16:00 CEST \n Berner Heerweg 60"
+            elif i == 11:
+                # preparing texts and placeholders
+                texts=["Ibadah Minggu", 
+                       "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
+                       "Sonntagsgottesdienst", 
+                       "Jeden Sonntag, 16:00  \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 12:
+                # preparing texts and placeholders
+                texts=["Ibadah Minggu & Perjamuan Kudus", 
+                       "Minggu, 9:00 \n Berner Heerweg 60", 
+                       "Sonntagsgottesdienst & Abendmahl", 
+                       "Sonntag, 9:00 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 13:
+                # preparing texts and placeholders
+                texts=["Persekutuan Doa", 
+                       "Minggu, 11:00 \n Berner Heerweg 60", 
+                       "Gebetkreis", 
+                       "Sonntag, 11:00 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 14:
+                # preparing texts and placeholders
+                texts=["Persekutuan Doa", 
+                       "Setiap Minggu, 15:30 \n Berner Heerweg 60", 
+                       "Gebetkreis", 
+                       "Sonntags, 15:30 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 15:
+                # preparing texts and placeholders
+                texts=["Sekolah Minggu", 
+                       "Minggu, 9:00 \n Berner Heerweg 60", 
+                       "Sonntagsschule", 
+                       "Sonntag, 9:00 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
+
+            elif i == 16:
+                # preparing texts and placeholders
+                texts=["Sekolah Minggu", 
+                       "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
+                       "Sonntagsschule", 
+                       "Jeden Sonntag, 16:00 \n Berner Heerweg 60"]
+                placeholders = get_placeholders_in_slide(prs, slide_layout) 
+                index = 0
+
+                # filling the placeholders with the texts
+                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
+                for placeholder in placeholders:
+                    slide_layout.placeholders[placeholder].text = texts[index]
+                    index += 1
             
-            zeit_ort = slide_layout.placeholders[13]
-            zeit_ort.text = "Jeden Sonntag, 16:00 CEST \n Berner Heerweg 60"
 
 
-
+    except IndexError:
+        print("Invalid placeholder index. It's okay, we can continue.")
 
 
 #################### IN MEMORY SONG SAVING #########################################
@@ -353,6 +508,14 @@ def check_placeholders_in_slide(prs, slide):
             print('id: %d, name: %s' % (phf.idx, phf.type))
     print('check done. Remember, the id is more important than the position')
 
+def get_placeholders_in_slide(prs, slide):
+    print('in slide %s' % slide)
+    placeholders = []
+    for shape in slide.placeholders:
+        if shape.is_placeholder:
+            phf = shape.placeholder_format
+            placeholders.append(phf.idx)
+    return placeholders
 
     
 

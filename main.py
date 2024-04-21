@@ -86,7 +86,7 @@ from footer import footer
 global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
 
 # 1. 4 song's numbers
-SONG_NUMBERS = [161, 320, 93, 169]
+SONG_NUMBERS = ["test", "test", "test", "test"]
 # 2. Opening Bible verse
 OPEN_BIBLE_FULL_VERSES = ["Kejadian 1:2-3", "Keluaran 1:2-3"]
 OPEN_BIBLE_FULL_VERSE = "Kejadian 1:2-3"
@@ -373,7 +373,8 @@ def main():
     st_print("saved in " + NEW_OUTPUT_DIR)
 
 
-# if __name__ == "__main__":
-#     main()
+# uncomment this to test the program without streamlit
+if __name__ == "__main__":
+    main()
 
 
