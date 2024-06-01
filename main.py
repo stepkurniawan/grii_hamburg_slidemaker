@@ -80,7 +80,6 @@ from pptx_creator import *
 # from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
-from user_input import ask_for_input
 
 
 ########################################### Version ##########################################
@@ -278,6 +277,7 @@ def main():
 
     ##### ask for input from the user UI
     ## use this input if not using STREAMLIT
+    # from user_input import ask_for_input
     # data = ask_for_input()
     # processing_answers(data)
 
