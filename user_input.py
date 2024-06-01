@@ -1,7 +1,7 @@
 import tkinter as tk
 
 DEFAULT_PASTOR_NAME = "Pdt. Billy Kristanto"
-DEFAULT_PASTOR_TITLE_DE = "Pfr."
+DEFAULT_PASTOR_TITLE_DE = "Past."
 
 def ask_for_input():
     global root, entry_song_numbers, entry_pastor_name, entry_votum_bible_verse, entry_pastor_title_de, data_array
@@ -22,7 +22,7 @@ def ask_for_input():
     label_pastor_name = tk.Label(root, text="pastor name: [Pdt. Billy Kristanto]")
     entry_pastor_name = tk.Entry(root, width=30)
 
-    label_pastor_title_de = tk.Label(root, text="pastor title in DE: [Pfr.]")
+    label_pastor_title_de = tk.Label(root, text="pastor title in DE: [Past.]")
     entry_pastor_title_de = tk.Entry(root, width=30)
 
     # Create a Submit button
