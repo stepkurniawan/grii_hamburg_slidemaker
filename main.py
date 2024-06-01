@@ -92,7 +92,7 @@ OPEN_BIBLE_FULL_VERSES = ["Kejadian 1:2-3", "Keluaran 1:2-3"]
 OPEN_BIBLE_FULL_VERSE = "Kejadian 1:2-3"
 # 3. Pastor's title in Indonesian and German, and name
 PASTOR_TITLE_ID = "Pdt."
-PASTOR_TITLE_DE = "Pfr."
+PASTOR_TITLE_DE = "Past."
 PASTOR_NAME = "Billy Kristanto"
 # 4. Second (blue) offering purpose in Indonesian and German
 SECOND_OFFERING_PURPOSE_ID = ["NONE", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
@@ -137,7 +137,7 @@ TEMPLATE_FILE = get_resource_path('master_slide_template.pptx')
 
 def processing_answers(data_array):
     # IMPORTANT: we are using global variables! 
-    # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Pfr."]
+    # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Past."]
     global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
     
     SONG_NUMBERS = data_array[0].split(",")
@@ -228,13 +228,13 @@ def create_website():
     # ask for pastor title in German
     st.sidebar.subheader("Pastor title in German")
     st.sidebar.write("Please enter the pastor title in German")
-    st.sidebar.write("Default Example: Pfr.")
-    # default is Pfr. 
+    st.sidebar.write("Default Example: Past.")
+    # default is Past. 
     pastor_title_de = st.sidebar.text_input("Pastor title in German")
 
     # if pastor_title_de is empty, then use default value
     if pastor_title_de == "":
-        pastor_title_de = "Pfr."
+        pastor_title_de = "Past."
 
 
     # create a submit button

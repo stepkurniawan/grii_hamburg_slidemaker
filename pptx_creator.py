@@ -292,7 +292,7 @@ def add_bekantmachung_page(prs):
             elif i == 7:
                 # preparing texts and placeholders
                 texts=["Katekisasi Nikah", 
-                       "Pendaftaran: Thomas"]
+                       "Pendaftaran: Nina"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
