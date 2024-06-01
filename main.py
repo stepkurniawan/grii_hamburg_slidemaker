@@ -58,7 +58,7 @@ The slide will be generated based on this structure:
 # 3.2.2 make bible verse more robust
 
 
-VERSION = "3.2.2"
+VERSION = "3.2.20240601"
 
 # Importing libraries
 import collections
