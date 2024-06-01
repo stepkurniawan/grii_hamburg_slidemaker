@@ -98,8 +98,8 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
     
     
     # Find the layout with the specified name
-    layout_name_cover = "BIBLE_READING" # Bible reading cover
-    slide_layout_cover = add_slide_layout_from_layout_name(prs, layout_name_cover)
+    LAYOUT_NAME_COVER = "BIBLE_READING" # Bible reading cover
+    slide_layout_cover = add_slide_layout_from_layout_name(prs, LAYOUT_NAME_COVER)
     bible_book_ID = ""
     bible_book_DE = ""
 
@@ -119,6 +119,13 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
         bible_verse = slide_layout_cover.placeholders[10]
         bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
         bible_verse.text = bible_cover_text 
+
+        bible_verse_DE = slide_layout_cover.placeholders[11]
+        bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
+        bible_cover_text_DE = bible_book_DE + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
+        bible_verse_DE.text = bible_cover_text_DE
+
+
     except IndexError:
         print("Invalid placeholder index.")
 

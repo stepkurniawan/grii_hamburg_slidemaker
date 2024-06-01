@@ -58,7 +58,7 @@ The slide will be generated based on this structure:
 # 3.2.2 make bible verse more robust
 
 
-VERSION = "3.2.2"
+VERSION = "3.2.20240601"
 
 # Importing libraries
 import collections
@@ -81,6 +81,7 @@ from pptx_creator import *
 # from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
+from user_input import ask_for_input
 
 ########################################### INPUTS ##########################################
 global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE, SELECTED_SECOND_OFFERING_PURPOSE_ID
