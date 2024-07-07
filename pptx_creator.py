@@ -244,7 +244,7 @@ def add_bekantmachung_page(prs):
                 # preparing texts and placeholders
                 texts=["Makan Malam & \n Persekutuan Doa", 
                        "Abendessen & Gebetkreis", 
-                       "Setiap Jumat di Minggu Ganjil \n 18:30 ", 
+                       "Setiap Jumat di Minggu Genap \n 18:30 ", 
                        "Freitags der ungeraden Woche \n 18:30 "]
                 placeholders = get_placeholders_in_slide(prs, slide_layout)
                 index = 0
@@ -286,7 +286,8 @@ def add_bekantmachung_page(prs):
             elif i == 6:
                 # preparing texts and placeholders
                 texts=["Master Class", 
-                       "Setiap Sabtu minggu genap \n 14:00 "]
+                       "Setiap Sabtu, minggu ganjil \n 14:00",
+                       "untuk pengurus & pokja \n Gemeindevorsitzende & Arbeitsgruppe"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
