@@ -65,7 +65,7 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
     # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
     # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
     german_book = indonesian_to_german_bible[book]
-    english_book = translate_ind_to_eng(book)
+    english_book = indonesian_to_english_bible[book]
     reference = f"{english_book} {chapter}:{verse_start}-{verse_end}"
 
     result = fetch_bible_passage(BIBLE_VERSION, reference)
@@ -82,14 +82,6 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
                 verses_dict[f"{english_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
 
     return verses_dict
-
-def translate_ind_to_eng(bible_book_full_indo):
-    """
-    parameter: bible_book_full_indo (string), ex: "Kejadian"
-    """
-    return indonesian_to_english_bible[bible_book_full_indo]
-
-
 
 
 

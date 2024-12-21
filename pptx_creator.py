@@ -1,11 +1,9 @@
 import os
 import streamlit as st
-from PIL import Image
 
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
-from bible_translation import indonesian_to_german_bible
-from bible_translation import lai_abbre_to_full
+from bible_translation import lai_abbre_to_full, indonesian_to_english_bible
 from Bible_API import get_verses_dict
 from Pujian import *
 
@@ -102,6 +100,7 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
     slide_layout_cover = add_slide_layout_from_layout_name(prs, LAYOUT_NAME_COVER)
     bible_book_ID = ""
     bible_book_DE = ""
+    bible_book_EN = ""
 
     print("bible verse text: ", bible_verse_text)
     bible_book = bible_verse_text.split(" ")[0] # 2Sam
@@ -120,10 +119,10 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
         bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
         bible_verse.text = bible_cover_text 
 
-        bible_verse_DE = slide_layout_cover.placeholders[11]
-        bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
-        bible_cover_text_DE = bible_book_DE + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
-        bible_verse_DE.text = bible_cover_text_DE
+        bible_verse_EN = slide_layout_cover.placeholders[11]
+        bible_book_EN = indonesian_to_english_bible.get(bible_book_ID)
+        bible_cover_text_EN = bible_book_EN + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
+        bible_verse_EN.text = bible_cover_text_EN
 
 
     except IndexError:
@@ -131,30 +130,30 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
 
 
 
-    # get the bible verse in german
-    bible_book_DE = indonesian_to_german_bible.get(bible_book_ID)
+    # get the bible verse in english
+    bible_book_EN = indonesian_to_english_bible.get(bible_book_ID)
 
     id_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
-    de_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "DE")
+    en_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "EN")
 
     # count how many verse 
     verse_count = len(id_bible_verse)
 
     # loop so we add slide for each verse
-    for id_key, de_key in zip(id_bible_verse.keys(), de_bible_verse.keys()):
+    for id_key, en_key in zip(id_bible_verse.keys(), en_bible_verse.keys()):
         bible_verse_layout_name = "BIBLE_VERSE" # renamed in the master template pptx file
         slide_layout_bible_verse = add_slide_layout_from_layout_name(prs, bible_verse_layout_name)
         try:
             # print("bible verse layout")
             # check_placeholders_in_slide(prs,slide_layout_bible_verse)
-            de_bible_verse_placeholder = slide_layout_bible_verse.placeholders[10]
+            en_bible_verse_placeholder = slide_layout_bible_verse.placeholders[10]
             id_bible_verse_placeholder = slide_layout_bible_verse.placeholders[11]
 
             # Get the values corresponding to the current keys
-            de_value = de_bible_verse[de_key]
+            en_value = en_bible_verse[en_key]
             id_value = id_bible_verse[id_key]
 
-            de_bible_verse_placeholder.text = de_key + " : " + de_value
+            en_bible_verse_placeholder.text = en_key + " : " + en_value
             id_bible_verse_placeholder.text = id_key + " : " + id_value
             
         except IndexError:
@@ -178,10 +177,10 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     print("preacher layout")
     # check_placeholders_in_slide(prs,slide_layout)
 
-    de_preacher_placeholder = slide_layout.placeholders[10]
+    en_preacher_placeholder = slide_layout.placeholders[10]
     id_preacher_placeholder = slide_layout.placeholders[11]
 
-    de_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
+    en_preacher_placeholder.text = PASTOR_TITLE_DE + " " + PASTOR_NAME
     id_preacher_placeholder.text = PASTOR_TITLE_ID + " " + PASTOR_NAME
 
     
@@ -242,10 +241,14 @@ def add_bekantmachung_page(prs):
 
             if i == 3:
                 # preparing texts and placeholders
-                texts=["Makan Malam & \n Persekutuan Doa", 
+                texts_de=["Makan Malam & \n Persekutuan Doa", 
                        "Abendessen & Gebetkreis", 
                        "Setiap Jumat di Minggu Genap \n 18:30 ", 
                        "Freitags der ungeraden Woche \n 18:30 "]
+                texts= ["Makan Malam & \n Persekutuan Doa", 
+                          "Dinner & Prayer Meeting", 
+                          "Setiap Jumat di minggu genap \n 18:30 ",
+                          "Fridays on Even week \n 18:30 "]
                 placeholders = get_placeholders_in_slide(prs, slide_layout)
                 index = 0
 
@@ -257,10 +260,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 4:
                 # preparing texts and placeholders
-                texts=["Pemahaman Alkitab", 
+                texts_de=["Pemahaman Alkitab", 
                        "Sabtu, 15:00  \n Berner Heerweg 60", 
                        "Bibelstunde", 
                        "Samstags, 15:00  \n Berner Heerweg 60"]
+                texts=["Pemahaman Alkitab",
+                          "Sabtu, 15:00  \n Berner Heerweg 60",
+                          "Bible Study", 
+                          "Saturdays, 15:00  \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -272,8 +279,8 @@ def add_bekantmachung_page(prs):
 
             elif i == 5:
                 # preparing texts and placeholders
-                texts=["Katekisasi Online", 
-                       "Sabtu, setiap 2 minggu, 13:00 "]
+                texts=["Online Catechism", 
+                       "Saturdays, every 2 weeks, 13:00 "]
                 placeholders = get_placeholders_in_slide(prs, slide_layout)
                 index = 0
 
@@ -286,8 +293,8 @@ def add_bekantmachung_page(prs):
             elif i == 6:
                 # preparing texts and placeholders
                 texts=["Master Class", 
-                       "Setiap Sabtu, minggu ganjil \n 14:00",
-                       "untuk pengurus & pokja \n Gemeindevorsitzende & Arbeitsgruppe"]
+                       "Every Saturdays, odd weeks \n 14:00",
+                       "untuk pengurus & pokja \n For Administrators & Working Groups"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -299,8 +306,8 @@ def add_bekantmachung_page(prs):
 
             elif i == 7:
                 # preparing texts and placeholders
-                texts=["Katekisasi Nikah", 
-                       "Pendaftaran: Nina"]
+                texts=["Marriage Catechism", 
+                       "Registration: Nina"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -312,10 +319,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 8:
                 # preparing texts and placeholders
-                texts=["Latihan Koor", 
+                texts_de=["Latihan Koor", 
                        "Minggu, 14:00 - 15:00 \n Berner Heerweg 60", 
                        "Chorübung", 
                        "Sonntags, 14:00 - 15:00 \n Berner Heerweg 60"]
+                texts=["Latihan Koor",
+                        "Minggu, 14:00 - 15:00 \n Berner Heerweg 60",
+                        "Choir Practice",
+                        "Sundays, 14:00 - 15:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -327,10 +338,15 @@ def add_bekantmachung_page(prs):
 
             elif i == 9:
                 # preparing texts and placeholders
-                texts=["Persekutuan Doa", 
+                texts_de=["Persekutuan Doa", 
                        "Setiap Minggu, 15:30  \n Berner Heerweg 60", 
                        "Gebetkreis", 
                        "Sonntags, 15:30 \n Berner Heerweg 60"]
+                texts=["Persekutuan Doa",
+                         "Setiap Minggu, 15:30  \n Berner Heerweg 60",
+                         "Prayer Fellowship",
+                         "Sundays, 15:30 \n Berner Heerweg 60"]
+                            
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -342,10 +358,14 @@ def add_bekantmachung_page(prs):
             
             elif i == 10:
                 # preparing texts and placeholders
-                texts=["Ibadah Minggu", 
+                texts_de=["Ibadah Minggu", 
                        "Minggu, 14:00 \n Berner Heerweg 60", 
                        "Sonntagsgottesdienst", 
                        "Sonntag, 14:00  \n Berner Heerweg 60"]
+                texts=["Ibadah Minggu",
+                        "Minggu, 14:00 \n Berner Heerweg 60",
+                        "Sunday Worship",
+                        "Sunday, 14:00  \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -357,10 +377,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 11:
                 # preparing texts and placeholders
-                texts=["Ibadah Minggu", 
+                texts_de=["Ibadah Minggu", 
                        "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
                        "Sonntagsgottesdienst", 
                        "Jeden Sonntag, 16:00  \n Berner Heerweg 60"]
+                texts=["Ibadah Minggu",
+                        "Setiap Minggu, 16:00 \n Berner Heerweg 60",
+                        "Sunday Worship",
+                        "Every Sunday, 16:00  \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -372,10 +396,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 12:
                 # preparing texts and placeholders
-                texts=["Ibadah Minggu & Perjamuan Kudus", 
+                texts_de=["Ibadah Minggu & Perjamuan Kudus", 
                        "Minggu, 9:00 \n Berner Heerweg 60", 
                        "Sonntagsgottesdienst & Abendmahl", 
                        "Sonntag, 9:00 \n Berner Heerweg 60"]
+                texts=["Ibadah Minggu & Perjamuan Kudus",
+                        "Minggu, 9:00 \n Berner Heerweg 60",
+                        "Sunday Worship & Holy Communion",
+                        "Sunday, 9:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -387,10 +415,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 13:
                 # preparing texts and placeholders
-                texts=["Persekutuan Doa", 
+                texts_de=["Persekutuan Doa", 
                        "Minggu, 11:00 \n Berner Heerweg 60", 
                        "Gebetkreis", 
                        "Sonntag, 11:00 \n Berner Heerweg 60"]
+                texts=["Persekutuan Doa",
+                        "Minggu, 11:00 \n Berner Heerweg 60",
+                        "Prayer Fellowship",
+                        "Sunday, 11:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -402,10 +434,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 14:
                 # preparing texts and placeholders
-                texts=["Persekutuan Doa", 
+                texts_de=["Persekutuan Doa", 
                        "Setiap Minggu, 15:30 \n Berner Heerweg 60", 
                        "Gebetkreis", 
                        "Sonntags, 15:30 \n Berner Heerweg 60"]
+                texts=["Persekutuan Doa",
+                        "Setiap Minggu, 15:30 \n Berner Heerweg 60",
+                        "Prayer Fellowship",
+                        "Sundays, 15:30 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -417,12 +453,17 @@ def add_bekantmachung_page(prs):
 
             elif i == 15:
                 # preparing texts and placeholders
-                texts=["Sekolah Minggu", 
+                texts_de=["Sekolah Minggu", 
                        "Minggu, 9:00 \n Berner Heerweg 60", 
                        "Sonntagsschule", 
                        "Sonntag, 9:00 \n Berner Heerweg 60"]
+                texts=["Sekolah Minggu",
+                        "Minggu, 9:00 \n Berner Heerweg 60",
+                        "Sunday School",
+                        "Sunday, 9:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
+
 
                 # filling the placeholders with the texts
                 # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
@@ -432,10 +473,14 @@ def add_bekantmachung_page(prs):
 
             elif i == 16:
                 # preparing texts and placeholders
-                texts=["Sekolah Minggu", 
+                texts_de=["Sekolah Minggu", 
                        "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
                        "Sonntagsschule", 
                        "Jeden Sonntag, 16:00 \n Berner Heerweg 60"]
+                texts=["Sekolah Minggu",
+                        "Setiap Minggu, 16:00 \n Berner Heerweg 60",
+                        "Sunday School",
+                        "Every Sunday, 16:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -445,7 +490,6 @@ def add_bekantmachung_page(prs):
                     slide_layout.placeholders[placeholder].text = texts[index]
                     index += 1
             
-
 
     except IndexError:
         print("Invalid placeholder index. It's okay, we can continue.")
