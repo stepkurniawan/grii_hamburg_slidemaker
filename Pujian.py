@@ -6,7 +6,7 @@ and download the folder with the name of the number
 then it will unzip the folder and delete the zip file
 then it will search for the file with the name of the number
 
-if it found the file, it will open the file and search for a folder with the word "DE"
+if it found the file, it will open the file and search for a folder with the word "DE" -> deprecated, since we move to english, just use the number 
 if it found the folder
     import all the JPG files in the folder and add to the pptx file
 
@@ -230,48 +230,6 @@ def make_local_folder_based_on_google_folder_name(item, destination_folder, song
 
     return folder_id, folder_name
 
-def folder_kenwyn_way(song_number, folder_song_name_list):
-    """
-    This function selects the appropriate folder from the list based on the given criteria.
-
-    :param song_number: Not used in this function.
-    :param folder_song_name_list: A list of folders with their names and IDs.
-    :return: The selected folder or None if no suitable folder is found.
-
-    folder_song_name_list = ["DE, "115"]
-    folder_song_name_inside = "DE"
-    folder_song_name_inside_3 = "115 DE"
-
-    """
-
-    # FOLDER SELECTION
-    # Select the folder that contains "DE" or "de" or "De" in the name, otherwise, the first folder.
-
-    for folder in folder_song_name_list:
-        if folder['name'] == "DE":
-            folder_song_name_inside = folder
-            break
-        else:
-            print("No folder with kenwyn path found. (in folder named DE)")
-    else:
-        # If no folder contains "DE" or "de" or "De", select the first folder in the list.
-        if folder_song_name_list:
-            folder_song_name_inside = folder_song_name_list[0]
-        else:
-            return None
-
-    folder_song_name_inside_2_list = get_list_folders(folder_song_name_inside["id"], creds)
-
-    for folder in folder_song_name_inside_2_list:
-        if "DE" in folder['name'].upper():
-            folder_song_name_inside_3 = folder
-            break
-    else:
-        folder_song_name_inside_3 = None
-
-    return folder_song_name_inside_3
-
-
 ##### adding fall back plan to take english songs if german songs are not found
 
 def folder_english_way(song_number, folder_song_name_list):
@@ -299,8 +257,6 @@ def folder_english_way(song_number, folder_song_name_list):
             return None
 
     return folder_song_name_inside
-
-
 
 
 
@@ -367,13 +323,7 @@ def download_new_song_pipeline(song_number):
         st.error("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: " + str(song_number))
         raise IndexError("Folder_song_name_inside is not found, I cannot find the song number in the Master Folder: " + str(song_number))
 
-    folder_song_name_inside2 = folder_kenwyn_way(song_number,folder_song_name_inside)
-    if folder_song_name_inside2 is None:
-        print("Folder not found according to kenwyn path (German folder not found)")
-        st.error("Folder not found according to kenwyn path (German folder not found), please check google drive to make sure this is intended, song: " + str(song_number))
-        folder_song_name_inside2 = folder_english_way(song_number,folder_song_name_inside)
-        st.warning("Using English folder instead, please check if its the correct song: " + str(song_number))
-        
+    folder_song_name_inside2 = folder_english_way(song_number, folder_song_name_inside)
     if folder_song_name_inside2 is None:
         st.error("English folder not found, please check google drive path to make sure this is intended, song: " + str(song_number))
         return None

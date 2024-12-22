@@ -91,7 +91,7 @@ VERSION = "3.2."+str(date_today)
 global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, SELECTED_SECOND_OFFERING_PURPOSE_ID
 
 # 1. 4 song's numbers
-SONG_NUMBERS = ["test", "test", "test", "test"]
+SONG_NUMBERS = ["41", "test", "test", "test"]
 # 2. Opening Bible verse
 OPEN_BIBLE_FULL_VERSES = ["Kejadian 1:2-3", "Keluaran 1:2-3"]
 OPEN_BIBLE_FULL_VERSE = "Kejadian 1:2-3"
