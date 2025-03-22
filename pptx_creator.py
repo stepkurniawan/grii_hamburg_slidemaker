@@ -3,7 +3,7 @@ import streamlit as st
 
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
-from bible_translation import lai_abbre_to_full, indonesian_to_english_bible
+from bible_translation import english_to_indonesian_bible
 from Bible_API import get_verses_dict
 from Pujian import *
 
@@ -69,72 +69,48 @@ def add_church_cover_page(prs, sunday_date):
 
     sundays_date_placeholder = slide_layout.placeholders[10]
     sundays_date_placeholder.text = sunday_date
-    
 
-def get_full_book_name(book_name):
-    # if bible_book has less than 4 characters, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
-    output = book_name
-    if len(book_name) < 4:
-        output = lai_abbre_to_full[book_name]
-    # if bible_book has 4 characters, but the first one is a number, then its the abbreviated version. the full version is in lai_abbre_to_full dictionary
-    elif book_name[0].isdigit() & (len(book_name) == 4):
-        output = lai_abbre_to_full[book_name]
-    
-    return output
-
-def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
-    # clean bible_verse_text 
-    bible_verse_text = bible_verse_text.replace(".", "")
-    # capitalize the first letter if its not number like 1Sam
-    if not bible_verse_text[0].isdigit():
-        bible_verse_text = bible_verse_text[0].upper() + bible_verse_text[1:]
-    elif bible_verse_text[0].isdigit() & (len(bible_verse_text) == 4):
-        # capitalize the second letter, ex: 1sam -> 1Sam
-        bible_verse_text = bible_verse_text[0] + bible_verse_text[1].upper() + bible_verse_text[2:]
-
-        
-    
+def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
     
     # Find the layout with the specified name
     LAYOUT_NAME_COVER = "BIBLE_READING" # Bible reading cover
     slide_layout_cover = add_slide_layout_from_layout_name(prs, LAYOUT_NAME_COVER)
     bible_book_ID = ""
-    bible_book_DE = ""
     bible_book_EN = ""
 
+    # get the bible book, chapter, verse_start, verse_end by going from behind
+    # ex 2 Kings 1:1-2
+    bible_chapter_and_verse = bible_verse_text.split(" ")[-1] # 1:1-2
+    # the rest is the bible book
+    bible_book = bible_verse_text.replace(bible_chapter_and_verse, "").strip() # 2 Kings
+    
     print("bible verse text: ", bible_verse_text)
-    bible_book = bible_verse_text.split(" ")[0] # 2Sam
     print("bible_book: ", bible_book)
-    bible_book_ID = get_full_book_name(bible_book) # 2 Samuel
+    
 
-    bible_chapter = bible_verse_text.split(" ")[1].split(":")[0]
-    bible_verse_start = bible_verse_text.split(" ")[1].split(":")[1].split("-")[0]
-    bible_verse_end = bible_verse_text.split(" ")[1].split(":")[1].split("-")[1]
+    bible_chapter = bible_chapter_and_verse.split(":")[0]
+    bible_verse_start = bible_chapter_and_verse.split(":")[1].split("-")[0]
+    bible_verse_end = bible_chapter_and_verse.split(":")[1].split("-")[1]
 
     
     ## ADD BIBLE RADING COVER PAGE
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
-        bible_verse = slide_layout_cover.placeholders[10]
-        bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
-        bible_verse.text = bible_cover_text 
-
         bible_verse_EN = slide_layout_cover.placeholders[11]
-        bible_book_EN = indonesian_to_english_bible.get(bible_book_ID)
+        bible_book_EN = bible_book
         bible_cover_text_EN = bible_book_EN + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
         bible_verse_EN.text = bible_cover_text_EN
-
+    
+        bible_verse_ID = slide_layout_cover.placeholders[10]
+        bible_book_ID = english_to_indonesian_bible.get(bible_book)
+        bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
+        bible_verse_ID.text = bible_cover_text 
 
     except IndexError:
         print("Invalid placeholder index.")
 
-
-
-    # get the bible verse in english
-    bible_book_EN = indonesian_to_english_bible.get(bible_book_ID)
-
-    id_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
-    en_bible_verse = get_verses_dict(bible_book_ID, bible_chapter, bible_verse_start, bible_verse_end, "EN")
+    id_bible_verse = get_verses_dict(bible_book_EN, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
+    en_bible_verse = get_verses_dict(bible_book_EN, bible_chapter, bible_verse_start, bible_verse_end, "EN")
 
     # count how many verse 
     verse_count = len(id_bible_verse)
@@ -159,7 +135,6 @@ def add_bible_reading_page(prs, bible_verse_text = "Kej 1:2-3"):
         except IndexError:
             print("Invalid placeholder index.")
     
-
 
 
 def add_doa_bapa_kami_page(prs):

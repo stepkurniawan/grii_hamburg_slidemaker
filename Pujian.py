@@ -57,7 +57,7 @@ SONGS_FOLDER = os.path.join(base_path, 'Songs' )
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
 
 # ID of the folder you want to download from Google Drive
-master_lagu_ibadah_folder_id = '1CjmdxteRGNpgSdYwMLf4UgH-uSWVXjnt'
+master_lagu_ibadah_folder_id = '1286x7da8SnvwGhBv5C0NubPDeqf2kJEt'
 
 # Read the credentials from the credentials.json file and parse it as a dictionary
 # with open(credentials_file, 'r') as f:

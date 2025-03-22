@@ -14,12 +14,12 @@ for german bible, use luther
 """
 
 import requests
-from bible_translation import indonesian_to_english_bible, indonesian_to_german_bible
+from bible_translation import english_to_indonesian_bible, english_to_german_bible
 
 ######### GLOBAL VARIABLES #########
 BASE_URL = "https://api.biblesupersearch.com/api"
 
-LANG = "de"
+LANG = "en"
 BIBLE_VERSION = ""
 
 reference = "Genesis 1:1-2"
@@ -43,7 +43,7 @@ def fetch_bible_passage(bible_version, reference):
 def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
     """
     param:
-    book (string): ex: "Kejadian"
+    book (string): ex: "Genesis"
     chapter (string): ex: "1"
     verse_start (string): ex: "1"
     verse_end (string): ex: "2"
@@ -64,8 +64,9 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
     # create a dictionary from the verses
     # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
     # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
-    german_book = indonesian_to_german_bible[book]
-    english_book = indonesian_to_english_bible[book]
+    english_book = book
+    german_book = english_to_german_bible.get(book)
+    indonesian_book = english_to_indonesian_bible.get(book)
     reference = f"{english_book} {chapter}:{verse_start}-{verse_end}"
 
     result = fetch_bible_passage(BIBLE_VERSION, reference)
@@ -77,7 +78,7 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
             if language == "DE":
                 verses_dict[f"{german_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
             elif language == "ID":
-                verses_dict[f"{book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
+                verses_dict[f"{indonesian_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
             else:
                 verses_dict[f"{english_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
 

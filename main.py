@@ -91,10 +91,10 @@ VERSION = "3.2."+str(date_today)
 global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, SELECTED_SECOND_OFFERING_PURPOSE_ID
 
 # 1. 4 song's numbers
-SONG_NUMBERS = ["41", "test", "test", "test"]
+SONG_NUMBERS = ["1", "test", "test", "test"]
 # 2. Opening Bible verse
-OPEN_BIBLE_FULL_VERSES = ["Kejadian 1:2-3", "Keluaran 1:2-3"]
-OPEN_BIBLE_FULL_VERSE = "Kejadian 1:2-3"
+OPEN_BIBLE_FULL_VERSES = ["Genesis 1:2-3", "1 Kings 1:1-2"]
+OPEN_BIBLE_FULL_VERSE = "Genesis 1:2-3"
 # 3. Pastor's title in Indonesian and German, and name
 PASTOR_TITLE_ID = "Pdt."
 PASTOR_TITLE_DE_OR_EN = "Past."
@@ -192,7 +192,7 @@ def create_website():
     # subheading
     st.subheader("How to use this website")
     st.write("1. Enter the song numbers separated by comma on the left sidebar")
-    st.write("2. Enter the Bible verse. Feel free to use Indonesian abbreviation like Kej for Kejadian. But you can also use the full name: Kejadian.")
+    st.write("2. Enter the (English) Bible verse. ex: Genesis 1:2-3, 1 Kings 1:1-2")
     st.write("3. (Optional) Enter the pastor name ")
     st.write("4. (Optional) Enter the pastor title in German ")
     st.write("5. Click the submit button")
@@ -216,8 +216,8 @@ def create_website():
 
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
-    st.sidebar.write("Please enter the Bible verse")
-    st.sidebar.write("Example: 2Sam 1:2-3, Kej 1:2-3, Kejadian 1:2-3")
+    st.sidebar.write("Please enter the Bible verse in English")
+    st.sidebar.write("Example: Genesis 1:2-3, 1 Kings 1:1-2")
     bible_verses = st.sidebar.text_input("Bible verse(s)")
     
     # ask for pastor name
@@ -230,16 +230,16 @@ def create_website():
     if pastor_name == "":
         pastor_name = "Pdt. Billy Kristanto"
 
-    # ask for pastor title in German
-    st.sidebar.subheader("Pastor title in German")
-    st.sidebar.write("Please enter the pastor title in German")
-    st.sidebar.write("Default Example: Past.")
-    # default is Past. 
-    pastor_title_de = st.sidebar.text_input("Pastor title in German")
+    # ask for pastor title in English
+    st.sidebar.subheader("Pastor title")
+    st.sidebar.write("Please enter the pastor title")
+    st.sidebar.write("Default Example: Rev.")
+    # default is Rev. 
+    pastor_title = st.sidebar.text_input("Pastor title")
 
     # if pastor_title_de is empty, then use default value
-    if pastor_title_de == "":
-        pastor_title_de = "Past."
+    if pastor_title == "":
+        pastor_title = "Rev."
 
 
     # create a submit button
@@ -251,7 +251,7 @@ def create_website():
         # 2. Bible verse
         # 3. pastor name
         # 4. pastor title in German
-        data_array = [song_numbers, pastor_name, bible_verses, pastor_title_de] # switch the order because of the processing_answers()
+        data_array = [song_numbers, pastor_name, bible_verses, pastor_title] # switch the order because of the processing_answers()
         st.write("Data sent to main.py")
         st.write(data_array)
         processing_answers(data_array)
