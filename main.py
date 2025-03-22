@@ -1,11 +1,11 @@
 """
 This program is to make a powerpoint presentation for Sunday service.
-It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).
+It is tweaked for Hamburg Church, which is bilingual (Indonesian and English).
 The inputs that are changed every week:
 1. 4 song's numbers 
 2. Opening Bible verse
 3. Pastor's title in Indonesian and English, and name
-4. Second (blue) offering purpose in Indonesian and German
+4. Second (blue) offering purpose in Indonesian and English
 
 The songs are stored in google drive as a jpg. 
 So we just have to use that picture as a slide. 
@@ -25,7 +25,7 @@ The slide will be generated based on this structure:
 10. Lord's Prayer (in English and Indonesian) -  3 slides - Static, we have it
 11. church cover - page
 12. Predigt - page
-    - Title: <Pastor's title in German>. <Pastor's name>
+    - Title: <Pastor's title in English>. <Pastor's name>
     - Subtitle: <Pastor's title in Indonesian>. <Pastor's name>
 13. church cover - page
 14. Apostles' Creed (in English and Indonesian) - 6 slides - Static, we have it
@@ -56,7 +56,7 @@ The slide will be generated based on this structure:
 # 3.2.0 implement multi ayat alkitab
 # 3.2.1 bug fix Pengkothbah typo, add better bible verse cover
 # 3.2.2 make bible verse more robust
-
+# 3.2.3 change the bible input from indo to english
 
 
 # Importing libraries
@@ -95,11 +95,11 @@ SONG_NUMBERS = ["1", "test", "test", "test"]
 # 2. Opening Bible verse
 OPEN_BIBLE_FULL_VERSES = ["Genesis 1:2-3", "1 Kings 1:1-2"]
 OPEN_BIBLE_FULL_VERSE = "Genesis 1:2-3"
-# 3. Pastor's title in Indonesian and German, and name
+# 3. Pastor's title in Indonesian and English, and name
 PASTOR_TITLE_ID = "Pdt."
-PASTOR_TITLE_DE_OR_EN = "Past."
+PASTOR_TITLE_DE_OR_EN = "Rev."
 PASTOR_NAME = "Billy Kristanto"
-# 4. Second (blue) offering purpose in Indonesian and German
+# 4. Second (blue) offering purpose in Indonesian and English
 SECOND_OFFERING_PURPOSE_ID = ["NONE", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
 SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 
@@ -187,14 +187,14 @@ def create_website():
     # subheading
     st.subheader(" 📜 Welcome to MRII Europe SlideMaker V" + VERSION + " A1")
     st.write("This website is used to create a powerpoint presentation for Sunday service.")
-    st.write("It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).")
+    st.write("It is tweaked for Hamburg Church, which is bilingual (English and Indo).")
 
     # subheading
     st.subheader("How to use this website")
     st.write("1. Enter the song numbers separated by comma on the left sidebar")
     st.write("2. Enter the (English) Bible verse. ex: Genesis 1:2-3, 1 Kings 1:1-2")
     st.write("3. (Optional) Enter the pastor name ")
-    st.write("4. (Optional) Enter the pastor title in German ")
+    st.write("4. (Optional) Enter the pastor title in English ")
     st.write("5. Click the submit button")
     
     # subheading
@@ -250,7 +250,7 @@ def create_website():
         # 1. song numbers
         # 2. Bible verse
         # 3. pastor name
-        # 4. pastor title in German
+        # 4. pastor title in English
         data_array = [song_numbers, pastor_name, bible_verses, pastor_title] # switch the order because of the processing_answers()
         st.write("Data sent to main.py")
         st.write(data_array)
