@@ -96,12 +96,12 @@ def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
     ## ADD BIBLE RADING COVER PAGE
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
-        bible_verse_EN = slide_layout_cover.placeholders[11]
+        bible_verse_EN = slide_layout_cover.placeholders[10] # main title
         bible_book_EN = bible_book
         bible_cover_text_EN = bible_book_EN + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
         bible_verse_EN.text = bible_cover_text_EN
     
-        bible_verse_ID = slide_layout_cover.placeholders[10]
+        bible_verse_ID = slide_layout_cover.placeholders[11] # sub title
         bible_book_ID = english_to_indonesian_bible.get(bible_book)
         bible_cover_text = bible_book_ID + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Kejadian 1:2-3
         bible_verse_ID.text = bible_cover_text 

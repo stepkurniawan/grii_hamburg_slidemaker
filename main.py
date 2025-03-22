@@ -4,7 +4,7 @@ It is tweaked for Hamburg Church, which is bilingual (Indonesian and German).
 The inputs that are changed every week:
 1. 4 song's numbers 
 2. Opening Bible verse
-3. Pastor's title in Indonesian and German, and name
+3. Pastor's title in Indonesian and English, and name
 4. Second (blue) offering purpose in Indonesian and German
 
 The songs are stored in google drive as a jpg. 
@@ -16,23 +16,23 @@ The slide will be generated based on this structure:
 3. First song
 4. church cover - page
 5. Second song
-6. Opening Bible vers (in German), ex: Subtitel: Bibellesung, Titel: Jesaja 43,1-7 
-    - German Translation with the verse number
+6. Opening Bible vers (in English), ex: Subtitel: Scripture Reading, Titel: Jeremiah 20:1-2 
+    - English Translation with the verse number
     - Indonesian Translation with the verse number
 7. church cover - page
 8. Third song
 9. church cover - page
-10. Lord's Prayer (in German and Indonesian) -  3 slides - Static, we have it
+10. Lord's Prayer (in English and Indonesian) -  3 slides - Static, we have it
 11. church cover - page
 12. Predigt - page
     - Title: <Pastor's title in German>. <Pastor's name>
     - Subtitle: <Pastor's title in Indonesian>. <Pastor's name>
 13. church cover - page
-14. Apostles' Creed (in German and Indonesian) - 6 slides - Static, we have it
+14. Apostles' Creed (in English and Indonesian) - 6 slides - Static, we have it
 15. church cover - page
 16. Offerings - page
     - Small Title: Kollekte
-    - Title: MRII Hamburg (rot) & <Second offering purpose in German> (blau)
+    - Title: MRII Hamburg (rot) & <Second offering purpose in English> (blau)
     - SubTitle: MRII Hamburg (merah) & <Second offering purpose in Indonesian> (biru)
 17. Fourth song
 18. church cover - page
