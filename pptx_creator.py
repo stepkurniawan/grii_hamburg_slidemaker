@@ -135,6 +135,18 @@ def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
         except IndexError:
             print("Invalid placeholder index.")
     
+def add_intersession_page(prs, intercession_text_id='', intercession_text_en=''):
+    # Specify the layout name you want to use
+    layout_name = "INTERCESSION_PRAYER" # renamed in the master template pptx file
+    slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+
+    # check_placeholders_in_slide(prs,slide_layout)
+
+    id_intercession_placeholder = slide_layout.placeholders[10]
+    en_intercession_placeholder = slide_layout.placeholders[11]
+
+    id_intercession_placeholder.text = intercession_text_id
+    en_intercession_placeholder.text = intercession_text_en
 
 
 def add_doa_bapa_kami_page(prs):

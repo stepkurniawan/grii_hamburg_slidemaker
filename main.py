@@ -332,7 +332,9 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
+    
     st_print("Adding Lord's Prayer")
+    add_intersession_page(prs)
     add_doa_bapa_kami_page(prs)
 
     add_church_cover_page(prs, sunday_date("slide"))
