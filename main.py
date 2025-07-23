@@ -142,8 +142,10 @@ TEMPLATE_FILE = get_resource_path('master_slide_template_en.pptx')
 
 def processing_answers(data_array):
     # IMPORTANT: we are using global variables! 
-    # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Past."]
-    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, SELECTED_SECOND_OFFERING_PURPOSE_ID
+    # answer = ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Keluaran 16:2-3", "Past.", "93"]
+    global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, \
+    OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, \
+    SELECTED_SECOND_OFFERING_PURPOSE_ID, HOLY_COMMUNION_SONG_NUMBER
     
     SONG_NUMBERS = data_array[0].split(",")
     # remove whitespace
@@ -156,6 +158,7 @@ def processing_answers(data_array):
     OPEN_BIBLE_FULL_VERSES = data_array[2].split(",")
     OPEN_BIBLE_FULL_VERSES = [bible_verse.strip() for bible_verse in OPEN_BIBLE_FULL_VERSES]
     PASTOR_TITLE_DE_OR_EN = data_array[3]
+    HOLY_COMMUNION_SONG_NUMBER = data_array[4]
 
 def sunday_date(formatted):
     # save file as with next sunday's date yyyymmdd.pptx
@@ -214,6 +217,12 @@ def create_website():
     st.sidebar.write("Example: 161, 320, 93, 169")
     song_numbers = st.sidebar.text_input("Song numbers")
 
+    holy_communion = st.sidebar.toggle("Holy Communion", key="holy_communion", help="Toggle this if the service is Holy Communion. This will add the Holy Communion song slide before the sermon.")
+    holy_communion_song_number: int | None = None
+    if holy_communion:
+        st.sidebar.write("Holy Communion song will be added before the sermon slide.")
+        holy_communion_song_number = st.sidebar.text_input("Holy Communion song number")
+
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
     st.sidebar.write("Please enter the Bible verse in English")
@@ -251,7 +260,7 @@ def create_website():
         # 2. Bible verse
         # 3. pastor name
         # 4. pastor title in English
-        data_array = [song_numbers, pastor_name, bible_verses, pastor_title] # switch the order because of the processing_answers()
+        data_array = [song_numbers, pastor_name, bible_verses, pastor_title, holy_communion_song_number] # switch the order because of the processing_answers()
         st.write("Data sent to main.py")
         st.write(data_array)
         processing_answers(data_array)
@@ -339,7 +348,17 @@ def main():
 
     add_church_cover_page(prs, sunday_date("slide"))
 
-    st_print("Adding Preacher")
+    if HOLY_COMMUNION_SONG_NUMBER is not None:
+        st_print("Adding Holy Communion song")
+        try:
+            insert_slides_from_google_drive_folder(prs, str(HOLY_COMMUNION_SONG_NUMBER))
+        except:
+            print("Error: Cannot add the Holy Communion song")
+            st_error_print("Error: Cannot add the Holy Communion song")
+
+    add_church_cover_page(prs, sunday_date("slide"))
+
+    st_print("Adding Preacher Sermon Page")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE_OR_EN, PASTOR_NAME)
 
     add_church_cover_page(prs, sunday_date("slide"))

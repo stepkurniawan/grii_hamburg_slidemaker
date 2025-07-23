@@ -7,6 +7,13 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+streamlit = "^1.47.0"
+requests = "^2.32.4"
+python-pptx = "^1.0.2"
+protobuf = "^6.31.1"
+google-auth-oauthlib = "^1.2.2"
+google-api-python-client = "^2.177.0"
+htbuilder = "0.6.1"
 
 
 [build-system]
