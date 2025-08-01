@@ -217,7 +217,7 @@ def create_website():
     st.sidebar.write("Example: 161, 320, 93, 169")
     song_numbers = st.sidebar.text_input("Song numbers")
 
-    holy_communion = st.sidebar.toggle("Holy Communion", key="holy_communion", help="Toggle this if the service is Holy Communion. This will add the Holy Communion song slide before the sermon.")
+    holy_communion = st.sidebar.checkbox("Holy Communion", key="holy_communion", help="Toggle this if the service is Holy Communion. This will add the Holy Communion song slide before the sermon.")
     holy_communion_song_number: int | None = None
     if holy_communion:
         st.sidebar.write("Holy Communion song will be added before the sermon slide.")
