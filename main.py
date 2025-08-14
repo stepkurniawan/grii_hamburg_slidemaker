@@ -222,6 +222,8 @@ def create_website():
     if holy_communion:
         st.sidebar.write("Holy Communion song will be added before the sermon slide.")
         holy_communion_song_number = st.sidebar.text_input("Holy Communion song number")
+        if holy_communion and not holy_communion_song_number:
+            st.sidebar.error("Please enter the Holy Communion song number.")
 
     # ask for Bible verse
     st.sidebar.subheader("Bible verse")
