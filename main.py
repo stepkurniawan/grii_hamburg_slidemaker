@@ -352,11 +352,10 @@ def main():
         st_print("Adding Holy Communion song")
         try:
             insert_slides_from_google_drive_folder(prs, str(HOLY_COMMUNION_SONG_NUMBER))
+            add_church_cover_page(prs, sunday_date("slide"))
         except:
             print("Error: Cannot add the Holy Communion song")
             st_error_print("Error: Cannot add the Holy Communion song")
-
-    add_church_cover_page(prs, sunday_date("slide"))
 
     st_print("Adding Preacher Sermon Page")
     add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE_OR_EN, PASTOR_NAME)
