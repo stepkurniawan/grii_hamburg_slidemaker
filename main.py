@@ -286,13 +286,6 @@ def main():
     Presentation -> Layout name -> slide layout -> slide -> shapes -> placeholders
     """
 
-    ##### ask for input from the user UI
-    ## use this input if not using STREAMLIT
-    # from user_input import ask_for_input
-    # data = ask_for_input()
-    # processing_answers(data)
-
-
     ########################################### CHECKING SONGS ##########################################
 
     # create a test presentation file
