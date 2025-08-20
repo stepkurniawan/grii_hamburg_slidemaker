@@ -36,33 +36,46 @@ class Passage(BaseModel):
 
 class EsvService: 
     def __init__(self):
-        self.base_url = settings.API_URL
-        self.api_key = settings.API_KEY
-        self.headers = f"Authorization: Token {self.api_key}"
-        self.base_params = {
-            "include-footnotes": True,
-            "include-headings": True,
-            "include-subheadings": True,
-            "include-verse-numbers": True,
-            "include-heading-horizontal-lines" : True,
-        }
+        self.http_session = requests.Session()
+        self.http_session.headers.update({"Authorization": f'Token {settings.esv_api_key}'})
 
-    def get_passage(self, reference: str) -> Passage:
+    def get_passage(self, reference: str, **override_flag_values: bool) -> Passage:
         """
-        Fetches a Bible passage by its reference.
-
+        Fetch a Bible passage from the ESV API.
+        
         Args:
-            reference (str): The reference for the Bible passage, e.g., "John 3:16".
-
+            reference (str): The Bible reference to fetch, e.g., 'John 3:16'.
+            **override_flag_values: Optional flags to override default behavior, such as 'include-footnotes'.
+        
         Returns:
-            Passage: A Passage object containing the reference and verses.
+            Passage: A Passage object containing the reference, verses, copyright information, and options.
         """
-        params = self.base_params.copy()
-        params['q'] = reference
 
-        response = requests.get(self.base_url, headers=self.headers, params=params)
+        request_params = {
+            "q": reference,
+            "include_verse_numbers": "true",
+            "include_verse_anchors": "true",
+            "include_headings": "true",
+            "include_subheadings": "true",
+            "include_footnotes": "true",
+            "include_footnote_body": "true",
+            "include_copyright": "false",
+            "include_short_copyright": "false",
+        }
+        for flag_name, flag_value in override_flag_values.items():
+            request_params[flag_name] = "true" if flag_value else "false"
+
+        response = self.http_session.get(
+            settings.ESV_HTML_API_URL,
+            params=request_params,
+            timeout=30
+        )
         response.raise_for_status()
 
-        return Passage.model_validate(response.json())
+        json_payload = response.json()
+
+
+esv_service = EsvService()
+esv_service.get_passage("John 3:16")  # Example usage, can be removed or modified as needed
 
     
