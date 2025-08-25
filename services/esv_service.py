@@ -25,16 +25,16 @@ class Verse(BaseModel):
     chapter: int = Field(..., description="The chapter number within the book.")
     number: int = Field(..., description="The verse number within the chapter.")
     text: str = Field(..., description="The text of the verse.")
-    heading: str | None = Field(..., description="The heading or title of the verse, if applicable.")
-    subheading: str | None = Field(..., description="The subheading or subtitle of the verse, if applicable.")
-    footnotes: List[Footnote] | None = Field(..., description="A list of footnotes associated with the verse, if any.")
+    heading: str | None = Field(None, description="The heading or title of the verse, if applicable.")
+    subheading: str | None = Field(None, description="The subheading or subtitle of the verse, if applicable.")
+    footnotes: List[Footnote] | None = Field(None, description="A list of footnotes associated with the verse, if any.")
 
 class Passage(BaseModel):
     """Model for a Bible passage, including its reference and verses."""
     reference : str = Field(..., description="The reference for the Bible passage, e.g., 'John 3:16'")
     verses : List[Verse] = Field(..., description="A list of verses in the passage, each represented as a dictionary with keys 'number' and 'text'.")
     copyright_ : str | None = Field(None, description="Copyright information for the Bible translation used.", alias = "copyright")
-    options : dict[str, bool] | None = Field(..., description="Options used for the request, such as 'include-footnotes'.")
+    options : dict[str, bool] | None = Field(None, description="Options used for the request, such as 'include-footnotes'.")
 
 
 
