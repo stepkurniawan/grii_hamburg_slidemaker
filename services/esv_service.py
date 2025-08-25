@@ -80,7 +80,7 @@ class EsvService:
         passage_html = "".join(json_payload.get("passages", []))
         canonical_reference = json_payload.get("canonical", reference)
 
-        verse_models = self._parse_passage_text(passage_html)
+        verse_models = self._parse_passage_verse(passage_html)
         used_option_flags = {name: (value == "true") for name, value in request_params.items() if name != "q"}
 
         return Passage(
@@ -89,13 +89,9 @@ class EsvService:
             options=used_option_flags,
         )
         
-    def _parse_passage_text(self, passage_html: str) -> tuple[list[Verse]]:
+    def _parse_passage_verse(self, passage_html: str) -> tuple[list[Verse]]:
         soup = BeautifulSoup(passage_html, 'html.parser')
         verses_list: List[Verse] = []
-
-        # 1. Extract the main heading from the h3 tag
-        heading_tag = soup.find('h3')
-        main_heading = heading_tag.get_text(strip=True) if heading_tag else None
 
         # 2. vind all verse markesers (b tags with chapter-num or verse-num class)
         verse_markers = soup.find_all('b', class_=['chapter-num', 'verse-num'])
@@ -112,7 +108,6 @@ class EsvService:
                 # Stop if we hit the next verse marker
                 if isinstance(sibling, Tag) and sibling.get('class') and ('verse-num' in sibling.get('class') or 'chapter-num' in sibling.get('class')):
                     break
-                
                 # If it's a NavigableString (plain text)
                 if isinstance(sibling, NavigableString):
                     verse_text_parts.append(sibling.strip())
@@ -122,22 +117,30 @@ class EsvService:
             
             # Join the parts, filtering out any empty strings
             verse_text = ' '.join(filter(None, verse_text_parts)).strip()
+        
+            # --- 5. Determine the heading for this specific verse ---
+            current_heading = None
+            parent_p = marker.find_parent('p')
+
+            if parent_p:
+            # A heading applies only if this is the FIRST verse marker in the paragraph.
+                is_first_verse_in_p = not marker.find_previous_sibling('b', class_=['chapter-num', 'verse-num'])
+
+                if is_first_verse_in_p:
+                    # If it's the first verse, check if the paragraph's immediate predecessor is an <h3>.
+                    # We use find_previous_sibling(name=True) to skip over whitespace nodes.
+                    prev_tag = parent_p.find_previous_sibling(name=True)
+                    if prev_tag and prev_tag.name == 'h3':
+                        current_heading = prev_tag.get_text(strip=True)
 
             # 5. Create the Pydantic Verse object
             verse_obj = Verse(
                 number=verse_number,
                 text=verse_text,
-                heading=main_heading,
+                heading=current_heading,
                 subheading=None, # No subheadings in the provided HTML
                 footnotes=None   # No footnotes in the provided HTML
             )
             verses_list.append(verse_obj)
 
         return verses_list
-
-
-
-esv_service = EsvService()
-esv_service.get_passage("John 3:2")  # Example usage, can be removed or modified as needed
-
-    

@@ -15,6 +15,7 @@ for german bible, use luther
 
 import requests
 from bible_translation import english_to_indonesian_bible, english_to_german_bible
+from services.esv_service import EsvService
 
 ######### GLOBAL VARIABLES #########
 BASE_URL = "https://api.biblesupersearch.com/api"
@@ -40,10 +41,10 @@ def fetch_bible_passage(bible_version, reference):
 
 
 
-def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
+def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"):
     """
     param:
-    book (string): ex: "Genesis"
+    english_book (string): ex: "Genesis"
     chapter (string): ex: "1"
     verse_start (string): ex: "1"
     verse_end (string): ex: "2"
@@ -55,7 +56,7 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
     verses_dict = {}
 
     if language == "EN":
-        BIBLE_VERSION = "kjv"
+        BIBLE_VERSION = "asv"
     elif language == "ID":
         BIBLE_VERSION = "indo_tb"
     elif language == "DE":
@@ -64,23 +65,26 @@ def get_verses_dict(book, chapter, verse_start, verse_end, language="ID"):
     # create a dictionary from the verses
     # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
     # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
-    english_book = book
-    german_book = english_to_german_bible.get(book)
-    indonesian_book = english_to_indonesian_bible.get(book)
+    german_book = english_to_german_bible.get(english_book)
+    indonesian_book = english_to_indonesian_bible.get(english_book)
     reference = f"{english_book} {chapter}:{verse_start}-{verse_end}"
 
     result = fetch_bible_passage(BIBLE_VERSION, reference)
+
+    esv_service = EsvService()
+    esv_passage = esv_service.get_passage(reference)
     
 
     for i in range(0, len(result["results"])):
         verse_result = result["results"][i]["verses"][BIBLE_VERSION]
+
         for verse in verse_result[chapter]:
             if language == "DE":
                 verses_dict[f"{german_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
             elif language == "ID":
                 verses_dict[f"{indonesian_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
             else:
-                verses_dict[f"{english_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
+                verses_dict[f"{english_book} {chapter}:{verse}"] = esv_passage.verses[i].text
 
     return verses_dict
 
