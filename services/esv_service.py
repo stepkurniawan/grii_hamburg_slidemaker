@@ -93,54 +93,54 @@ class EsvService:
         soup = BeautifulSoup(passage_html, 'html.parser')
         verses_list: List[Verse] = []
 
-        # 2. vind all verse markesers (b tags with chapter-num or verse-num class)
+        # Find all verse markers in the document in the order they appear.
         verse_markers = soup.find_all('b', class_=['chapter-num', 'verse-num'])
+        
+        current_chapter = 0 # Initialize chapter number
 
         for marker in verse_markers:
-            # 3. Extract the verse number
-            # Handles formats like "3:1 " and "2 " -> gets the number after the colon or the number itself.
-            verse_num_str = marker.get_text(strip=True).split(':')[-1]
-            verse_number = int(re.sub(r'\D', '', verse_num_str)) # Remove non-digit characters
+            # --- 1. Extract chapter, verse number, and text ---
+            marker_text = marker.get_text(strip=True)
+            
+            # If the marker text contains ':', it's a chapter:verse format
+            if ':' in marker_text:
+                chapter_str, verse_str = marker_text.split(':')
+                current_chapter = int(re.sub(r'\D', '', chapter_str))
+                verse_number = int(re.sub(r'\D', '', verse_str))
+            else: # Otherwise, it's just a verse number
+                verse_number = int(re.sub(r'\D', '', marker_text))
 
-            # 4. Gather the verse text from all subsequent siblings
             verse_text_parts = []
             for sibling in marker.next_siblings:
-                # Stop if we hit the next verse marker
                 if isinstance(sibling, Tag) and sibling.get('class') and ('verse-num' in sibling.get('class') or 'chapter-num' in sibling.get('class')):
                     break
-                # If it's a NavigableString (plain text)
                 if isinstance(sibling, NavigableString):
                     verse_text_parts.append(sibling.strip())
-                # If it's another tag (like the <span>), get all its text
                 elif isinstance(sibling, Tag):
                     verse_text_parts.append(sibling.get_text(strip=True))
             
-            # Join the parts, filtering out any empty strings
             verse_text = ' '.join(filter(None, verse_text_parts)).strip()
-        
-            # --- 5. Determine the heading for this specific verse ---
+
+            # --- 2. Determine the heading for this specific verse ---
             current_heading = None
             parent_p = marker.find_parent('p')
 
             if parent_p:
-            # A heading applies only if this is the FIRST verse marker in the paragraph.
+                # A heading applies only if this is the FIRST verse marker in the paragraph.
                 is_first_verse_in_p = not marker.find_previous_sibling('b', class_=['chapter-num', 'verse-num'])
 
                 if is_first_verse_in_p:
                     # If it's the first verse, check if the paragraph's immediate predecessor is an <h3>.
-                    # We use find_previous_sibling(name=True) to skip over whitespace nodes.
                     prev_tag = parent_p.find_previous_sibling(name=True)
                     if prev_tag and prev_tag.name == 'h3':
                         current_heading = prev_tag.get_text(strip=True)
 
-            # 5. Create the Pydantic Verse object
-            verse_obj = Verse(
+            # --- 3. Create the Verse object and add to the list ---
+            verses_list.append(Verse(
+                chapter=current_chapter,
                 number=verse_number,
                 text=verse_text,
                 heading=current_heading,
-                subheading=None, # No subheadings in the provided HTML
-                footnotes=None   # No footnotes in the provided HTML
-            )
-            verses_list.append(verse_obj)
+            ))
 
         return verses_list
