@@ -264,13 +264,14 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main()
             st.balloons()
-            st.sidebar.success("Slide generated successfully in " + NEW_OUTPUT_DIR + ":tada:")
+            st.sidebar.success("Slide generated successfully in " + NEW_OUTPUT_DIR + ":tada:" + "https://drive.google.com/drive/folders/1AJTLk-AXOI7nEYcWAOMTZ_MxDNzaRSK2")
 
             st.sidebar.download_button(
                 label="Download slide!",
                 data=binary_output_file.getvalue(),
                 file_name=sunday_date("filename")+ ".pptx",
             )
+    
     footer()
 
 
