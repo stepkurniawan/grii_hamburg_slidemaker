@@ -100,7 +100,7 @@ class EsvService:
         if title_tag:
             title_text = title_tag.get_text(strip=True)
             # Match a pattern like "John 3:1" or "Genesis 1:2-3" to find the chapter
-            match = re.search(r'\s(\d+):', title_text)
+            match = re.search(r'\s(\d+)(?::\d+)?', title_text)
             if match:
                 current_chapter = int(match.group(1))
 
