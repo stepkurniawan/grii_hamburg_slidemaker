@@ -60,32 +60,27 @@ The slide will be generated based on this structure:
 
 
 # Importing libraries
-import collections
 import collections.abc
 
 import datetime
 from io import BytesIO
 import os
 import sys
-
 import streamlit as st
 
-import pptx # pip install python-pptx
 from pptx import Presentation
 from pptx.util import Inches
-# from alkitab_scraper import *
 
 from pptx_creator import *
-# from user_input import *
-# from Pujian import download_new_song_pipeline
 from Pujian import SONGS_FOLDER
 from footer import footer
+from services.esv_service import EsvService
 
 
 ########################################### Version ##########################################
 # date today in yymmdd
 date_today = datetime.datetime.now().strftime("%y%m%d")
-VERSION = "3.2."+str(date_today)
+VERSION = "3.3."+str(date_today)
 
 ########################################### INPUTS ##########################################
 global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, SELECTED_SECOND_OFFERING_PURPOSE_ID
@@ -396,6 +391,7 @@ def main():
 
 # uncomment this to test the program without streamlit
 if __name__ == "__main__":
+    esv_service = EsvService()
     main()
 
 

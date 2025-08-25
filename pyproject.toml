@@ -1,21 +1,21 @@
-[tool.poetry]
+[project]
 name = "grii-europe-slide-maker"
 version = "0.1.0"
 description = ""
-authors = ["stepkurniawan <stepkurniawan@gmail.com>"]
+authors = [{ name = "stepkurniawan", email = "stepkurniawan@gmail.com" }]
+requires-python = ">=3.13"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-streamlit = "^1.47.0"
-requests = "^2.32.4"
-python-pptx = "^1.0.2"
-protobuf = "^6.31.1"
-google-auth-oauthlib = "^1.2.2"
-google-api-python-client = "^2.177.0"
-htbuilder = "0.6.1"
-
+dependencies = [
+    "streamlit>=1.47.0,<2",
+    "requests>=2.32.4,<3",
+    "python-pptx>=1.0.2,<2",
+    "protobuf>=6.31.1,<7",
+    "google-auth-oauthlib>=1.2.2,<2",
+    "google-api-python-client>=2.177.0,<3",
+    "htbuilder==0.6.1",
+    "pydantic (>=2.11.7,<3.0.0)",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
