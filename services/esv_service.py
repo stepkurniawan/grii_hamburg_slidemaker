@@ -22,6 +22,7 @@ class Footnote(BaseModel):
 
 class Verse(BaseModel):
     """Model for a collection of Bible verses."""
+    chapter: int = Field(..., description="The chapter number within the book.")
     number: int = Field(..., description="The verse number within the chapter.")
     text: str = Field(..., description="The text of the verse.")
     heading: str | None = Field(..., description="The heading or title of the verse, if applicable.")

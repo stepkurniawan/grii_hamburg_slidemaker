@@ -76,6 +76,7 @@ def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"
     
 
     for i in range(0, len(result["results"])):
+        # get all the verses in the chapter of this bible
         verse_result = result["results"][i]["verses"][BIBLE_VERSION]
 
         for verse in verse_result[chapter]:
@@ -83,8 +84,9 @@ def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"
                 verses_dict[f"{german_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
             elif language == "ID":
                 verses_dict[f"{indonesian_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
-            else:
-                verses_dict[f"{english_book} {chapter}:{verse}"] = esv_passage.verses[i].text
+            
+    for verse in esv_passage.verses:
+        verses_dict[f"{english_book} {verse.chapter}:{verse.number}"] = verse.text
 
     return verses_dict
 
