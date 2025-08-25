@@ -89,6 +89,22 @@ class EsvService:
             verses=verse_models,
             options=used_option_flags,
         )
+    
+    def _get_chapter_number(self, passage_html: str) -> int:
+        # finding chapter number
+        soup = BeautifulSoup(passage_html, 'html.parser')
+
+        current_chapter = 0 # Default chapter
+        title_tag = soup.find('h2', class_='extra_text')
+
+        if title_tag:
+            title_text = title_tag.get_text(strip=True)
+            # Match a pattern like "John 3:1" or "Genesis 1:2-3" to find the chapter
+            match = re.search(r'\s(\d+):', title_text)
+            if match:
+                current_chapter = int(match.group(1))
+
+        return current_chapter
         
     def _parse_passage_verse(self, passage_html: str) -> tuple[list[Verse]]:
         soup = BeautifulSoup(passage_html, 'html.parser')
@@ -97,7 +113,7 @@ class EsvService:
         # Find all verse markers in the document in the order they appear.
         verse_markers = soup.find_all('b', class_=['chapter-num', 'verse-num'])
         
-        current_chapter = 0 # Initialize chapter number
+        chapter_number = self._get_chapter_number(passage_html)
 
         for marker in verse_markers:
             # --- 1. Extract chapter, verse number, and text ---
@@ -106,7 +122,7 @@ class EsvService:
             # If the marker text contains ':', it's a chapter:verse format
             if ':' in marker_text:
                 chapter_str, verse_str = marker_text.split(':')
-                current_chapter = int(re.sub(r'\D', '', chapter_str))
+                chapter_number = int(re.sub(r'\D', '', chapter_str))
                 verse_number = int(re.sub(r'\D', '', verse_str))
             else: # Otherwise, it's just a verse number
                 verse_number = int(re.sub(r'\D', '', marker_text))
@@ -138,7 +154,7 @@ class EsvService:
 
             # --- 3. Create the Verse object and add to the list ---
             verses_list.append(Verse(
-                chapter=current_chapter,
+                chapter=chapter_number,
                 number=verse_number,
                 text=verse_text,
                 heading=current_heading,
