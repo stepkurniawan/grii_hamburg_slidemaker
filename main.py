@@ -71,6 +71,7 @@ import streamlit as st
 from pptx import Presentation
 from pptx.util import Inches
 
+from annoucement import insert_annoucement_slides
 from pptx_creator import *
 from Pujian import SONGS_FOLDER
 from footer import footer
@@ -295,7 +296,7 @@ def main():
     #### add first song
     st_print("Adding first song")
     try:
-        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[0]))
+        insert_song_slides_drive_folder(prs, str(SONG_NUMBERS[0]))
     except:
         print("Error: Cannot add the 1st song")
         st_error_print("Error: Cannot add the 1st song")
@@ -305,7 +306,7 @@ def main():
     #### add second song
     st_print("Adding second song")
     try: 
-        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[1]))
+        insert_song_slides_drive_folder(prs, str(SONG_NUMBERS[1]))
     except:
         print("Error: Cannot add the 2nd song")
         st_error_print("Error: Cannot add the 2nd song")
@@ -325,7 +326,7 @@ def main():
     #### add third song
     st_print("Adding third song")
     try: 
-        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[2]))
+        insert_song_slides_drive_folder(prs, str(SONG_NUMBERS[2]))
     except:
         print("Error: Cannot add the 3rd song")
         st_error_print("Error: Cannot add the 3rd song")
@@ -342,7 +343,7 @@ def main():
     if HOLY_COMMUNION_SONG_NUMBER is not None:
         st_print("Adding Holy Communion song")
         try:
-            insert_slides_from_google_drive_folder(prs, str(HOLY_COMMUNION_SONG_NUMBER))
+            insert_song_slides_drive_folder(prs, str(HOLY_COMMUNION_SONG_NUMBER))
             add_church_cover_page(prs, sunday_date("slide"))
         except:
             print("Error: Cannot add the Holy Communion song")
@@ -365,7 +366,7 @@ def main():
     #### add fourth song
     st_print("Adding fourth song")
     try:
-        insert_slides_from_google_drive_folder(prs, str(SONG_NUMBERS[3]))
+        insert_song_slides_drive_folder(prs, str(SONG_NUMBERS[3]))
     except:
         print("Error: Cannot add the 4th song")
         st_error_print("Error: Cannot add the 4th song")
@@ -382,6 +383,7 @@ def main():
     add_church_cover_page(prs, sunday_date("slide"))
 
     add_bekantmachung_page(prs)
+    insert_annoucement_slides(prs)
     
     # save in output folder
     prs.save(binary_output_file) # so it is downloadable using button

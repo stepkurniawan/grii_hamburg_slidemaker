@@ -1,4 +1,5 @@
 import os
+from typing import List
 import streamlit as st
 
 # from alkitab_scraper import get_ayat_alkitab_dict
@@ -228,10 +229,6 @@ def add_bekantmachung_page(prs):
 
             if i == 3:
                 # preparing texts and placeholders
-                texts_de=["Makan Malam & \n Persekutuan Doa", 
-                       "Abendessen & Gebetkreis", 
-                       "Setiap Jumat di Minggu Genap \n 18:30 ", 
-                       "Freitags der ungeraden Woche \n 18:30 "]
                 texts= ["Makan Malam & \n Persekutuan Doa", 
                           "Dinner & Prayer Meeting", 
                           "Setiap Jumat di minggu genap \n 18:30 ",
@@ -245,71 +242,8 @@ def add_bekantmachung_page(prs):
                     slide_layout.placeholders[placeholder].text = texts[index]
                     index += 1
 
-            elif i == 4:
-                # preparing texts and placeholders
-                texts_de=["Pemahaman Alkitab", 
-                       "Sabtu, 15:00  \n Berner Heerweg 60", 
-                       "Bibelstunde", 
-                       "Samstags, 15:00  \n Berner Heerweg 60"]
-                texts=["Pemahaman Alkitab",
-                          "Sabtu, 15:00  \n Berner Heerweg 60",
-                          "Bible Study", 
-                          "Saturdays, 15:00  \n Berner Heerweg 60"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
-            elif i == 5:
-                # preparing texts and placeholders
-                texts=["Online Catechism", 
-                       "Saturdays, every 2 weeks, 13:00 "]
-                placeholders = get_placeholders_in_slide(prs, slide_layout)
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
-            elif i == 6:
-                # preparing texts and placeholders
-                texts=["Master Class", 
-                       "Every Saturdays, odd weeks \n 14:00",
-                       "untuk pengurus & pokja \n For Administrators & Working Groups"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
-            elif i == 7:
-                # preparing texts and placeholders
-                texts=["Marriage Catechism", 
-                       "Registration: Nina"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
             elif i == 8:
                 # preparing texts and placeholders
-                texts_de=["Latihan Koor", 
-                       "Minggu, 14:00 - 15:00 \n Berner Heerweg 60", 
-                       "Chorübung", 
-                       "Sonntags, 14:00 - 15:00 \n Berner Heerweg 60"]
                 texts=["Latihan Koor",
                         "Minggu, 14:00 - 15:00 \n Berner Heerweg 60",
                         "Choir Practice",
@@ -325,10 +259,6 @@ def add_bekantmachung_page(prs):
 
             elif i == 9:
                 # preparing texts and placeholders
-                texts_de=["Persekutuan Doa", 
-                       "Setiap Minggu, 15:30  \n Berner Heerweg 60", 
-                       "Gebetkreis", 
-                       "Sonntags, 15:30 \n Berner Heerweg 60"]
                 texts=["Persekutuan Doa",
                          "Setiap Minggu, 15:30  \n Berner Heerweg 60",
                          "Prayer Fellowship",
@@ -343,31 +273,8 @@ def add_bekantmachung_page(prs):
                     slide_layout.placeholders[placeholder].text = texts[index]
                     index += 1
             
-            elif i == 10:
-                # preparing texts and placeholders
-                texts_de=["Ibadah Minggu", 
-                       "Minggu, 14:00 \n Berner Heerweg 60", 
-                       "Sonntagsgottesdienst", 
-                       "Sonntag, 14:00  \n Berner Heerweg 60"]
-                texts=["Ibadah Minggu",
-                        "Minggu, 14:00 \n Berner Heerweg 60",
-                        "Sunday Worship",
-                        "Sunday, 14:00  \n Berner Heerweg 60"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
             elif i == 11:
                 # preparing texts and placeholders
-                texts_de=["Ibadah Minggu", 
-                       "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
-                       "Sonntagsgottesdienst", 
-                       "Jeden Sonntag, 16:00  \n Berner Heerweg 60"]
                 texts=["Ibadah Minggu",
                         "Setiap Minggu, 16:00 \n Berner Heerweg 60",
                         "Sunday Worship",
@@ -383,14 +290,10 @@ def add_bekantmachung_page(prs):
 
             elif i == 12:
                 # preparing texts and placeholders
-                texts_de=["Ibadah Minggu & Perjamuan Kudus", 
-                       "Minggu, 9:00 \n Berner Heerweg 60", 
-                       "Sonntagsgottesdienst & Abendmahl", 
-                       "Sonntag, 9:00 \n Berner Heerweg 60"]
                 texts=["Ibadah Minggu & Perjamuan Kudus",
-                        "Minggu, 9:00 \n Berner Heerweg 60",
+                        "Minggu, 16:00 \n Berner Heerweg 60",
                         "Sunday Worship & Holy Communion",
-                        "Sunday, 9:00 \n Berner Heerweg 60"]
+                        "Sunday, 16:00 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
 
@@ -402,55 +305,12 @@ def add_bekantmachung_page(prs):
 
             elif i == 13:
                 # preparing texts and placeholders
-                texts_de=["Persekutuan Doa", 
-                       "Minggu, 11:00 \n Berner Heerweg 60", 
-                       "Gebetkreis", 
-                       "Sonntag, 11:00 \n Berner Heerweg 60"]
-                texts=["Persekutuan Doa",
-                        "Minggu, 11:00 \n Berner Heerweg 60",
-                        "Prayer Fellowship",
-                        "Sunday, 11:00 \n Berner Heerweg 60"]
+                texts=["Makan Siang &Persekutuan Doa",
+                        "Sabtu, 12:30 \n Berner Heerweg 60",
+                        "Lunch & Prayer Fellowship",
+                        "Saturday, 12:30 \n Berner Heerweg 60"]
                 placeholders = get_placeholders_in_slide(prs, slide_layout) 
                 index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
-            elif i == 14:
-                # preparing texts and placeholders
-                texts_de=["Persekutuan Doa", 
-                       "Setiap Minggu, 15:30 \n Berner Heerweg 60", 
-                       "Gebetkreis", 
-                       "Sonntags, 15:30 \n Berner Heerweg 60"]
-                texts=["Persekutuan Doa",
-                        "Setiap Minggu, 15:30 \n Berner Heerweg 60",
-                        "Prayer Fellowship",
-                        "Sundays, 15:30 \n Berner Heerweg 60"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
-                # filling the placeholders with the texts
-                # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
-                for placeholder in placeholders:
-                    slide_layout.placeholders[placeholder].text = texts[index]
-                    index += 1
-
-            elif i == 15:
-                # preparing texts and placeholders
-                texts_de=["Sekolah Minggu", 
-                       "Minggu, 9:00 \n Berner Heerweg 60", 
-                       "Sonntagsschule", 
-                       "Sonntag, 9:00 \n Berner Heerweg 60"]
-                texts=["Sekolah Minggu",
-                        "Minggu, 9:00 \n Berner Heerweg 60",
-                        "Sunday School",
-                        "Sunday, 9:00 \n Berner Heerweg 60"]
-                placeholders = get_placeholders_in_slide(prs, slide_layout) 
-                index = 0
-
 
                 # filling the placeholders with the texts
                 # the first text should be in the first placeholder, the second text should be in the second placeholder, and so on
@@ -460,10 +320,6 @@ def add_bekantmachung_page(prs):
 
             elif i == 16:
                 # preparing texts and placeholders
-                texts_de=["Sekolah Minggu", 
-                       "Setiap Minggu, 16:00 \n Berner Heerweg 60", 
-                       "Sonntagsschule", 
-                       "Jeden Sonntag, 16:00 \n Berner Heerweg 60"]
                 texts=["Sekolah Minggu",
                         "Setiap Minggu, 16:00 \n Berner Heerweg 60",
                         "Sunday School",
@@ -485,7 +341,7 @@ def add_bekantmachung_page(prs):
 #################### IN MEMORY SONG SAVING #########################################
 
 
-def insert_slides_from_google_drive_folder(prs, song_number):
+def insert_song_slides_drive_folder(prs, song_number):
     """
     prs: Presentation object
     song_slides: list of song_slide objects, ex: [song_slide1, song_slide2, song_slide3]
@@ -495,24 +351,23 @@ def insert_slides_from_google_drive_folder(prs, song_number):
     
     song_images_byte = download_new_song_pipeline(song_number).values()
     song_images_byte = list(song_images_byte)
-    make_song_slides_from_song_imgs(prs, song_images_byte)
+    make_slides_from_imgs(prs, song_images_byte)
 
 
 
-def make_song_slides_from_song_imgs(prs, song_images_byte):
+def make_slides_from_imgs(prs, song_images_byte: List[bytes]):
     """
     song_imgs: list of song_img objects, ex: [song_img1, song_img2, song_img3] (from Pujian.py)
     the somg_img object we get from google drives
     """
-    song_slides = []
     for song_image_byte in song_images_byte:
         # create a new slide
         slide = prs.slides.add_slide(prs.slide_layouts[6])
         # add the picture to the slide
-        pic = slide.shapes.add_picture(song_image_byte, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width) # i dont need song_image_byte.getvalue() because we are using the BytesIO directly
+        slide.shapes.add_picture(song_image_byte, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width) # i dont need song_image_byte.getvalue() because we are using the BytesIO directly
 
 
-def make_song_slide_from_song_img(prs, song_img):
+def make_slide_from_img(prs, img: bytes):
     """
     song_img: song_img object, ex: song_img1 (from Pujian.py)
     the somg_img object we get from google drives
@@ -520,7 +375,7 @@ def make_song_slide_from_song_img(prs, song_img):
     # create a new slide
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     # add the picture to the slide
-    pic = slide.shapes.add_picture(song_img, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
+    slide.shapes.add_picture(img, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
     
     
 

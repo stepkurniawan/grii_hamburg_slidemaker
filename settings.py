@@ -19,3 +19,5 @@ class Settings (BaseSettings):
     ESV_TEXT_API_URL: HttpUrl = HttpUrl('https://api.esv.org/v3/passage/text/')
     ESV_HTML_API_URL: HttpUrl = HttpUrl('https://api.esv.org/v3/passage/html/')
 
+    ANNOUCEMENT_FOLDER_ID: str = Field("1VdvaMjeAA0HsMpGmQ5OVsjKanarjaukU")
+

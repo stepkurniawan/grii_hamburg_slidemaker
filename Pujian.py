@@ -24,6 +24,7 @@ import os
 import io
 import re
 import sys
+from typing import Any
 from pptx import Presentation
 from pptx.util import Inches
 import stat
@@ -262,7 +263,7 @@ def folder_english_way(song_number, folder_song_name_list):
 
 
 ################## IN MEMORY IMAGE SAVING ##################
-def save_images_from_google_folder_to_memory(folder_id):
+def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
     # folder_id is the ID of the Google Drive folder containing the images
     drive_service = build('drive', 'v3', credentials=creds)
 
@@ -299,7 +300,6 @@ def save_images_from_google_folder_to_memory(folder_id):
             print("Downloaded file: " + file_name)
 
     # sort the dictionary by the key
-    # song_images_dict = dict(sorted(song_images_dict.items()))
     song_images_dict = dict(sorted(song_images_dict.items(), key=lambda x: int(re.findall(r'\d+', x[0])[0]) if re.findall(r'\d+', x[0]) else 0))
 
     return song_images_dict
