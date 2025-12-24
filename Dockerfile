@@ -39,6 +39,6 @@ RUN adduser -D -u 1000 appuser && \
 USER appuser
 
 # Expose application port
-EXPOSE 8000
+EXPOSE 8502
 # Command to run the application
-CMD ["streamlit", "run", "/app/entry_point.py"]
+CMD ["streamlit", "run", "/app/entry_point.py", "--server.port=8502", "--server.address=0.0.0.0"]
