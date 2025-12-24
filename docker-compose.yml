@@ -1,0 +1,9 @@
+version: "3"
+services:
+  streamlit:
+    image: stepkurniawan/slidemaker:latest
+    ports:
+      - "8502:8502"
+    restart: unless-stopped
+    volumes: 
+      - /home/stepkurniawan/programming/python_docker_project/GRII_Europe_Slide_Maker/.streamlit:/app/.streamlit:ro  # :ro = read-only
