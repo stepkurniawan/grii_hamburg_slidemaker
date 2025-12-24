@@ -71,6 +71,7 @@ pytest
 
 ## Notes
 - Slides, templates and output handling are in [`pptx_creator.py`](pptx_creator.py) and [`main.py`](main.py).
+- To change the slide template, edit `master_slide_template_en.pptx`.
 - Announcement images are read from a Google Drive folder id defined in settings and inserted via [`annoucement.insert_annoucement_slides`](annoucement.py).
 - Keep private credentials out of the repo — `.gitignore` includes token and credentials files.
 
