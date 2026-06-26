@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from services.esv_service import EsvService
+from grii_slide_maker.services.esv_service import EsvService
 
 
 def make_service(fake_http_session):

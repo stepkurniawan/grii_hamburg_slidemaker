@@ -3,13 +3,12 @@
 Lightweight Streamlit app and utilities to generate bilingual (English / Indonesian / German) church slides (PowerPoint) using in-memory images from Google Drive and Bible passages from ESV/BibleSuperSearch.
 
 ## Quick links
-- Web app entry: [`entry_point.py`](entry_point.py) → runs [`main.create_website`](main.py)  
-- Slide generation & layouts: [`pptx_creator.py`](pptx_creator.py)  
-- Song download + Drive helpers: [`songs.download_new_song_pipeline`](songs.py) / [`songs.save_images_from_google_folder_to_memory`](songs.py)  
-- ESV wrapper: [`services.esv_service.EsvService`](services/esv_service.py)  
-- App settings (env/secrets): [`settings.Settings`](settings.py)  
+- Web app entry: [`main.py`](main.py) → runs [`grii_slide_maker.app.create_website`](grii_slide_maker/app.py)  
+- Slide generation & layouts: [`grii_slide_maker/slides/creator.py`](grii_slide_maker/slides/creator.py)  
+- Song download + Drive helpers: [`grii_slide_maker.songs.drive.download_new_song_pipeline`](grii_slide_maker/songs/drive.py) / [`grii_slide_maker.songs.drive.save_images_from_google_folder_to_memory`](grii_slide_maker/songs/drive.py)  
+- ESV wrapper: [`grii_slide_maker.services.esv_service.EsvService`](grii_slide_maker/services/esv_service.py)  
+- App settings (env/secrets): [`grii_slide_maker.config.Settings`](grii_slide_maker/config.py)  
 - Dockerfile: [Dockerfile](Dockerfile)  
-- PyInstaller CLI: [pyinstaller_command.txt](pyinstaller_command.txt)
 
 ## Requirements / Prerequisites
 - Python >= 3.13
@@ -37,14 +36,14 @@ pip install -r requirements.txt
 ```
 
 3. Provide secrets:
-- Place service account / Drive credentials into Streamlit secrets (`.streamlit/secrets.toml`) or use `token.json` / `credentials.json` as needed. See [`settings.Settings`](settings.py).
+- Place service account / Drive credentials into Streamlit secrets (`.streamlit/secrets.toml`) or use `token.json` / `credentials.json` as needed. See [`grii_slide_maker.config.Settings`](grii_slide_maker/config.py).
 
 ## Run (development)
 Start the Streamlit app:
 ```bash
-streamlit run entry_point.py
+streamlit run main.py
 ```
-The Streamlit app is built in [`main.create_website`](main.py).
+The Streamlit app is built in [`grii_slide_maker.app.create_website`](grii_slide_maker/app.py).
 
 ## Docker
 Build and run (example):
@@ -53,10 +52,7 @@ docker build -t stepkurniawan/slidemaker:latest .
 docker run -p 8000:8000 stepkurniawan/slidemaker:latest
 ```
 The Dockerfile uses uv to sync dependencies and runs:
-`streamlit run /app/entry_point.py`.
-
-## Build standalone executable
-A PyInstaller command is provided in [pyinstaller_command.txt](pyinstaller_command.txt).
+`streamlit run /app/main.py`.
 
 ## Testing & Lint
 - Lint: flake8
@@ -70,9 +66,9 @@ pytest
 ```
 
 ## Notes
-- Slides, templates and output handling are in [`pptx_creator.py`](pptx_creator.py) and [`main.py`](main.py).
+- Slides, templates and output handling are in [`grii_slide_maker/slides/creator.py`](grii_slide_maker/slides/creator.py) and [`grii_slide_maker/app.py`](grii_slide_maker/app.py).
 - To change the slide template, edit `master_slide_template_en.pptx`.
-- Announcement images are read from a Google Drive folder id defined in settings and inserted via [`annoucement.insert_annoucement_slides`](annoucement.py).
+- Announcement images are read from a Google Drive folder id defined in settings and inserted via [`grii_slide_maker.slides.announcements.insert_annoucement_slides`](grii_slide_maker/slides/announcements.py).
 - Keep private credentials out of the repo — `.gitignore` includes token and credentials files.
 
 ## Contributing

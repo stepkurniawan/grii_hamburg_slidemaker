@@ -8,7 +8,7 @@ class FixedDate(datetime.date):
 
 
 def test_sunday_date_returns_next_sunday_formats(monkeypatch):
-    import main
+    from grii_slide_maker import app as main
 
     monkeypatch.setattr(main.datetime, "date", FixedDate)
 
@@ -18,7 +18,7 @@ def test_sunday_date_returns_next_sunday_formats(monkeypatch):
 
 
 def test_processing_answers_adapts_legacy_form_data():
-    import main
+    from grii_slide_maker import app as main
 
     order = main.processing_answers(
         ["161, 320, 93, 169", "Pdt. Billy Kristanto", "Genesis 1:2-3", "Rev.", ""]

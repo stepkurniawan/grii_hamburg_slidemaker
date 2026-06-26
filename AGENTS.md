@@ -4,12 +4,13 @@
 This repository is a Python-based Streamlit app plus helper utilities for generating bilingual church service PowerPoint slides.
 
 ## Key files
-- `main.py` - Streamlit app entry point and website flow. Use this when updating the app UI or any request flow.
-- `pptx_creator.py` - slide generation logic and PowerPoint layout helpers.
-- `annoucement.py` - Google Drive announcement slide insertion.
-- `songs.py` - song download and Drive-related helpers.
-- `services/esv_service.py` - ESV Bible API wrapper.
-- `settings.py` - application settings and secret management.
+- `main.py` - Streamlit entry wrapper.
+- `grii_slide_maker/app.py` - Streamlit app and website flow. Use this when updating the app UI or any request flow.
+- `grii_slide_maker/slides/creator.py` - slide generation logic and PowerPoint layout helpers.
+- `grii_slide_maker/slides/announcements.py` - Google Drive announcement slide insertion.
+- `grii_slide_maker/songs/drive.py` - song download and Drive-related helpers.
+- `grii_slide_maker/services/esv_service.py` - ESV Bible API wrapper.
+- `grii_slide_maker/config.py` - application settings and secret management.
 - `README.md` - install, run, Docker, and test instructions.
 
 ## Environment and commands
@@ -20,7 +21,7 @@ This repository is a Python-based Streamlit app plus helper utilities for genera
   - `pip install -r requirements.txt`
   - or use `uv sync --frozen --no-install-project --no-dev`
 - Run app locally:
-  - `streamlit run entry_point.py`
+  - `streamlit run main.py`
 - Tests:
   - `pytest`
 - Lint:
@@ -31,7 +32,7 @@ This repository is a Python-based Streamlit app plus helper utilities for genera
 - CI uses Python 3.13 and runs:
   - `uv sync --all-groups`
   - `uv run pytest`
-- Docker build uses the repository root and runs `streamlit run /app/entry_point.py`.
+- Docker build uses the repository root and runs `streamlit run /app/main.py`.
 
 ## Project-specific guidance
 - The app is built around Streamlit and in-memory slide/image handling; avoid design changes that require persistent storage unless the feature explicitly adds it.
@@ -42,5 +43,3 @@ This repository is a Python-based Streamlit app plus helper utilities for genera
 ## Useful links
 - Repository README: `README.md`
 - Dockerfile: `Dockerfile`
-- PyInstaller command: `pyinstaller_command.txt`
-

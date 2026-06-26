@@ -8,8 +8,8 @@ from typing import List
 
 
 import requests
-from models import EsvTextResponse, Passage, Verse
-from settings import Settings
+from grii_slide_maker.config import Settings
+from grii_slide_maker.models import EsvTextResponse, Passage, Verse
 
 
 class EsvService: 

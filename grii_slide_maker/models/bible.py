@@ -3,7 +3,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from bible_translation import english_to_indonesian_bible
+from grii_slide_maker.bible.translations import english_to_indonesian_bible
 
 
 BIBLE_REFERENCE_PATTERN = re.compile(

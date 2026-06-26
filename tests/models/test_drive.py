@@ -3,7 +3,7 @@ from io import BytesIO
 import pytest
 from pydantic import ValidationError
 
-from models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
+from grii_slide_maker.models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
 
 
 def test_drive_folder_validates_folder_payload():

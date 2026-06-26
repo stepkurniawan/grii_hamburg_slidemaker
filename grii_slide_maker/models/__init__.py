@@ -1,4 +1,4 @@
-from models.bible import (
+from grii_slide_maker.models.bible import (
     BibleReference,
     BibleSuperSearchResponse,
     BibleSuperSearchResult,
@@ -8,8 +8,13 @@ from models.bible import (
     Passage,
     Verse,
 )
-from models.drive import DriveFolder, DriveImageFile, DriveItem, SongImageSet
-from models.service_order import (
+from grii_slide_maker.models.drive import (
+    DriveFolder,
+    DriveImageFile,
+    DriveItem,
+    SongImageSet,
+)
+from grii_slide_maker.models.service_order import (
     OfferingPurpose,
     Pastor,
     ServiceOrder,

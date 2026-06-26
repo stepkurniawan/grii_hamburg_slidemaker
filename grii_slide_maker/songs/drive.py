@@ -17,9 +17,13 @@ from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-from models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
+from grii_slide_maker.models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
 
-base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+base_path = getattr(
+    sys,
+    "_MEIPASS",
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+)
 
 
 # INPUT

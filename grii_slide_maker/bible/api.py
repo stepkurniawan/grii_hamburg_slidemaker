@@ -1,9 +1,12 @@
 """Fetch and format Bible passages for the slide generator."""
 
 import requests
-from bible_translation import english_to_indonesian_bible, english_to_german_bible
-from models import BibleReference, BibleSuperSearchResponse
-from services.esv_service import EsvService
+from grii_slide_maker.bible.translations import (
+    english_to_german_bible,
+    english_to_indonesian_bible,
+)
+from grii_slide_maker.models import BibleReference, BibleSuperSearchResponse
+from grii_slide_maker.services.esv_service import EsvService
 
 ######### GLOBAL VARIABLES #########
 BASE_URL = "https://api.biblesupersearch.com/api"

@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from models import BibleReference, BibleSuperSearchResponse, Passage, Verse
+from grii_slide_maker.models import BibleReference, BibleSuperSearchResponse, Passage, Verse
 
 
 @pytest.mark.parametrize("reference", ["Genesis 1:2-3", "1 Kings 1:1-2"])

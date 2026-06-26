@@ -3,7 +3,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from models.bible import BibleReference
+from grii_slide_maker.models.bible import BibleReference
 
 
 class SongNumber(BaseModel):

@@ -1,11 +1,11 @@
 import datetime
 from pathlib import Path
 
-from models import OfferingPurpose
+from grii_slide_maker.models import OfferingPurpose
 
 
 def test_sort_by_number_sorts_embedded_numbers():
-    from pptx_creator import sort_by_number
+    from grii_slide_maker.slides.creator import sort_by_number
 
     assert sorted(["Slide10.JPG", "Slide2.JPG", "notes"], key=sort_by_number) == [
         "Slide2.JPG",
@@ -15,7 +15,7 @@ def test_sort_by_number_sorts_embedded_numbers():
 
 
 def test_insert_slides_from_pict_folder_adds_only_images(tmp_path, fake_prs):
-    from pptx_creator import insert_slides_from_pict_folder
+    from grii_slide_maker.slides.creator import insert_slides_from_pict_folder
 
     for name in ["Slide2.JPG", "notes.txt", "Slide1.png"]:
         (tmp_path / name).write_bytes(b"image")
@@ -34,7 +34,7 @@ def test_insert_slides_from_pict_folder_adds_only_images(tmp_path, fake_prs):
 
 
 def test_add_slide_layout_from_layout_name_uses_matching_layout(fake_prs):
-    from pptx_creator import add_slide_layout_from_layout_name
+    from grii_slide_maker.slides.creator import add_slide_layout_from_layout_name
 
     slide = add_slide_layout_from_layout_name(fake_prs, "COVER_2")
 
@@ -42,7 +42,7 @@ def test_add_slide_layout_from_layout_name_uses_matching_layout(fake_prs):
 
 
 def test_decide_offering_purpose_layout_name_maps_week_of_month():
-    from pptx_creator import decide_offering_purpose_layout_name
+    from grii_slide_maker.slides.creator import decide_offering_purpose_layout_name
 
     assert decide_offering_purpose_layout_name(datetime.date(2026, 6, 7)) == (
         OfferingPurpose.P_PENGINJILAN

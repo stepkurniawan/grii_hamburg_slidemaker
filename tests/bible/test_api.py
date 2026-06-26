@@ -1,4 +1,4 @@
-from models import BibleSuperSearchResponse, Passage, Verse
+from grii_slide_maker.models import BibleSuperSearchResponse, Passage, Verse
 
 
 class FakeEsvService:
@@ -14,7 +14,7 @@ class FakeEsvService:
 def test_fetch_bible_passage_validates_http_response(
     monkeypatch, fake_http_response, bible_supersearch_payload
 ):
-    import bible_api
+    from grii_slide_maker.bible import api as bible_api
 
     calls = []
     fake_http_response.payload = bible_supersearch_payload
@@ -39,7 +39,7 @@ def test_fetch_bible_passage_validates_http_response(
 def test_get_verses_dict_combines_local_language_and_esv(
     monkeypatch, bible_supersearch_payload
 ):
-    import bible_api
+    from grii_slide_maker.bible import api as bible_api
 
     esv_service = FakeEsvService(
         Passage(
@@ -72,7 +72,7 @@ def test_get_verses_dict_combines_local_language_and_esv(
 
 
 def test_get_verses_dict_rejects_unsupported_language():
-    import bible_api
+    from grii_slide_maker.bible import api as bible_api
 
     try:
         bible_api.get_verses_dict("Genesis", "1", "1", "2", "FR")

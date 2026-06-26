@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from models import Pastor, ServiceOrder, SongSelection
+from grii_slide_maker.models import Pastor, ServiceOrder, SongSelection
 
 
 def test_song_selection_accepts_four_trimmed_songs():
