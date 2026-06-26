@@ -1,65 +1,4 @@
-"""
-This program is to make a powerpoint presentation for Sunday service.
-It is tweaked for Hamburg Church, which is bilingual (Indonesian and English).
-The inputs that are changed every week:
-1. 4 song's numbers 
-2. Opening Bible verse
-3. Pastor's title in Indonesian and English, and name
-4. Second (blue) offering purpose in Indonesian and English
-
-The songs are stored in google drive as a jpg. 
-So we just have to use that picture as a slide. 
-
-The slide will be generated based on this structure:
-1. Our service is about to start page
-2. church cover - page (Static)
-3. First song
-4. church cover - page
-5. Second song
-6. Opening Bible vers (in English), ex: Subtitel: Scripture Reading, Titel: Jeremiah 20:1-2 
-    - English Translation with the verse number
-    - Indonesian Translation with the verse number
-7. church cover - page
-8. Third song
-9. church cover - page
-10. Lord's Prayer (in English and Indonesian) -  3 slides - Static, we have it
-11. church cover - page
-12. Predigt - page
-    - Title: <Pastor's title in English>. <Pastor's name>
-    - Subtitle: <Pastor's title in Indonesian>. <Pastor's name>
-13. church cover - page
-14. Apostles' Creed (in English and Indonesian) - 6 slides - Static, we have it
-15. church cover - page
-16. Offerings - page
-    - Small Title: Kollekte
-    - Title: MRII Hamburg (rot) & <Second offering purpose in English> (blau)
-    - SubTitle: MRII Hamburg (merah) & <Second offering purpose in Indonesian> (biru)
-17. Fourth song
-18. church cover - page
-19. Puji Allah Bapa Putra - page - 3 slides - Static, we have it
-20. church cover - page
-21. A...Men - page - 1 slide - Static, we have it
-22. Annoucement - page - 1 slide - Static
-23. Persekutuan Doa - page - 1 slide - Static
-24. Seminar - page - 1 slide - Static
-25. Ibadah Minggu Depan - page - 1 slide - Static
-26. Sekolah Minggu - page - 1 slide - Static
-27. Happy Birthday - page - 1 slide - Static
-28. Coffee Time - page - 1 slide - Static
-    
-"""
-
-####### Versioning
-# 3.0.0 implement in memory song download
-# 3.1.0 implement english if german cant be found
-# "3.1.2 bug fix english path
-# 3.2.0 implement multi ayat alkitab
-# 3.2.1 bug fix Pengkothbah typo, add better bible verse cover
-# 3.2.2 make bible verse more robust
-# 3.2.3 change the bible input from indo to english
-# 3.4.0 refactor adding pydantic 
-
-# Importing libraries
+"""Build bilingual Sunday service PowerPoint slides for GRII Hamburg."""
 
 import datetime
 from io import BytesIO
@@ -73,7 +12,7 @@ from pptx.util import Inches
 
 from annoucement import insert_annoucement_slides
 from models import ServiceOrder
-from Pujian import SONGS_FOLDER
+from songs import SONGS_FOLDER
 from footer import footer
 from pptx_creator import (
     add_amen_page,
@@ -123,7 +62,7 @@ DOWNLOAD_FOLDER = os.path.join(CURRENT_DIR, "Downloads")
 # print("HOME_DIR: " + HOME_DIR)
 GRII_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII")
 OUTPUT_DIR = os.path.join(GRII_FOLDER,"GRII_Slides")
-NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR,"Output")
+NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR, "output")
 output_file = ""
 binary_output_file = BytesIO()
 

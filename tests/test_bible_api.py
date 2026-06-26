@@ -14,7 +14,7 @@ class FakeEsvService:
 def test_fetch_bible_passage_validates_http_response(
     monkeypatch, fake_http_response, bible_supersearch_payload
 ):
-    import Bible_API
+    import bible_api
 
     calls = []
     fake_http_response.payload = bible_supersearch_payload
@@ -23,14 +23,14 @@ def test_fetch_bible_passage_validates_http_response(
         calls.append({"url": url, "params": params})
         return fake_http_response
 
-    monkeypatch.setattr(Bible_API.requests, "get", fake_get)
+    monkeypatch.setattr(bible_api.requests, "get", fake_get)
 
-    response = Bible_API.fetch_bible_passage("indo_tb", "Genesis 1:1-2")
+    response = bible_api.fetch_bible_passage("indo_tb", "Genesis 1:1-2")
 
     assert isinstance(response, BibleSuperSearchResponse)
     assert calls == [
         {
-            "url": Bible_API.BASE_URL,
+            "url": bible_api.BASE_URL,
             "params": {"bible": "indo_tb", "reference": "Genesis 1:1-2"},
         }
     ]
@@ -39,7 +39,7 @@ def test_fetch_bible_passage_validates_http_response(
 def test_get_verses_dict_combines_local_language_and_esv(
     monkeypatch, bible_supersearch_payload
 ):
-    import Bible_API
+    import bible_api
 
     esv_service = FakeEsvService(
         Passage(
@@ -52,15 +52,15 @@ def test_get_verses_dict_combines_local_language_and_esv(
     )
 
     monkeypatch.setattr(
-        Bible_API,
+        bible_api,
         "fetch_bible_passage",
         lambda bible_version, reference: BibleSuperSearchResponse.model_validate(
             bible_supersearch_payload
         ),
     )
-    monkeypatch.setattr(Bible_API, "EsvService", lambda: esv_service)
+    monkeypatch.setattr(bible_api, "EsvService", lambda: esv_service)
 
-    verses = Bible_API.get_verses_dict("Genesis", "1", "1", "2", "ID")
+    verses = bible_api.get_verses_dict("Genesis", "1", "1", "2", "ID")
 
     assert verses == {
         "Kejadian 1:1": "Pada mulanya...",
@@ -72,10 +72,10 @@ def test_get_verses_dict_combines_local_language_and_esv(
 
 
 def test_get_verses_dict_rejects_unsupported_language():
-    import Bible_API
+    import bible_api
 
     try:
-        Bible_API.get_verses_dict("Genesis", "1", "1", "2", "FR")
+        bible_api.get_verses_dict("Genesis", "1", "1", "2", "FR")
     except ValueError as error:
         assert str(error) == "Unsupported Bible language: FR"
     else:

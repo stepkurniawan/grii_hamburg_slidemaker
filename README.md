@@ -5,7 +5,7 @@ Lightweight Streamlit app and utilities to generate bilingual (English / Indones
 ## Quick links
 - Web app entry: [`entry_point.py`](entry_point.py) → runs [`main.create_website`](main.py)  
 - Slide generation & layouts: [`pptx_creator.py`](pptx_creator.py)  
-- Song download + Drive helpers: [`Pujian.download_new_song_pipeline`](Pujian.py) / [`Pujian.save_images_from_google_folder_to_memory`](Pujian.py)  
+- Song download + Drive helpers: [`songs.download_new_song_pipeline`](songs.py) / [`songs.save_images_from_google_folder_to_memory`](songs.py)  
 - ESV wrapper: [`services.esv_service.EsvService`](services/esv_service.py)  
 - App settings (env/secrets): [`settings.Settings`](settings.py)  
 - Dockerfile: [Dockerfile](Dockerfile)  

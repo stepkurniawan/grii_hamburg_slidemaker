@@ -5,9 +5,9 @@ import streamlit as st
 # from alkitab_scraper import get_ayat_alkitab_dict
 from pptx.util import Inches
 from bible_translation import english_to_indonesian_bible
-from Bible_API import get_verses_dict
+from bible_api import get_verses_dict
 from models import BibleReference, OfferingPurpose
-from Pujian import download_new_song_pipeline
+from songs import download_new_song_pipeline
 
 
 def st_print(*text):
@@ -347,7 +347,7 @@ def insert_song_slides_drive_folder(prs, song_number):
 
 def make_slides_from_imgs(prs, song_images_byte: List[bytes]):
     """
-    song_imgs: list of song_img objects, ex: [song_img1, song_img2, song_img3] (from Pujian.py)
+    song_imgs: list of song_img objects, ex: [song_img1, song_img2, song_img3] (from songs.py)
     the somg_img object we get from google drives
     """
     for song_image_byte in song_images_byte:
@@ -359,7 +359,7 @@ def make_slides_from_imgs(prs, song_images_byte: List[bytes]):
 
 def make_slide_from_img(prs, img: bytes):
     """
-    song_img: song_img object, ex: song_img1 (from Pujian.py)
+    song_img: song_img object, ex: song_img1 (from songs.py)
     the somg_img object we get from google drives
     """
     # create a new slide
@@ -406,5 +406,5 @@ def get_placeholders_in_slide(prs, slide):
 #### TEST FUNCTIONS ############################################################
 
 def test_insert_slides_from_pict_folder(prs, folder_path):
-    folder_path = os.path.join(os.path.dirname(__file__), 'Sample', '2', '2')
+    folder_path = os.path.join(os.path.dirname(__file__), "sample", "2", "2")
     insert_slides_from_pict_folder(prs, folder_path)
