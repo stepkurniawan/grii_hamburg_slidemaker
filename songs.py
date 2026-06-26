@@ -25,7 +25,6 @@ base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 # INPUT
 HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
-SONG_NUMBER = "141" # TODO: get from input  
 SONGS_FOLDER = os.path.join(base_path, 'songs' )
 
 

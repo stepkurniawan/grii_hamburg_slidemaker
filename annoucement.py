@@ -13,9 +13,3 @@ def insert_annoucement_slides(prs):
     images: List[bytes] = list(images_dict.values())
     make_slides_from_imgs(prs, images)
 
-
-
-
-
-
-
