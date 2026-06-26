@@ -10,9 +10,10 @@ from models import BibleReference, OfferingPurpose
 from Pujian import download_new_song_pipeline
 
 
-def st_print(text):
-    st.write(text)
-    print(text)
+def st_print(*text):
+    message = " ".join(str(part) for part in text)
+    st.write(message)
+    print(message)
 
 def sort_by_number(file_name):
     # Custom sorting function to extract numbers from the file name and sort numerically
