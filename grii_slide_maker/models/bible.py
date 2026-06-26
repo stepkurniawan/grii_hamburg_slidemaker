@@ -24,7 +24,7 @@ class BibleReference(BaseModel):
     full_input: str = Field(
         ...,
         min_length=1,
-        description="The original reference string provided by the user, e.g. 'Genesis 1:2-3'.",
+        description="The fulls tring input reference string provided by the user, e.g. 'Genesis 1:2-3'.",
         examples=["Genesis 1:2-3", "1 Kings 2:1-3"],
     )
     book: str
@@ -45,7 +45,7 @@ class BibleReference(BaseModel):
                     "Bible reference must look like 'Genesis 1:2-3' or '1 Kings 1:1-2'"
                 )
             return {
-                "original": reference,
+                "full_input": reference,
                 "book": match.group("book"),
                 "chapter": int(match.group("chapter")),
                 "verse_start": int(match.group("verse_start")),
