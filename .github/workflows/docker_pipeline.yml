@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: Docker Pipeline Github Actions
 
 on:
     push:
@@ -11,6 +11,22 @@ jobs:
         steps:
             -   name: Checkout repository
                 uses: actions/checkout@v4
+
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: "3.13"
+
+            -   name: Install uv
+                uses: astral-sh/setup-uv@v5
+                with:
+                    enable-cache: true
+
+            -   name: Install dependencies
+                run: uv sync --all-groups
+
+            -   name: Run tests
+                run: uv run pytest
 
             -   name: Log in to Docker Hub
                 uses: docker/login-action@v2
