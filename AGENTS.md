@@ -1,7 +1,7 @@
 # AI Agent Guidance
 
 ## Purpose
-This repository is a Python-based Streamlit app plus helper utilities for generating bilingual church service PowerPoint slides.
+This repository is a Python-based Streamlit app plus helper utilities for generating GRII/MRII Europe church service PowerPoint slides.
 
 ## Key files
 - `main.py` - Streamlit entry wrapper.
@@ -10,36 +10,45 @@ This repository is a Python-based Streamlit app plus helper utilities for genera
 - `grii_slide_maker/slides/announcements.py` - Google Drive announcement slide insertion.
 - `grii_slide_maker/songs/drive.py` - song download and Drive-related helpers.
 - `grii_slide_maker/services/esv_service.py` - ESV Bible API wrapper.
+- `grii_slide_maker/bible/` - Bible API and translation helpers.
+- `grii_slide_maker/models/` - Pydantic models for Bible references, Drive assets, and service orders.
 - `grii_slide_maker/config.py` - application settings and secret management.
 - `README.md` - install, run, Docker, and test instructions.
+- `.github/workflows/docker_pipeline.yml` - CI, test, Docker build, and Docker push workflow.
 
 ## Environment and commands
 - Python version: `>=3.13`
 - Local dev install:
   - `python -m venv .venv`
   - `source .venv/bin/activate`
-  - `pip install -r requirements.txt`
-  - or use `uv sync --frozen --no-install-project --no-dev`
+  - preferred: `uv sync --frozen --no-install-project --no-dev`
+  - alternative: `pip install -r requirements.txt`
 - Run app locally:
   - `streamlit run main.py`
 - Tests:
-  - `pytest`
+  - `uv run pytest`
+  - or `pytest` when dependencies are already installed
 - Lint:
-  - `flake8 .`
+  - `uvx pre-commit run --all-files`
+  - or direct Ruff: `uvx ruff check --fix .`
 
 ## CI and build notes
 - GitHub Actions workflow: `.github/workflows/docker_pipeline.yml`
 - CI uses Python 3.13 and runs:
   - `uv sync --all-groups`
   - `uv run pytest`
-- Docker build uses the repository root and runs `streamlit run /app/main.py`.
+- Docker build uses the repository root and runs `streamlit run /app/main.py --server.port=8502 --server.address=0.0.0.0`.
+- `docker-compose.yml` maps `8502:8502` and mounts `.streamlit` read-only.
 
 ## Project-specific guidance
 - The app is built around Streamlit and in-memory slide/image handling; avoid design changes that require persistent storage unless the feature explicitly adds it.
 - Secrets and service account credentials should not be committed. Use `.streamlit/secrets.toml` or external `token.json` / `credentials.json` as described in `README.md`.
+- `ESV_BIBLE_API_KEY` is required for ESV passage lookup. `ANNOUCEMENT_FOLDER_ID` defaults in `Settings`, but can be overridden by secrets/env.
 - Keep new behavior covered by tests in `tests/` and use existing test patterns found under `tests/` and `tests/models/`.
 - When modifying import paths or app entry points, note the repository has both `pyproject.toml` and `requirements.txt`, and the Docker workflow is tied to `uv`.
+- Keep docs in sync with the Dockerfile, `docker-compose.yml`, and CI workflow when changing ports, dependency commands, entry points, or required secrets.
 
 ## Useful links
 - Repository README: `README.md`
 - Dockerfile: `Dockerfile`
+- Docker Compose: `docker-compose.yml`
