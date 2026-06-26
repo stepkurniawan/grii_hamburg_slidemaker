@@ -19,14 +19,11 @@ if it found the folder
 """
 
 
-import json
 import os
 import io
 import re
 import sys
 from typing import Any
-from pptx import Presentation
-from pptx.util import Inches
 import stat
 import streamlit as st
 
@@ -41,7 +38,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow # missing refresh_token
 from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
-import os
+
+from models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
 
 base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 # credentials_file = os.path.join(base_path, "mrii-automated-slides-service-accn-private-key.json")
@@ -136,40 +134,48 @@ def connect_service_account_streamlit():
     try_build_drive_service(creds)
 
 
+def ensure_drive_connected():
+    if not creds or not creds.valid:
+        connect_service_account_streamlit()
+
+
 def get_list_folders(folder_id, creds):
     try:
-        service = build('drive', 'v3', credentials=creds)
+        ensure_drive_connected()
+        active_creds = globals()["creds"]
+        service = build('drive', 'v3', credentials=active_creds)
 
         query = "mimeType='application/vnd.google-apps.folder' and trashed = false and '{0}' in parents".format(folder_id)
-        results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
+        results = service.files().list(q=query, fields="nextPageToken, files(id, name, mimeType)").execute()
         items = results.get('files', [])
 
         while 'nextPageToken' in results:
             page_token = results['nextPageToken']
-            results = service.files().list(q=query, fields="nextPageToken, files(id, name)", pageToken=page_token).execute()
+            results = service.files().list(q=query, fields="nextPageToken, files(id, name, mimeType)", pageToken=page_token).execute()
             items.extend(results.get('files', []))
 
         if not items:
             print('No folders found.')
 
-        return items
+        return [DriveFolder.model_validate(item) for item in items]
 
     except HttpError as error:
         print(f'An error occurred: {error}')
 
 def get_folder_id_by_name(folder_name, parent_folder_id):
     try:
+        ensure_drive_connected()
         service = build('drive', 'v3', credentials=creds)
 
         query = "name='{0}' and mimeType='application/vnd.google-apps.folder' and trashed = false and '{1}' in parents".format(folder_name, parent_folder_id)
-        results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
+        results = service.files().list(q=query, fields="nextPageToken, files(id, name, mimeType)").execute()
         items = results.get('files', [])
 
         if not items:
             print('No folders found.')
             return None
         else:
-            return items[0]['id']
+            return DriveFolder.model_validate(items[0]).id
     # file not found
     except IndexError:
         # throws error so user knows that the folder is not found and exit the program
@@ -181,10 +187,12 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
     
 
 def download_folder(google_folder_item, destination_folder, song_number):
-    st_print("Downloading folder: " + google_folder_item['name'])
+    google_folder = DriveFolder.model_validate(google_folder_item)
+    st_print("Downloading folder: " + google_folder.name)
+    ensure_drive_connected()
     service = build('drive', 'v3', credentials=creds)
 
-    g_folder_id, folder_name = make_local_folder_based_on_google_folder_name(google_folder_item, destination_folder, song_number)
+    g_folder_id, folder_name = make_local_folder_based_on_google_folder_name(google_folder, destination_folder, song_number)
     destination_folder = os.path.join(destination_folder, folder_name)
     print("destination_folder for songs: " + destination_folder)
 
@@ -197,17 +205,20 @@ def download_folder(google_folder_item, destination_folder, song_number):
     else:
         print('Files:')
         for item in items:
-            print(u'{0} ({1})'.format(item['name'], item['id']))
-            if item['mimeType'] == 'application/vnd.google-apps.folder':
-                download_folder(item, destination_folder, song_number)
+            drive_item = DriveItem.model_validate(item)
+            print(u'{0} ({1})'.format(drive_item.name, drive_item.id))
+            if drive_item.is_folder:
+                download_folder(drive_item, destination_folder, song_number)
             else:
-                download_file(item, destination_folder)
+                download_file(drive_item, destination_folder)
 
 def download_file(item, destination_folder):
+    drive_item = DriveItem.model_validate(item)
+    ensure_drive_connected()
     service = build('drive', 'v3', credentials=creds)
 
-    file_id = item['id']
-    file_name = item['name']
+    file_id = drive_item.id
+    file_name = drive_item.name
 
     request = service.files().get_media(fileId=file_id)
     fh = io.FileIO(os.path.join(destination_folder, file_name), 'wb')
@@ -218,8 +229,9 @@ def download_file(item, destination_folder):
     st_print("Downloaded file: " + file_name)
 
 def make_local_folder_based_on_google_folder_name(item, destination_folder, song_number=None):
-    folder_id = item['id']
-    folder_name = item['name']
+    folder = DriveFolder.model_validate(item)
+    folder_id = folder.id
+    folder_name = folder.name
     song_number = str(song_number) # convert to string
     # change the folder name to the song number if it is not None
     temp_destination_folder = os.path.join(destination_folder, song_number) 
@@ -247,7 +259,8 @@ def folder_english_way(song_number, folder_song_name_list):
     folder_song_name_inside = ["262"]
     """
     for folder in folder_song_name_list:
-        if folder['name'] == song_number:
+        drive_folder = DriveFolder.model_validate(folder)
+        if drive_folder.name == song_number:
             folder_song_name_inside = folder
             break
     else:
@@ -265,10 +278,11 @@ def folder_english_way(song_number, folder_song_name_list):
 ################## IN MEMORY IMAGE SAVING ##################
 def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
     # folder_id is the ID of the Google Drive folder containing the images
+    ensure_drive_connected()
     drive_service = build('drive', 'v3', credentials=creds)
 
     # Retrieve a list of files in the folder
-    response = drive_service.files().list(q=f"'{folder_id}' in parents").execute()
+    response = drive_service.files().list(q=f"'{folder_id}' in parents", fields="files(id, name, mimeType)").execute()
     files = response.get('files', [])
 
     # Create a dictionary to store the image data
@@ -276,12 +290,14 @@ def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
 
     # Loop through files and add image data to the dictionary
     for file in files:
-        if file['mimeType'].startswith('image/'):
+        drive_item = DriveItem.model_validate(file)
+        if drive_item.is_image:
+            image_file = DriveImageFile.model_validate(file)
             # Get the file ID
-            file_id = file['id']
+            file_id = image_file.id
 
             # Get the file name
-            file_name = file['name']
+            file_name = image_file.name
 
             # Create a list entry for the file name
             song_images_dict[file_name] = {}
@@ -302,7 +318,7 @@ def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
     # sort the dictionary by the key
     song_images_dict = dict(sorted(song_images_dict.items(), key=lambda x: int(re.findall(r'\d+', x[0])[0]) if re.findall(r'\d+', x[0]) else 0))
 
-    return song_images_dict
+    return SongImageSet.model_validate({"images": song_images_dict}).images
 
 
 
@@ -330,13 +346,11 @@ def download_new_song_pipeline(song_number):
 
     #### download from google drive
     st_print("Downloading from google drive song number: " + str(song_number))
-    song_images = save_images_from_google_folder_to_memory(folder_song_name_inside2['id'])
+    song_folder = DriveFolder.model_validate(folder_song_name_inside2)
+    song_images = save_images_from_google_folder_to_memory(song_folder.id)
     return song_images
 
     
-connect_service_account_streamlit()
-
-
 ##### TEST #####
 # download_new_song_pipeline(5)
 

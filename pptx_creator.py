@@ -6,7 +6,8 @@ import streamlit as st
 from pptx.util import Inches
 from bible_translation import english_to_indonesian_bible
 from Bible_API import get_verses_dict
-from Pujian import *
+from models import BibleReference, OfferingPurpose
+from Pujian import download_new_song_pipeline
 
 
 def st_print(text):
@@ -35,7 +36,7 @@ def insert_slides_from_pict_folder(prs, folder_path):
             # create a new slide
             slide = prs.slides.add_slide(prs.slide_layouts[6])
             # add the picture to the slide
-            pic = slide.shapes.add_picture(os.path.join(folder_path, file), Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
+            slide.shapes.add_picture(os.path.join(folder_path, file), Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
 
 def add_slide_layout_from_layout_name(prs,layout_name):
     # Specify the layout name you want to use
@@ -76,29 +77,24 @@ def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
     # Find the layout with the specified name
     LAYOUT_NAME_COVER = "BIBLE_READING" # Bible reading cover
     slide_layout_cover = add_slide_layout_from_layout_name(prs, LAYOUT_NAME_COVER)
+    bible_reference = BibleReference.model_validate(bible_verse_text)
     bible_book_ID = ""
-    bible_book_EN = ""
-
-    # get the bible book, chapter, verse_start, verse_end by going from behind
-    # ex 2 Kings 1:1-2
-    bible_chapter_and_verse = bible_verse_text.split(" ")[-1] # 1:1-2
-    # the rest is the bible book
-    bible_book = bible_verse_text.replace(bible_chapter_and_verse, "").strip() # 2 Kings
+    bible_book_EN = bible_reference.book
+    bible_book = bible_reference.book
     
     print("bible verse text: ", bible_verse_text)
     print("bible_book: ", bible_book)
     
 
-    bible_chapter = bible_chapter_and_verse.split(":")[0]
-    bible_verse_start = bible_chapter_and_verse.split(":")[1].split("-")[0]
-    bible_verse_end = bible_chapter_and_verse.split(":")[1].split("-")[1]
+    bible_chapter = str(bible_reference.chapter)
+    bible_verse_start = str(bible_reference.verse_start)
+    bible_verse_end = str(bible_reference.verse_end)
 
     
     ## ADD BIBLE RADING COVER PAGE
     try: 
         # check_placeholders_in_slide(prs,slide_layout_cover)
         bible_verse_EN = slide_layout_cover.placeholders[10] # main title
-        bible_book_EN = bible_book
         bible_cover_text_EN = bible_book_EN + " " + bible_chapter + ":" + bible_verse_start + "-" + bible_verse_end # Genesis 1:2-3
         bible_verse_EN.text = bible_cover_text_EN
     
@@ -112,9 +108,6 @@ def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
 
     id_bible_verse = get_verses_dict(bible_book_EN, bible_chapter, bible_verse_start, bible_verse_end, "ID") 
     en_bible_verse = get_verses_dict(bible_book_EN, bible_chapter, bible_verse_start, bible_verse_end, "EN")
-
-    # count how many verse 
-    verse_count = len(id_bible_verse)
 
     # loop so we add slide for each verse
     for id_key, en_key in zip(id_bible_verse.keys(), en_bible_verse.keys()):
@@ -178,7 +171,7 @@ def add_appostle_creed_page(prs):
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"
     for i in range(0,6):
         layout_name = str(i) + "_APOSTLE_CREED_1"
-        slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+        add_slide_layout_from_layout_name(prs, layout_name)
         print( str(i) + " apostle creed layout")
 
 def decide_offering_purpose_layout_name(next_sunday_date):
@@ -187,25 +180,24 @@ def decide_offering_purpose_layout_name(next_sunday_date):
     # third sunday, then its "P_MANDAT"
     # fourth sunday, then its "P_PEMBANGUNAN"
     # fifth sunday, then its "P_DIAKONIA"
-    output = ""
     if next_sunday_date.day <= 7:
-        output = "P_PENGINJILAN"
+        output = OfferingPurpose.P_PENGINJILAN
     elif next_sunday_date.day <= 14:
-        output = "P_SEKOLAH"
+        output = OfferingPurpose.P_SEKOLAH
     elif next_sunday_date.day <= 21:
-        output = "P_MANDAT"
+        output = OfferingPurpose.P_MANDAT
     elif next_sunday_date.day <= 28:
-        output = "P_PEMBANGUNAN"
+        output = OfferingPurpose.P_PEMBANGUNAN
     else:
-        output = "P_DIAKONIA"
+        output = OfferingPurpose.P_DIAKONIA
     return output
     
 
 def add_secondary_offering_purpose_page(prs, offering_purpose):
     # if offering_purpose is P_PENGINJILAN, then add slide with layout name "P_PENGINJILAN"
     # if offering_purpose is P_SEKOLAH, then add slide with layout name "P_SEKOLAH"
-    layout_name = offering_purpose
-    slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
+    layout_name = OfferingPurpose(offering_purpose).value
+    add_slide_layout_from_layout_name(prs, layout_name)
 
 
 
@@ -346,9 +338,6 @@ def insert_song_slides_drive_folder(prs, song_number):
     prs: Presentation object
     song_slides: list of song_slide objects, ex: [song_slide1, song_slide2, song_slide3]
     """
-    song_images_byte = []
-    song_images = []
-    
     song_images_byte = download_new_song_pipeline(song_number).values()
     song_images_byte = list(song_images_byte)
     make_slides_from_imgs(prs, song_images_byte)

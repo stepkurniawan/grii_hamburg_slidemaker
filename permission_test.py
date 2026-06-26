@@ -1,8 +1,6 @@
 # create a folder and create an empty file in it
 
 import os
-import sys
-import json
 
 from main import CURRENT_DIR
 

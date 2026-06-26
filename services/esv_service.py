@@ -4,42 +4,18 @@ https://api.esv.org/docs/passage-text/
 """
 
 import re
-from pydantic import BaseModel, Field
 from typing import List
-from bs4 import BeautifulSoup, Tag, NavigableString
 
 
 import requests
+from models import EsvTextResponse, Passage, Verse
 from settings import Settings
-
-settings = Settings()
-
-
-class Footnote(BaseModel):
-    """Model for a footnote in a Bible verse."""
-    text: str = Field(..., description="The text of the footnote.")
-    id_: str = Field(..., description="The unique identifier for the footnote.", alias="id")
-
-class Verse(BaseModel):
-    """Model for a collection of Bible verses."""
-    chapter: int = Field(..., description="The chapter number within the book.")
-    number: int = Field(..., description="The verse number within the chapter.")
-    text: str = Field(..., description="The text of the verse.")
-    heading: str | None = Field(None, description="The heading or title of the verse, if applicable.")
-    subheading: str | None = Field(None, description="The subheading or subtitle of the verse, if applicable.")
-    footnotes: List[Footnote] | None = Field(None, description="A list of footnotes associated with the verse, if any.")
-
-class Passage(BaseModel):
-    """Model for a Bible passage, including its reference and verses."""
-    reference : str = Field(..., description="The reference for the Bible passage, e.g., 'John 3:16'")
-    verses : List[Verse] = Field(..., description="A list of verses in the passage, each represented as a dictionary with keys 'number' and 'text'.")
-    copyright_ : str | None = Field(None, description="Copyright information for the Bible translation used.", alias = "copyright")
-    options : dict[str, bool] | None = Field(None, description="Options used for the request, such as 'include-footnotes'.")
-
 
 
 class EsvService: 
     def __init__(self):
+        settings = Settings()
+        self.settings = settings
         self.http_session = requests.Session()
         self.http_session.headers.update({"Authorization": f'Token {settings.ESV_BIBLE_API_KEY}'})
 
@@ -71,16 +47,16 @@ class EsvService:
 
         response = self.http_session.get(
             # settings.ESV_HTML_API_URL,
-            settings.ESV_TEXT_API_URL,
+            self.settings.ESV_TEXT_API_URL,
             params=request_params,
             timeout=30
         )
         response.raise_for_status()
 
-        json_payload = response.json()
+        json_payload = EsvTextResponse.model_validate(response.json())
 
-        passage_response = "".join(json_payload.get("passages", []))
-        canonical_reference = json_payload.get("canonical", reference)
+        passage_response = "".join(json_payload.passages)
+        canonical_reference = json_payload.canonical or reference
 
         verse_models = self._parse_passage_verse_text(passage_response)
         used_option_flags = {name: (value == "true") for name, value in request_params.items() if name != "q"}
@@ -128,7 +104,7 @@ class EsvService:
                 return title_candidate
         return None
     
-    def _parse_passage_verse_text(self, passage_text: str) -> tuple[list[Verse]]:
+    def _parse_passage_verse_text(self, passage_text: str) -> list[Verse]:
         """
         This function parses the passage text into a list of Verse objects. The verse always starts with [i].
 

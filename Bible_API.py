@@ -15,6 +15,7 @@ for german bible, use luther
 
 import requests
 from bible_translation import english_to_indonesian_bible, english_to_german_bible
+from models import BibleReference, BibleSuperSearchResponse
 from services.esv_service import EsvService
 
 ######### GLOBAL VARIABLES #########
@@ -35,9 +36,10 @@ def fetch_bible_passage(bible_version, reference):
     }
     
     response = requests.get(BASE_URL, params=params)
+    response.raise_for_status()
     data = response.json()
     
-    return data
+    return BibleSuperSearchResponse.model_validate(data)
 
 
 
@@ -53,40 +55,46 @@ def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"
     verses_dict (dictionary): ex: {"Kejadian 1:1" : "In the beginning God created the heaven and the earth.",
 
     """
+    bible_reference = BibleReference.model_validate(
+        f"{english_book} {chapter}:{verse_start}-{verse_end}"
+    )
     verses_dict = {}
 
     if language == "EN":
-        BIBLE_VERSION = "asv"
+        bible_version = "asv"
     elif language == "ID":
-        BIBLE_VERSION = "indo_tb"
+        bible_version = "indo_tb"
     elif language == "DE":
-        BIBLE_VERSION = "luther_1912"
+        bible_version = "luther_1912"
+    else:
+        raise ValueError(f"Unsupported Bible language: {language}")
     
     # create a dictionary from the verses
     # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
     # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
-    german_book = english_to_german_bible.get(english_book)
-    indonesian_book = english_to_indonesian_bible.get(english_book)
-    reference = f"{english_book} {chapter}:{verse_start}-{verse_end}"
+    german_book = english_to_german_bible.get(bible_reference.book)
+    indonesian_book = english_to_indonesian_bible.get(bible_reference.book)
+    reference = bible_reference.as_reference_text()
 
-    result = fetch_bible_passage(BIBLE_VERSION, reference)
+    result = fetch_bible_passage(bible_version, reference)
 
     esv_service = EsvService()
     esv_passage = esv_service.get_passage(reference)
     
 
-    for i in range(0, len(result["results"])):
+    for bible_result in result.results:
         # get all the verses in the chapter of this bible
-        verse_result = result["results"][i]["verses"][BIBLE_VERSION]
+        verse_result = bible_result.verses[bible_version]
+        chapter_key = str(bible_reference.chapter)
 
-        for verse in verse_result[chapter]:
+        for verse in verse_result[chapter_key]:
             if language == "DE":
-                verses_dict[f"{german_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
+                verses_dict[f"{german_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
             elif language == "ID":
-                verses_dict[f"{indonesian_book} {chapter}:{verse}"] = verse_result[chapter][verse]["text"]
+                verses_dict[f"{indonesian_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
             
     for verse in esv_passage.verses:
-        verses_dict[f"{english_book} {verse.chapter}:{verse.number}"] = verse.text
+        verses_dict[f"{bible_reference.book} {verse.chapter}:{verse.number}"] = verse.text
 
     return verses_dict
 
