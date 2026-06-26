@@ -6,6 +6,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from grii_slide_maker.bible.translations import english_to_indonesian_bible
 
 
+# Regex to parse a standard English Bible reference like 'Genesis 1:2-3' or '1 Kings 2:1-3'.
+# Groups:
+#   book         - optional leading 1-3 and book name, allowing spaces in the book name
+#   chapter      - the chapter number before the colon
+#   verse_start  - the first verse in the range
+#   verse_end    - the last verse in the range
 BIBLE_REFERENCE_PATTERN = re.compile(
     r"^(?P<book>(?:[1-3]\s+)?[A-Za-z][A-Za-z\s]+?)\s+"
     r"(?P<chapter>\d+):(?P<verse_start>\d+)-(?P<verse_end>\d+)$"
@@ -15,7 +21,12 @@ BIBLE_REFERENCE_PATTERN = re.compile(
 class BibleReference(BaseModel):
     """Parsed English Bible reference such as 'Genesis 1:2-3'."""
 
-    original: str
+    full_input: str = Field(
+        ...,
+        min_length=1,
+        description="The original reference string provided by the user, e.g. 'Genesis 1:2-3'.",
+        examples=["Genesis 1:2-3", "1 Kings 2:1-3"],
+    )
     book: str
     chapter: int = Field(ge=1)
     verse_start: int = Field(ge=1)
@@ -64,34 +75,108 @@ class BibleReference(BaseModel):
 
 
 class BibleSuperSearchVerse(BaseModel):
-    id: int
+    id: int = Field(
+        ...,
+        description="The unique identifier for the verse in the search results.",
+    )
     book: int
     chapter: int
     verse: int
     text: str
-    italics: str | None = None
-    claimed: bool | None = None
+    italics: str | None = Field(
+        None,
+        description="Text that should be rendered in italics, if applicable.",
+    )
+    claimed: bool | None = Field(
+        None,
+        description="Indicates if the verse has been marked as claimed in the search results.",
+    )
 
 
 class BibleSuperSearchResult(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    book_id: int
-    book_name: str
-    book_short: str | None = None
-    chapter_verse: str
-    verses: dict[str, dict[str, dict[str, BibleSuperSearchVerse]]]
-    verses_count: int = Field(ge=0)
-    single_verse: bool | None = None
+    book_id: int = Field(
+        ..., description="The numeric identifier for the book in Bible SuperSearch."
+    )
+    book_name: str = Field(
+        ..., description="The full book name as returned by Bible SuperSearch."
+    )
+    book_short: str | None = Field(
+        None,
+        description="Optional shortened book name or abbreviation for the book."
+    )
+    chapter_verse: str = Field(
+        ..., description="The chapter and verse reference string for this result."
+    )
+    verses: dict[str, dict[str, dict[str, BibleSuperSearchVerse]]] = Field(
+        ...,
+        description="Nested mapping of chapter numbers and verse numbers to verse details.",
+        examples=[
+            {
+                "1": {
+                    "1": {
+                        "1": {
+                            "id": 1,
+                            "book": 1,
+                            "chapter": 1,
+                            "verse": 1,
+                            "text": "In the beginning...",
+                            "italics": None,
+                            "claimed": False,
+                        }
+                    }
+                }
+            }
+        ],
+    )
+    verses_count: int = Field(
+        ge=0,
+        description="The number of verses included in the search result."
+    )
+    single_verse: bool | None = Field(
+        None,
+        description="Indicates whether the result represents a single verse."
+    )
 
 
 class BibleSuperSearchResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    hash: str | None = None
-    errors: list[Any] = Field(default_factory=list)
-    error_level: int = 0
-    results: list[BibleSuperSearchResult] = Field(default_factory=list)
+    hash: str | None = Field(
+        None,
+        description="Optional response hash for idempotency or caching.",
+        examples=["abc123def"]
+    )
+    errors: list[Any] = Field(
+        default_factory=list,
+        description="A list of errors returned by the upstream service, empty when successful.",
+        examples=[[]]
+    )
+    error_level: int = Field(
+        0,
+        description="Numeric error severity level (0 = no error).",
+        examples=[0]
+    )
+    results: list[BibleSuperSearchResult] = Field(
+        default_factory=list,
+        description="Search results containing passages and metadata.",
+        examples=[
+            {
+                "query": "John 3:16",
+                "verses_count": 1,
+                "single_verse": True,
+                "passages": [
+                    {
+                        "book": 43,
+                        "chapter": 3,
+                        "verse": 16,
+                        "text": "For God so loved the world...",
+                    }
+                ]
+            }
+        ]
+    )
 
     @model_validator(mode="after")
     def ensure_usable_response(self) -> "BibleSuperSearchResponse":

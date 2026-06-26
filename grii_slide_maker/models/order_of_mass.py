@@ -43,8 +43,8 @@ class SongSelection(BaseModel):
 
 
 class Pastor(BaseModel):
-    title_id: str = Field(min_length=1, description="Pastor title identifier (e.g., 'Pdt.', 'Rev.')")
-    title_de_or_en: str = Field(default="Rev.", min_length=1, description="Pastor title in German or English")
+    title_id: str = Field(min_length=1)
+    title_de_or_en: str = Field(default="Rev.", min_length=1)
     name: str = Field(min_length=1)
 
     @model_validator(mode="before")

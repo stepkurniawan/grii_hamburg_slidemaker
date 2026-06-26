@@ -11,7 +11,12 @@ class DriveItem(BaseModel):
 
     id: str = Field(min_length=1)
     name: str = Field(min_length=1)
-    mime_type: str = Field(alias="mimeType", min_length=1)
+    mime_type: str = Field(
+        alias="mimeType",
+        min_length=1,
+        description="The MIME type of the Google Drive item.",
+        examples=["application/vnd.google-apps.folder", "image/png"],
+    )
 
     @property
     def is_folder(self) -> bool:

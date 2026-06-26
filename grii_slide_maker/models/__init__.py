@@ -14,7 +14,7 @@ from grii_slide_maker.models.drive import (
     DriveItem,
     SongImageSet,
 )
-from grii_slide_maker.models.service_order import (
+from grii_slide_maker.models.order_of_mass import (
     OfferingPurpose,
     Pastor,
     ServiceOrder,
