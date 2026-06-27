@@ -59,12 +59,7 @@ CURRENT_DIR = getattr(
     sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 
-HOME_DIR = os.path.expanduser("~")
-DOWNLOAD_FOLDER = os.path.join(CURRENT_DIR, "Downloads")
-# print("HOME_DIR: " + HOME_DIR)
-GRII_FOLDER = os.path.join(DOWNLOAD_FOLDER, "GRII")
-OUTPUT_DIR = os.path.join(GRII_FOLDER,"GRII_Slides")
-NEW_OUTPUT_DIR = os.path.join(CURRENT_DIR, "output")
+OUTPUT_DIR = os.path.join(CURRENT_DIR, "output")
 output_file = ""
 binary_output_file = BytesIO()
 
@@ -240,7 +235,7 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main(service_order)
             st.balloons()
-            st.sidebar.success("Slide generated successfully in " + NEW_OUTPUT_DIR + ":tada:" + "https://drive.google.com/drive/folders/1AJTLk-AXOI7nEYcWAOMTZ_MxDNzaRSK2")
+            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:" + "https://drive.google.com/drive/folders/1AJTLk-AXOI7nEYcWAOMTZ_MxDNzaRSK2")
 
             st.sidebar.download_button(
                 label="Download slide!",
@@ -372,10 +367,13 @@ def main(service_order: ServiceOrder | None = None):
     insert_annoucement_slides(prs)
     
     # save in output folder
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     prs.save(binary_output_file) # so it is downloadable using button
-    st_print("Saving the slide in " + NEW_OUTPUT_DIR)
-    prs.save(os.path.join(NEW_OUTPUT_DIR, sunday_date("filename") + ".pptx"))
-    st_print("saved in " + NEW_OUTPUT_DIR)
+    st_print("Saving the slide in " + OUTPUT_DIR)
+    output_path = os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx")
+    with open(output_path, "wb") as saved_pptx:
+        saved_pptx.write(binary_output_file.getvalue())
+    st_print("saved in " + OUTPUT_DIR)
 
 
 # Run the Streamlit UI when this file is used as the app entry point.
