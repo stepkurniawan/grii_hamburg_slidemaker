@@ -16,7 +16,7 @@ Streamlit app and helper utilities for generating church service PowerPoint slid
 - Agent guidance: [`AGENTS.md`](AGENTS.md)
 
 ## Requirements / Prerequisites
-- Python >= 3.13
+- Python 3.13
 - uv, used by Docker and CI
 - Streamlit
 
@@ -34,7 +34,7 @@ source .venv/bin/activate
 
 ```bash
 pip install uv
-uv sync --frozen --no-install-project --no-dev
+uv sync --python 3.13 --frozen --no-install-project --no-dev
 ```
 
 Alternatively, install from `requirements.txt`:
