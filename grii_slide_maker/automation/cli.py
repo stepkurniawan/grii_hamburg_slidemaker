@@ -115,9 +115,9 @@ def sync_cron_command(args: argparse.Namespace) -> int:
 
 
 def _load_automation_workbook(settings: Settings) -> Workbook:
-    if not settings.GOOGLE_DRIVE_EXCEL_FILE_ID:
-        raise ValueError("GOOGLE_DRIVE_EXCEL_FILE_ID is required for automation")
-    workbook_bytes = download_excel_file_to_memory(settings.GOOGLE_DRIVE_EXCEL_FILE_ID)
+    if not settings.GOOGLE_SHEET_MASTER_WARTA_ID:
+        raise ValueError("GOOGLE_SHEET_MASTER_WARTA_ID is required for automation")
+    workbook_bytes = download_excel_file_to_memory(settings.GOOGLE_SHEET_MASTER_WARTA_ID)
     return load_workbook_from_bytes(workbook_bytes)
 
 

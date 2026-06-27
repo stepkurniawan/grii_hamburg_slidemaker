@@ -25,7 +25,7 @@ def build_workbook_bytes():
 
 def test_generate_command_builds_and_uploads(monkeypatch):
     calls = []
-    monkeypatch.setenv("GOOGLE_DRIVE_EXCEL_FILE_ID", "excel-file")
+    monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
     monkeypatch.setattr(
         cli,
         "download_excel_file_to_memory",
@@ -54,7 +54,7 @@ def test_generate_command_builds_and_uploads(monkeypatch):
 
 
 def test_print_cron_command_prints_managed_block(monkeypatch, capsys):
-    monkeypatch.setenv("GOOGLE_DRIVE_EXCEL_FILE_ID", "excel-file")
+    monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
     monkeypatch.setattr(
         cli,
         "download_excel_file_to_memory",
@@ -69,7 +69,7 @@ def test_print_cron_command_prints_managed_block(monkeypatch, capsys):
 
 def test_sync_cron_command_replaces_existing_block(monkeypatch):
     written = []
-    monkeypatch.setenv("GOOGLE_DRIVE_EXCEL_FILE_ID", "excel-file")
+    monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
     monkeypatch.setattr(
         cli,
         "download_excel_file_to_memory",
@@ -101,7 +101,7 @@ def test_sync_cron_command_removes_block_when_excel_disables_automation(monkeypa
     output.seek(0)
 
     written = []
-    monkeypatch.setenv("GOOGLE_DRIVE_EXCEL_FILE_ID", "excel-file")
+    monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
     monkeypatch.setattr(cli, "download_excel_file_to_memory", lambda file_id: output)
     monkeypatch.setattr(
         cli,

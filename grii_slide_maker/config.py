@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID: str
     ANNOUCEMENT_FOLDER_ID: str
     GOOGLE_DRIVE_OUTPUT_FOLDER_ID: str
-    GOOGLE_DRIVE_EXCEL_FILE_ID: str | None = None
+    GOOGLE_SHEET_MASTER_WARTA_ID: str | None = None
 
     # Automation workbook settings
     AUTOMATION_SCHEDULE_SHEET_NAME: str = "info"

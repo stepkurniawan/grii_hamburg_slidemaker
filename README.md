@@ -47,7 +47,7 @@ pip install -r requirements.txt
 - Place service account / Drive credentials into Streamlit secrets (`.streamlit/secrets.toml`) or use external `token.json` / `credentials.json` as needed.
 - Set `ESV_BIBLE_API_KEY` for ESV passage lookup.
 - Set `GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID`, `ANNOUCEMENT_FOLDER_ID`, and `GOOGLE_DRIVE_OUTPUT_FOLDER_ID` for Drive folder lookup.
-- For scheduled automation, set `GOOGLE_DRIVE_EXCEL_FILE_ID` to the Drive file id of the Excel workbook or Google Sheet.
+- For scheduled automation, set `GOOGLE_SHEET_MASTER_WARTA_ID` to the Drive file id of the Excel workbook or Google Sheet.
 - Optional settings include `ESV_TEXT_API_URL` and `ESV_HTML_API_URL`. See [`grii_slide_maker.config.Settings`](grii_slide_maker/config.py).
 
 ## Run (development)
