@@ -1,4 +1,4 @@
-# GRII Europe Slide Maker
+# GRII Hamburg Slide Maker
 
 Streamlit app and helper utilities for generating church service PowerPoint slides for GRII/MRII Europe. The app builds the Sunday service deck from song slide images, Bible passages, preacher details, Holy Communion options, offering slides, and Google Drive announcement images.
 
