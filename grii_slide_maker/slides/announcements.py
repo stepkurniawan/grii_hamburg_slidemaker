@@ -3,7 +3,7 @@
 from typing import Dict, List
 from grii_slide_maker.config import Settings
 from grii_slide_maker.slides.creator import make_slides_from_imgs
-from grii_slide_maker.songs.drive import save_images_from_google_folder_to_memory
+from grii_slide_maker.services.google_drive import save_images_from_google_folder_to_memory
 
 settings = Settings()
 
