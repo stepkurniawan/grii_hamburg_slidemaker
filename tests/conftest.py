@@ -3,6 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
+from grii_slide_maker.config import get_settings
+from grii_slide_maker.services.container import get_esv_service
+
 
 @pytest.fixture(autouse=True)
 def test_settings_env(monkeypatch):
@@ -10,6 +13,11 @@ def test_settings_env(monkeypatch):
     monkeypatch.setenv("GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID", "song-master-folder")
     monkeypatch.setenv("ANNOUCEMENT_FOLDER_ID", "announcement-folder")
     monkeypatch.setenv("GOOGLE_DRIVE_OUTPUT_FOLDER_ID", "output-folder")
+    get_settings.cache_clear()
+    get_esv_service.cache_clear()
+    yield
+    get_settings.cache_clear()
+    get_esv_service.cache_clear()
 
 
 @pytest.fixture

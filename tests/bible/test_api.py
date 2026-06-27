@@ -1,5 +1,5 @@
 from grii_slide_maker.bible import api as bible_api
-from grii_slide_maker.models import BibleSuperSearchResponse, Passage, Verse
+from grii_slide_maker.models import BibleSuperSearchResponse, BibleVerseDict, Passage, Verse
 
 
 class FakeEsvService:
@@ -55,11 +55,12 @@ def test_get_verses_dict_combines_local_language_and_esv(
             bible_supersearch_payload
         ),
     )
-    monkeypatch.setattr(bible_api, "EsvService", lambda: esv_service)
+    monkeypatch.setattr(bible_api, "get_esv_service", lambda: esv_service)
 
     verses = bible_api.get_verses_dict("Genesis", "1", "1", "2", "ID")
 
-    assert verses == {
+    assert isinstance(verses, BibleVerseDict)
+    assert verses.as_dict() == {
         "Kejadian 1:1": "Pada mulanya...",
         "Kejadian 1:2": "Bumi belum berbentuk...",
         "Genesis 1:1": "In the beginning",

@@ -1,7 +1,8 @@
 import re
+from collections.abc import ItemsView, Iterator, KeysView, ValuesView
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator, model_validator
 
 from grii_slide_maker.bible.translations import english_to_indonesian_bible
 
@@ -72,6 +73,46 @@ class BibleReference(BaseModel):
 
     def __str__(self) -> str:
         return self.as_reference_text()
+
+
+class BibleVerseDict(RootModel[dict[str, str]]):
+    """Mapping of display Bible references to verse text."""
+
+    root: dict[str, str] = Field(
+        default_factory=dict,
+        description="A mapping from display references like 'Genesis 1:1' to verse text.",
+        examples=[{"Genesis 1:1": "In the beginning..."}],
+    )
+
+    @model_validator(mode="after")
+    def ensure_valid_entries(self) -> "BibleVerseDict":
+        for reference, text in self.root.items():
+            if not reference.strip():
+                raise ValueError("Bible verse reference cannot be blank")
+            if not text.strip():
+                raise ValueError(f"Bible verse text cannot be blank for {reference}")
+        return self
+
+    def __getitem__(self, key: str) -> str:
+        return self.root[key]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self.root)
+
+    def __len__(self) -> int:
+        return len(self.root)
+
+    def keys(self) -> KeysView[str]:
+        return self.root.keys()
+
+    def values(self) -> ValuesView[str]:
+        return self.root.values()
+
+    def items(self) -> ItemsView[str, str]:
+        return self.root.items()
+
+    def as_dict(self) -> dict[str, str]:
+        return dict(self.root)
 
 
 class BibleSuperSearchVerse(BaseModel):

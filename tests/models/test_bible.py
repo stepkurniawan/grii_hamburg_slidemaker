@@ -1,7 +1,13 @@
 import pytest
 from pydantic import ValidationError
 
-from grii_slide_maker.models import BibleReference, BibleSuperSearchResponse, Passage, Verse
+from grii_slide_maker.models import (
+    BibleReference,
+    BibleSuperSearchResponse,
+    BibleVerseDict,
+    Passage,
+    Verse,
+)
 
 
 @pytest.mark.parametrize("reference", ["Genesis 1:2-3", "1 Kings 1:1-2"])
@@ -54,6 +60,25 @@ def test_bible_supersearch_response_validates_nested_verses():
 
     verse = response.results[0].verses["indo_tb"]["1"]["1"]
     assert verse.text == "Pada mulanya..."
+
+
+def test_bible_verse_dict_validates_and_behaves_like_mapping():
+    verses = BibleVerseDict.model_validate(
+        {
+            "Kejadian 1:1": "Pada mulanya...",
+            "Genesis 1:1": "In the beginning",
+        }
+    )
+
+    assert verses["Genesis 1:1"] == "In the beginning"
+    assert list(verses.keys()) == ["Kejadian 1:1", "Genesis 1:1"]
+    assert verses.as_dict() == {
+        "Kejadian 1:1": "Pada mulanya...",
+        "Genesis 1:1": "In the beginning",
+    }
+
+    with pytest.raises(ValidationError):
+        BibleVerseDict.model_validate({"Genesis 1:1": ""})
 
 
 def test_esv_passage_requires_at_least_one_verse():

@@ -12,7 +12,7 @@ from grii_slide_maker.songs.drive import SONGS_FOLDER
 from grii_slide_maker.slides.footer import footer
 
 
-def show_validation_errors(error: ValidationError):
+def show_validation_errors(error: ValidationError) -> None:
     for validation_error in error.errors():
         location = " > ".join(str(part) for part in validation_error["loc"])
         message = validation_error["msg"]

@@ -12,15 +12,17 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaIoBaseDownload, MediaIoBaseUpload
 
 from grii_slide_maker.models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
 
-SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/drive"]
+GOOGLE_SHEETS_MIME_TYPE = "application/vnd.google-apps.spreadsheet"
+EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 creds = None
 
 
-def test_connection():
+def test_connection() -> None:
     """Print the names and ids of the first 10 Drive files."""
     global creds
 
@@ -40,7 +42,7 @@ def test_connection():
     try_build_drive_service(creds)
 
 
-def try_build_drive_service(active_creds):
+def try_build_drive_service(active_creds: Any) -> None:
     try:
         drive_service = build("drive", "v3", credentials=active_creds)
 
@@ -62,7 +64,7 @@ def try_build_drive_service(active_creds):
         print(f"An error occurred: {error}")
 
 
-def connect_service_account_streamlit():
+def connect_service_account_streamlit() -> None:
     """Connect to Drive with Streamlit service account secrets."""
     global creds
 
@@ -76,17 +78,17 @@ def connect_service_account_streamlit():
             )
 
 
-def ensure_drive_connected():
+def ensure_drive_connected() -> None:
     if not creds or not creds.valid:
         connect_service_account_streamlit()
 
 
-def build_drive_service():
+def build_drive_service() -> Any:
     ensure_drive_connected()
     return build("drive", "v3", credentials=creds)
 
 
-def get_list_folders(folder_id):
+def get_list_folders(folder_id: str) -> list[DriveFolder] | None:
     try:
         drive_service = build_drive_service()
 
@@ -124,7 +126,7 @@ def get_list_folders(folder_id):
         return None
 
 
-def get_folder_id_by_name(folder_name, parent_folder_id):
+def get_folder_id_by_name(folder_name: str, parent_folder_id: str) -> str | None:
     try:
         drive_service = build_drive_service()
 
@@ -153,7 +155,7 @@ def get_folder_id_by_name(folder_name, parent_folder_id):
         return None
 
 
-def download_file(item, destination_folder):
+def download_file(item: dict[str, Any], destination_folder: str) -> None:
     drive_item = DriveItem.model_validate(item)
     drive_service = build_drive_service()
 
@@ -167,7 +169,85 @@ def download_file(item, destination_folder):
     print("Downloaded file: " + drive_item.name)
 
 
-def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
+def download_excel_file_to_memory(file_id: str) -> io.BytesIO:
+    """Download an Excel workbook, exporting Google Sheets to xlsx when needed."""
+    drive_service = build_drive_service()
+    metadata = (
+        drive_service.files()
+        .get(fileId=file_id, fields="id, name, mimeType")
+        .execute()
+    )
+
+    if metadata.get("mimeType") == GOOGLE_SHEETS_MIME_TYPE:
+        request = drive_service.files().export_media(
+            fileId=file_id,
+            mimeType=EXCEL_MIME_TYPE,
+        )
+    else:
+        request = drive_service.files().get_media(fileId=file_id)
+
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        _, done = downloader.next_chunk()
+
+    fh.seek(0)
+    return fh
+
+
+def upload_or_replace_file(
+    *,
+    filename: str,
+    content: bytes,
+    folder_id: str,
+    mime_type: str,
+) -> str:
+    """Upload a file to Drive, replacing the first file with the same name."""
+    drive_service = build_drive_service()
+    query = (
+        f"name='{filename}' "
+        f"and trashed = false and '{folder_id}' in parents"
+    )
+    results = (
+        drive_service.files()
+        .list(q=query, fields="files(id, name, mimeType)")
+        .execute()
+    )
+    existing_files = results.get("files", [])
+    media = MediaIoBaseUpload(io.BytesIO(content), mimetype=mime_type, resumable=True)
+
+    if existing_files:
+        file_id = existing_files[0]["id"]
+        result = (
+            drive_service.files()
+            .update(
+                fileId=file_id,
+                media_body=media,
+                fields="id",
+            )
+            .execute()
+        )
+        return result["id"]
+
+    body = {
+        "name": filename,
+        "parents": [folder_id],
+        "mimeType": mime_type,
+    }
+    result = (
+        drive_service.files()
+        .create(
+            body=body,
+            media_body=media,
+            fields="id",
+        )
+        .execute()
+    )
+    return result["id"]
+
+
+def save_images_from_google_folder_to_memory(folder_id: str) -> dict[str, Any]:
     drive_service = build_drive_service()
 
     response = (

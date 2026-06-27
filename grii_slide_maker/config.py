@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import ClassVar
 
 from pydantic import Field, HttpUrl
@@ -31,3 +32,23 @@ class Settings(BaseSettings):
     GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID: str
     ANNOUCEMENT_FOLDER_ID: str
     GOOGLE_DRIVE_OUTPUT_FOLDER_ID: str
+    GOOGLE_DRIVE_EXCEL_FILE_ID: str | None = None
+
+    # Automation workbook settings
+    AUTOMATION_SCHEDULE_SHEET_NAME: str = "info"
+    AUTOMATION_SERVICE_SHEET_NAME: str = "dashboard"
+    AUTOMATION_CRON_DAY_CELL: str = "B2"
+    AUTOMATION_CRON_HOUR_CELL: str = "B3"
+    AUTOMATION_CRON_MINUTE_CELL: str = "B4"
+    AUTOMATION_ENABLED_CELL: str = "B1"
+    AUTOMATION_SONG_NUMBERS_LABEL: str = "Songs"
+    AUTOMATION_BIBLE_VERSES_LABEL: str = "Bible Reading"
+    AUTOMATION_PASTOR_NAME_LABEL: str = "Preacher"
+    AUTOMATION_HOLY_COMMUNION_SONG_LABEL: str = "Holy Communion"
+    AUTOMATION_DASHBOARD_SECTION_LABEL: str = "THIS WEEK"
+
+
+@lru_cache
+def get_settings() -> Settings:
+    """Return the shared application settings instance."""
+    return Settings()

@@ -2,10 +2,11 @@
 
 import os
 import sys
+from typing import Never
 
 import streamlit as st
 
-from grii_slide_maker.config import Settings
+from grii_slide_maker.config import get_settings
 from grii_slide_maker.models import DriveFolder
 from grii_slide_maker.services.google_drive import (
     get_folder_id_by_name,
@@ -21,15 +22,18 @@ base_path = getattr(
 
 SONGS_FOLDER = os.path.join(base_path, "songs")
 
-settings = Settings()
+settings = get_settings()
 
 
-def st_print(text):
+def st_print(text: str) -> None:
     st.write(text)
     print(text)
 
 
-def select_song_image_folder(song_number, song_image_folders):
+def select_song_image_folder(
+    song_number: str,
+    song_image_folders: list[DriveFolder],
+) -> DriveFolder | None:
     """Prefer the nested folder matching the song number, then fall back to the first."""
     for folder in song_image_folders:
         drive_folder = DriveFolder.model_validate(folder)
@@ -42,11 +46,14 @@ def select_song_image_folder(song_number, song_image_folders):
     return None
 
 
-def folder_english_way(song_number, folder_song_name_list):
+def folder_english_way(
+    song_number: str,
+    folder_song_name_list: list[DriveFolder],
+) -> DriveFolder | None:
     return select_song_image_folder(song_number, folder_song_name_list)
 
 
-def _raise_song_folder_not_found(song_number):
+def _raise_song_folder_not_found(song_number: str) -> Never:
     message = (
         "Folder_song_name_inside is not found, I cannot find the song number "
         f"in the Master Folder: {song_number}"
@@ -56,7 +63,7 @@ def _raise_song_folder_not_found(song_number):
     raise IndexError(message)
 
 
-def download_new_song_pipeline(song_number):
+def download_new_song_pipeline(song_number: str) -> dict[str, object] | None:
     song_number = str(song_number)
     st_print("Downloading song number: " + song_number)
     master_lagu_ibadah_folder_id = settings.GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID

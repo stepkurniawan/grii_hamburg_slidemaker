@@ -1,5 +1,7 @@
 import os
-from typing import List
+import datetime
+from typing import Any
+
 import streamlit as st
 
 # from alkitab_scraper import get_ayat_alkitab_dict
@@ -10,12 +12,12 @@ from grii_slide_maker.models import BibleReference, OfferingPurpose
 from grii_slide_maker.songs.drive import download_new_song_pipeline
 
 
-def st_print(*text):
+def st_print(*text: object) -> None:
     message = " ".join(str(part) for part in text)
     st.write(message)
     print(message)
 
-def sort_by_number(file_name):
+def sort_by_number(file_name: str) -> int:
     # Custom sorting function to extract numbers from the file name and sort numerically
     try:
         key = int(''.join(filter(str.isdigit, file_name)))
@@ -25,7 +27,7 @@ def sort_by_number(file_name):
     return key
 
 # create slides from this folder. one slide for each file. The folder contains jpg files, and it should be scaled to fit the slide. 
-def insert_slides_from_pict_folder(prs, folder_path):
+def insert_slides_from_pict_folder(prs: Any, folder_path: str) -> None:
     # get all files in the folder
     files = sorted(os.listdir(folder_path), key=sort_by_number)
 
@@ -39,7 +41,7 @@ def insert_slides_from_pict_folder(prs, folder_path):
             # add the picture to the slide
             slide.shapes.add_picture(os.path.join(folder_path, file), Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width)
 
-def add_slide_layout_from_layout_name(prs,layout_name):
+def add_slide_layout_from_layout_name(prs: Any, layout_name: str) -> Any | None:
     # Specify the layout name you want to use
     slide = None
     slide_layout = None
@@ -55,14 +57,14 @@ def add_slide_layout_from_layout_name(prs,layout_name):
 
     return slide
 
-def add_beginning_slide(prs):
+def add_beginning_slide(prs: Any) -> None:
     # Specify the layout name you want to use
     layout_name = "beginning" # renamed in the master template pptx file
     add_slide_layout_from_layout_name(prs, layout_name)
 
 
 
-def add_church_cover_page(prs, sunday_date):
+def add_church_cover_page(prs: Any, sunday_date: str) -> None:
     # Specify the layout name you want to use
     layout_name = "COVER_2" # renamed in the master template pptx file
     
@@ -73,7 +75,10 @@ def add_church_cover_page(prs, sunday_date):
     sundays_date_placeholder = slide_layout.placeholders[10]
     sundays_date_placeholder.text = sunday_date
 
-def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
+def add_bible_reading_page(
+    prs: Any,
+    bible_verse_text: str = "2 Kings 1:1-2",
+) -> None:
     
     # Find the layout with the specified name
     LAYOUT_NAME_COVER = "BIBLE_READING" # Bible reading cover
@@ -130,7 +135,11 @@ def add_bible_reading_page(prs, bible_verse_text = "2 Kings 1:1-2"):
         except IndexError:
             print("Invalid placeholder index.")
     
-def add_intersession_page(prs, intercession_text_id='', intercession_text_en=''):
+def add_intersession_page(
+    prs: Any,
+    intercession_text_id: str = "",
+    intercession_text_en: str = "",
+) -> None:
     # Specify the layout name you want to use
     layout_name = "INTERCESSION_PRAYER" # renamed in the master template pptx file
     slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
@@ -144,7 +153,7 @@ def add_intersession_page(prs, intercession_text_id='', intercession_text_en='')
     en_intercession_placeholder.text = intercession_text_en
 
 
-def add_doa_bapa_kami_page(prs):
+def add_doa_bapa_kami_page(prs: Any) -> None:
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_1")
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_2")
     add_slide_layout_from_layout_name(prs, "BAPA_KAMI_3")
@@ -152,7 +161,12 @@ def add_doa_bapa_kami_page(prs):
 
 
 
-def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
+def add_preacher_page(
+    prs: Any,
+    PASTOR_TITLE_ID: str,
+    PASTOR_TITLE_DE: str,
+    PASTOR_NAME: str,
+) -> None:
     layout_name = "PREACHER" # renamed in the master template pptx file
     slide_layout = add_slide_layout_from_layout_name(prs, layout_name)
 
@@ -168,14 +182,16 @@ def add_preacher_page(prs, PASTOR_TITLE_ID, PASTOR_TITLE_DE, PASTOR_NAME):
     
     
 
-def add_appostle_creed_page(prs):
+def add_appostle_creed_page(prs: Any) -> None:
     #loop and search for layout with the name "0_APOSTLE_CREED_1", "1_APOSTLE_CREED_1" until "5_APOSTLE_CREED_1"
     for i in range(0,6):
         layout_name = str(i) + "_APOSTLE_CREED_1"
         add_slide_layout_from_layout_name(prs, layout_name)
         print( str(i) + " apostle creed layout")
 
-def decide_offering_purpose_layout_name(next_sunday_date):
+def decide_offering_purpose_layout_name(
+    next_sunday_date: datetime.date,
+) -> OfferingPurpose:
     # if next sunday is the first sunday of the month, then its "P_PENGINJILAN"
     # second sunday, then its "P_SEKOLAH"
     # third sunday, then its "P_MANDAT"
@@ -194,7 +210,10 @@ def decide_offering_purpose_layout_name(next_sunday_date):
     return output
     
 
-def add_secondary_offering_purpose_page(prs, offering_purpose):
+def add_secondary_offering_purpose_page(
+    prs: Any,
+    offering_purpose: OfferingPurpose | str,
+) -> None:
     # if offering_purpose is P_PENGINJILAN, then add slide with layout name "P_PENGINJILAN"
     # if offering_purpose is P_SEKOLAH, then add slide with layout name "P_SEKOLAH"
     layout_name = OfferingPurpose(offering_purpose).value
@@ -203,17 +222,17 @@ def add_secondary_offering_purpose_page(prs, offering_purpose):
 
 
 
-def add_doxology_page(prs):
+def add_doxology_page(prs: Any) -> None:
     add_slide_layout_from_layout_name(prs, "0_DOXOLOGY")
     add_slide_layout_from_layout_name(prs, "1_DOXOLOGY")
     add_slide_layout_from_layout_name(prs, "2_DOXOLOGY")
 
-def add_amen_page(prs):
+def add_amen_page(prs: Any) -> None:
     add_slide_layout_from_layout_name(prs, "3_DOXOLOGY")
 
 
 
-def add_bekantmachung_page(prs):
+def add_bekantmachung_page(prs: Any) -> None:
     try: 
         for i in range(0,20): # 0,1,2,3,4,5,6,7
             layout_name = str(i) + "_WARTA"  
@@ -334,7 +353,7 @@ def add_bekantmachung_page(prs):
 #################### IN MEMORY SONG SAVING #########################################
 
 
-def insert_song_slides_drive_folder(prs, song_number):
+def insert_song_slides_drive_folder(prs: Any, song_number: str) -> None:
     """
     prs: Presentation object
     song_slides: list of song_slide objects, ex: [song_slide1, song_slide2, song_slide3]
@@ -345,7 +364,7 @@ def insert_song_slides_drive_folder(prs, song_number):
 
 
 
-def make_slides_from_imgs(prs, song_images_byte: List[bytes]):
+def make_slides_from_imgs(prs: Any, song_images_byte: list[bytes]) -> None:
     """
     song_imgs: list of song_img objects, ex: [song_img1, song_img2, song_img3]
     the somg_img object we get from google drives
@@ -357,7 +376,7 @@ def make_slides_from_imgs(prs, song_images_byte: List[bytes]):
         slide.shapes.add_picture(song_image_byte, Inches(0), Inches(0), height=prs.slide_height, width=prs.slide_width) # i dont need song_image_byte.getvalue() because we are using the BytesIO directly
 
 
-def make_slide_from_img(prs, img: bytes):
+def make_slide_from_img(prs: Any, img: bytes) -> None:
     """
     song_img: song_img object, ex: song_img1
     the somg_img object we get from google drives
@@ -375,7 +394,7 @@ def make_slide_from_img(prs, img: bytes):
 
 ######## Helper functions ####################################################
 
-def check_placeholders_in_slide_index(prs, layout_index):
+def check_placeholders_in_slide_index(prs: Any, layout_index: int) -> None:
     slide = prs.slides.add_slide(prs.slide_layouts[layout_index])
     print('in layout %d :' % layout_index)
     for shape in slide.placeholders:
@@ -384,7 +403,7 @@ def check_placeholders_in_slide_index(prs, layout_index):
             print('id: %d, name: %s' % (phf.idx, phf.type))
     print('check done. Remember, the id is more important than the position')
 
-def check_placeholders_in_slide(prs, slide):
+def check_placeholders_in_slide(prs: Any, slide: Any) -> None:
     print('in slide %s' % slide)
     for shape in slide.placeholders:
         if shape.is_placeholder:
@@ -392,7 +411,7 @@ def check_placeholders_in_slide(prs, slide):
             print('id: %d, name: %s' % (phf.idx, phf.type))
     print('check done. Remember, the id is more important than the position')
 
-def get_placeholders_in_slide(prs, slide):
+def get_placeholders_in_slide(prs: Any, slide: Any) -> list[int]:
     print('in slide %s' % slide)
     placeholders = []
     for shape in slide.placeholders:
@@ -405,6 +424,6 @@ def get_placeholders_in_slide(prs, slide):
 
 #### TEST FUNCTIONS ############################################################
 
-def test_insert_slides_from_pict_folder(prs, folder_path):
+def test_insert_slides_from_pict_folder(prs: Any, folder_path: str) -> None:
     folder_path = os.path.join(os.path.dirname(__file__), "sample", "2", "2")
     insert_slides_from_pict_folder(prs, folder_path)

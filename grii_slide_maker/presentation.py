@@ -185,7 +185,7 @@ def build_service_slides(
 
 
 def add_song_with_status(
-    prs,
+    prs: object,
     song_number: str,
     *,
     status: str,

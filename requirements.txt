@@ -1,6 +1,7 @@
 google_api_python_client==2.94.0
 google_auth_oauthlib==1.0.0
 htbuilder==0.6.1
+openpyxl>=3.1.5,<4
 pydantic>=2.11.7,<3.0.0
 pydantic-settings>=2.10.1
 protobuf==4.24.0

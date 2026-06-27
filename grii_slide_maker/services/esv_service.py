@@ -13,10 +13,14 @@ from grii_slide_maker.models import EsvTextResponse, Passage, Verse
 
 
 class EsvService: 
-    def __init__(self):
-        settings = Settings()
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        http_session: requests.Session | None = None,
+    ) -> None:
+        settings = settings or Settings()
         self.settings = settings
-        self.http_session = requests.Session()
+        self.http_session = http_session or requests.Session()
         self.http_session.headers.update({"Authorization": f'Token {settings.ESV_BIBLE_API_KEY}'})
 
     def get_passage(self, reference: str, **override_flag_values: bool) -> Passage:

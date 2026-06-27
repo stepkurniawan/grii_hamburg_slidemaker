@@ -3,7 +3,7 @@
 import datetime
 
 
-def sunday_date(formatted: str, today: datetime.date | None = None):
+def sunday_date(formatted: str, today: datetime.date | None = None) -> str | datetime.date:
     """Return the next Sunday in the requested app format."""
     today = today or datetime.date.today()
     days_until_sunday = (6 - today.weekday()) % 7

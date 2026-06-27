@@ -5,7 +5,7 @@ import datetime
 import streamlit as st
 from pptx.util import Inches
 
-from grii_slide_maker.config import Settings
+from grii_slide_maker.config import get_settings
 from grii_slide_maker.dates import sunday_date as format_sunday_date
 from grii_slide_maker.models import OrderOfMass
 from grii_slide_maker.paths import (
@@ -58,24 +58,24 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 output_file = ""
-settings = Settings()
+settings = get_settings()
 
 
-def st_print(text):
+def st_print(text: str) -> None:
     st.write(text)
     print(text)
 
 
-def st_error_print(text):
+def st_error_print(text: str) -> None:
     st.error(text)
     print(text)
 
 
-def sunday_date(formatted):
+def sunday_date(formatted: str) -> str | datetime.date:
     return format_sunday_date(formatted, today=datetime.date.today())
 
 
-def create_website():
+def create_website() -> None:
     render_website(
         version=VERSION,
         settings=settings,
@@ -86,7 +86,7 @@ def create_website():
     )
 
 
-def main(service_order: OrderOfMass | None = None):
+def main(service_order: OrderOfMass | None = None) -> None:
     build_service_slides(
         service_order,
         template_file=TEMPLATE_FILE,

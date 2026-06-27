@@ -5,8 +5,8 @@ from grii_slide_maker.bible.translations import (
     english_to_german_bible,
     english_to_indonesian_bible,
 )
-from grii_slide_maker.models import BibleReference, BibleSuperSearchResponse
-from grii_slide_maker.services.esv_service import EsvService
+from grii_slide_maker.models import BibleReference, BibleSuperSearchResponse, BibleVerseDict
+from grii_slide_maker.services.container import get_esv_service
 
 ######### GLOBAL VARIABLES #########
 BASE_URL = "https://api.biblesupersearch.com/api"
@@ -18,7 +18,7 @@ reference = "Genesis 1:1-2"
 
 ######### FUNCTIONS #########
 
-def fetch_bible_passage(bible_version, reference):
+def fetch_bible_passage(bible_version: str, reference: str) -> BibleSuperSearchResponse:
     # reference = "Rom 4:1-2", always in english
     params = {
         "bible": bible_version,
@@ -33,7 +33,13 @@ def fetch_bible_passage(bible_version, reference):
 
 
 
-def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"):
+def get_verses_dict(
+    english_book: str,
+    chapter: str,
+    verse_start: str,
+    verse_end: str,
+    language: str = "ID",
+) -> BibleVerseDict:
     """
     param:
     english_book (string): ex: "Genesis"
@@ -68,7 +74,7 @@ def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"
 
     result = fetch_bible_passage(bible_version, reference)
 
-    esv_service = EsvService()
+    esv_service = get_esv_service()
     esv_passage = esv_service.get_passage(reference)
     
 
@@ -86,7 +92,7 @@ def get_verses_dict(english_book, chapter, verse_start, verse_end, language="ID"
     for verse in esv_passage.verses:
         verses_dict[f"{bible_reference.book} {verse.chapter}:{verse.number}"] = verse.text
 
-    return verses_dict
+    return BibleVerseDict.model_validate(verses_dict)
 
 
 

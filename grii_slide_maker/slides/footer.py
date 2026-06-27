@@ -1,17 +1,19 @@
 import streamlit as st
+from typing import Any
+
 from htbuilder import HtmlElement, div, br, hr, a, p, img, styles
 from htbuilder.units import percent, px
 
 
-def image(src_as_string, **style):
+def image(src_as_string: str, **style: Any) -> HtmlElement:
     return img(src=src_as_string, style=styles(**style))
 
 
-def link(link, text, **style):
+def link(link: str, text: str, **style: Any) -> HtmlElement:
     return a(_href=link, _target="_blank", style=styles(**style))(text)
 
 
-def layout(*args):
+def layout(*args: str | HtmlElement) -> None:
 
     style = """
     <style>
@@ -62,7 +64,7 @@ def layout(*args):
     st.markdown(str(foot), unsafe_allow_html=True)
 
 
-def footer():
+def footer() -> None:
     myargs = [
         " with ☁️ by ",
         link("https://www.linkedin.com/in/stepkurniawan/", "Stephen Kurniawan"),
