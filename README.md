@@ -91,6 +91,22 @@ To run Ruff directly:
 uvx ruff check --fix .
 ```
 
+## Versioning
+The app version has one source of truth: `project.version` in [`pyproject.toml`](pyproject.toml). The Streamlit UI reads that value and displays it in the page header.
+
+To bump the patch version:
+
+```bash
+uv version --bump patch
+```
+
+You can also bump a minor or major version:
+
+```bash
+uv version --bump minor
+uv version --bump major
+```
+
 ## Notes
 - Slides, templates, and output handling are in [`grii_slide_maker/slides/creator.py`](grii_slide_maker/slides/creator.py) and [`grii_slide_maker/app.py`](grii_slide_maker/app.py).
 - To change the slide template, edit `master_slide_template_en.pptx`.

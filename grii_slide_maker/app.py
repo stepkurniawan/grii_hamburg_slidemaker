@@ -17,6 +17,7 @@ from grii_slide_maker.paths import (
     get_resource_path,
 )
 from grii_slide_maker.presentation import build_service_slides
+from grii_slide_maker.version import get_app_version
 from grii_slide_maker.website import create_website as render_website
 from grii_slide_maker.website import show_validation_errors
 
@@ -36,8 +37,7 @@ __all__ = [
 ]
 
 
-date_today = datetime.datetime.now().strftime("%y%m%d")
-VERSION = "4.1." + str(date_today)
+VERSION = get_app_version()
 
 SONG_NUMBERS = ["1", "test", "test", "test"]
 OPEN_BIBLE_FULL_VERSES = ["Genesis 1:2-3", "1 Kings 1:1-2"]
