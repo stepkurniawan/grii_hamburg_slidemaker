@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from grii_slide_maker.models import Pastor, ServiceOrder, SongSelection
+from grii_slide_maker.models import Pastor, OrderOfMass, SongSelection
 
 
 def test_song_selection_accepts_four_trimmed_songs():
@@ -22,7 +22,7 @@ def test_song_selection_rejects_non_numeric_song_id():
 
 
 def test_service_order_accepts_optional_holy_communion_song():
-    order = ServiceOrder.model_validate(
+    order = OrderOfMass.model_validate(
         {
             "song_numbers": "161, 320, 93, 169",
             "pastor_name": "Pdt. Billy Kristanto",

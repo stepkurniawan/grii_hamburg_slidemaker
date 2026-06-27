@@ -1,387 +1,102 @@
 """Build bilingual Sunday service PowerPoint slides for GRII Hamburg."""
 
 import datetime
-from io import BytesIO
-import os
-import sys
-import streamlit as st
 
-from pydantic import ValidationError
-from pptx import Presentation
+import streamlit as st
 from pptx.util import Inches
 
 from grii_slide_maker.config import Settings
-from grii_slide_maker.models import ServiceOrder
-from grii_slide_maker.songs.drive import SONGS_FOLDER
-from grii_slide_maker.slides.announcements import insert_annoucement_slides
-from grii_slide_maker.slides.footer import footer
-from grii_slide_maker.slides.creator import (
-    add_amen_page,
-    add_appostle_creed_page,
-    add_beginning_slide,
-    add_bekantmachung_page,
-    add_bible_reading_page,
-    add_church_cover_page,
-    add_doa_bapa_kami_page,
-    add_doxology_page,
-    add_intersession_page,
-    add_preacher_page,
-    add_secondary_offering_purpose_page,
-    decide_offering_purpose_layout_name,
-    insert_song_slides_drive_folder,
+from grii_slide_maker.dates import sunday_date as format_sunday_date
+from grii_slide_maker.models import OrderOfMass
+from grii_slide_maker.paths import (
+    CURRENT_DIR,
+    OUTPUT_DIR,
+    PACKAGE_DIR,
+    TEMPLATE_FILE,
+    binary_output_file,
+    get_resource_path,
 )
+from grii_slide_maker.presentation import build_service_slides
+from grii_slide_maker.website import create_website as render_website
+from grii_slide_maker.website import show_validation_errors
 
 
-########################################### Version ##########################################
-# date today in yymmdd
+__all__ = [
+    "CURRENT_DIR",
+    "OUTPUT_DIR",
+    "PACKAGE_DIR",
+    "TEMPLATE_FILE",
+    "VERSION",
+    "binary_output_file",
+    "create_website",
+    "get_resource_path",
+    "main",
+    "show_validation_errors",
+    "sunday_date",
+]
+
+
 date_today = datetime.datetime.now().strftime("%y%m%d")
-VERSION = "3.3."+str(date_today)
+VERSION = "4.1." + str(date_today)
 
-########################################### INPUTS ##########################################
-global SONG_NUMBERS, PASTOR_TITLE_ID, PASTOR_NAME, OPEN_BIBLE_FULL_VERSE,OPEN_BIBLE_FULL_VERSES , PASTOR_TITLE_DE_OR_EN, SELECTED_SECOND_OFFERING_PURPOSE_ID
-
-# 1. 4 song's numbers
 SONG_NUMBERS = ["1", "test", "test", "test"]
-# 2. Opening Bible verse
 OPEN_BIBLE_FULL_VERSES = ["Genesis 1:2-3", "1 Kings 1:1-2"]
 OPEN_BIBLE_FULL_VERSE = "Genesis 1:2-3"
-# 3. Pastor's title in Indonesian and English, and name
 PASTOR_TITLE_ID = "Pdt."
 PASTOR_TITLE_DE_OR_EN = "Rev."
 PASTOR_NAME = "Billy Kristanto"
-# 4. Second (blue) offering purpose in Indonesian and English
-SECOND_OFFERING_PURPOSE_ID = ["NONE", "P_PENGINJILAN", "P_SEKOLAH", "P_MANDAT", "P_PEMBANGUNAN", "P_DIAKONIA" ]
+SECOND_OFFERING_PURPOSE_ID = [
+    "NONE",
+    "P_PENGINJILAN",
+    "P_SEKOLAH",
+    "P_MANDAT",
+    "P_PEMBANGUNAN",
+    "P_DIAKONIA",
+]
 SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 
-########################################### Global variables##########################################
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
-CURRENT_DIR = getattr(
-    sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-OUTPUT_DIR = os.path.join(PACKAGE_DIR, "output")
 output_file = ""
-binary_output_file = BytesIO()
 settings = Settings()
 
-
-########################################### Functions ##########################################
 
 def st_print(text):
     st.write(text)
     print(text)
 
+
 def st_error_print(text):
     st.error(text)
     print(text)
 
-def get_resource_path(relative_path):
-    if hasattr(sys, "_MEIPASS"):
-        # Running from PyInstaller executable, use sys._MEIPASS
-        base_path = sys._MEIPASS
-    else:
-        # Running from source code
-        base_path = CURRENT_DIR
-
-    return os.path.join(base_path, relative_path)
-
-TEMPLATE_FILE = get_resource_path('master_slide_template_en.pptx')
-
-def processing_answers(data_array):
-    # Legacy adapter for callers that still pass the old positional list.
-    return ServiceOrder.model_validate(
-        {
-            "song_numbers": data_array[0],
-            "pastor_name": data_array[1],
-            "bible_verses": data_array[2],
-            "pastor_title": data_array[3],
-            "holy_communion_song_number": data_array[4],
-        }
-    )
-
-
-def default_service_order():
-    return ServiceOrder.model_validate(
-        {
-            "song_numbers": "161, 320, 93, 169",
-            "pastor_name": "Pdt. Billy Kristanto",
-            "bible_verses": "Genesis 1:2-3, 1 Kings 1:1-2",
-            "pastor_title": "Rev.",
-            "holy_communion_song_number": None,
-        }
-    )
-
-
-def show_validation_errors(error: ValidationError):
-    for validation_error in error.errors():
-        location = " > ".join(str(part) for part in validation_error["loc"])
-        message = validation_error["msg"]
-        st.sidebar.error(f"{location}: {message}")
 
 def sunday_date(formatted):
-    # save file as with next sunday's date yyyymmdd.pptx
-    # Get today's date
-    today = datetime.date.today()
-    # Calculate the number of days until the next Sunday (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-    days_until_sunday = (6 - today.weekday()) % 7
-    # Calculate the date of the next Sunday
-    next_sunday = today + datetime.timedelta(days=days_until_sunday)
-    if formatted == "filename":
-        next_sunday = str(next_sunday).replace("-", "")
-    elif formatted == "slide":
-        # return 12 July 2020
-        next_sunday = str(next_sunday.strftime("%d %B %Y"))
-    else:
-        next_sunday = next_sunday
-        
-    return next_sunday
+    return format_sunday_date(formatted, today=datetime.date.today())
+
 
 def create_website():
-    # website title
-    page_title = "☁️ MRII Europe SlideMaker"
-
-    st.set_page_config( page_icon=":church:", page_title=page_title)
-
-    # website description
-    # heading
-    st.title(page_title)
-    # subheading
-    st.subheader(" 📜 Welcome to MRII Europe SlideMaker V" + VERSION + " A1")
-    st.write("This website is used to create a powerpoint presentation for Sunday service.")
-    st.write("It is tweaked for Hamburg Church, which is bilingual (English and Indo).")
-
-    # subheading
-    st.subheader("How to use this website")
-    st.write("1. Enter the song numbers separated by comma on the left sidebar")
-    st.write("2. Enter the (English) Bible verse. ex: Genesis 1:2-3, 1 Kings 1:1-2")
-    st.write("3. (Optional) Enter the pastor name ")
-    st.write("4. (Optional) Enter the pastor title in English ")
-    st.write("5. Click the submit button")
-    
-    # subheading
-    st.subheader("Where are the songs?")
-    st.write("The songs are downloaded from the database to the in-memory, since we don't have permission to store it in the server.")
-    st.write("It is stored in the folder, in the server: " + SONGS_FOLDER)
-
-    st.subheader("Where is the Slide?")
-    st.markdown("After the main process is finished, the **Download Button** will appear on the **left sidebar**")
-    st.markdown("You can save the slide by clicking on the **Download Button**")
-    st.markdown("The file name is the date of the **next Sunday** service")
-
-    # ask for user input as parameters on the side bar
-    # ask for song numbers
-    st.sidebar.subheader("Song numbers")
-    st.sidebar.write("Please enter the song numbers separated by comma")
-    st.sidebar.write("Example: 161, 320, 93, 169")
-    song_numbers = st.sidebar.text_input("Song numbers")
-
-    holy_communion = st.sidebar.checkbox("Holy Communion", key="holy_communion", help="Toggle this if the service is Holy Communion. This will add the Holy Communion song slide before the sermon.")
-    holy_communion_song_number: int | None = None
-    if holy_communion:
-        st.sidebar.write("Holy Communion song will be added before the sermon slide.")
-        holy_communion_song_number = st.sidebar.text_input("Holy Communion song number")
-        if holy_communion and not holy_communion_song_number:
-            st.sidebar.error("Please enter the Holy Communion song number.")
-
-    # ask for Bible verse
-    st.sidebar.subheader("Bible verse")
-    st.sidebar.write("Please enter the Bible verse in English")
-    st.sidebar.write("Example: Genesis 1:2-3, 1 Kings 1:1-2")
-    bible_verses = st.sidebar.text_input("Bible verse(s)")
-    
-    # ask for pastor name
-    st.sidebar.subheader("Pastor name")
-    st.sidebar.write("Please enter the pastor name")
-    st.sidebar.write("Default Example: Pdt. Billy Kristanto")
-    pastor_name = st.sidebar.text_input("Pastor name")
-
-    # if pastor_name is empty, then use default value
-    if pastor_name == "":
-        pastor_name = "Pdt. Billy Kristanto"
-
-    # ask for pastor title in English
-    st.sidebar.subheader("Pastor title")
-    st.sidebar.write("Please enter the pastor title")
-    st.sidebar.write("Default Example: Rev.")
-    # default is Rev. 
-    pastor_title = st.sidebar.text_input("Pastor title")
-
-    # if pastor_title_de is empty, then use default value
-    if pastor_title == "":
-        pastor_title = "Rev."
-
-
-    # create a submit button
-    submit_button = st.sidebar.button("Submit")
-    # if submit button is clicked
-    if submit_button:
-        try:
-            service_order = ServiceOrder.model_validate(
-                {
-                    "song_numbers": song_numbers,
-                    "pastor_name": pastor_name,
-                    "bible_verses": bible_verses,
-                    "pastor_title": pastor_title,
-                    "holy_communion_song_number": holy_communion_song_number,
-                }
-            )
-        except ValidationError as error:
-            st.sidebar.error("Please fix the input before generating the slide.")
-            show_validation_errors(error)
-            footer()
-            return
-
-        st.write("Validated service order")
-        st.write(service_order.model_dump(mode="json"))
-        with st.spinner('Generating the slide...'):
-            main(service_order)
-            st.balloons()
-            output_drive_folder_url = "https://drive.google.com/drive/folders/" + settings.GOOGLE_DRIVE_OUTPUT_FOLDER_ID
-            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:" + output_drive_folder_url)
-
-            st.sidebar.download_button(
-                label="Download slide!",
-                data=binary_output_file.getvalue(),
-                file_name=sunday_date("filename")+ ".pptx",
-            )
-    
-    footer()
-
-
-def main(service_order: ServiceOrder | None = None):
-
-    """
-    the structure of the slide is
-    Presentation -> Layout name -> slide layout -> slide -> shapes -> placeholders
-    """
-
-    if service_order is None:
-        service_order = default_service_order()
-
-    binary_output_file.seek(0)
-    binary_output_file.truncate(0)
-
-    ########################################### CHECKING SONGS ##########################################
-
-    # create a test presentation file
-    prs = Presentation(TEMPLATE_FILE)
-
-    #### Slide creation starts here ####
-    add_beginning_slide(prs)
-    add_church_cover_page(prs, sunday_date("slide"))
-    # check_placeholders_in_slide_index(prs, 4)
-
-    #### add first song
-    st_print("Adding first song")
-    try:
-        insert_song_slides_drive_folder(prs, service_order.songs.worship_songs[0].value)
-    except Exception:
-        print("Error: Cannot add the 1st song")
-        st_error_print("Error: Cannot add the 1st song")
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    #### add second song
-    st_print("Adding second song")
-    try: 
-        insert_song_slides_drive_folder(prs, service_order.songs.worship_songs[1].value)
-    except Exception:
-        print("Error: Cannot add the 2nd song")
-        st_error_print("Error: Cannot add the 2nd song")
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    #### ADD BIBLE VERSE
-    st_print("Adding bible reading")
-
-    print("Bible references: ", service_order.bible_references)
-    for bible_verse in service_order.bible_references:
-        print("bible_verse: ", bible_verse)
-        add_bible_reading_page(prs, bible_verse.as_reference_text())
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    #### add third song
-    st_print("Adding third song")
-    try: 
-        insert_song_slides_drive_folder(prs, service_order.songs.worship_songs[2].value)
-    except Exception:
-        print("Error: Cannot add the 3rd song")
-        st_error_print("Error: Cannot add the 3rd song")
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    
-    st_print("Adding Lord's Prayer")
-    add_intersession_page(prs)
-    add_doa_bapa_kami_page(prs)
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    if service_order.songs.holy_communion_song is not None:
-        st_print("Adding Holy Communion song")
-        try:
-            insert_song_slides_drive_folder(prs, service_order.songs.holy_communion_song.value)
-            add_church_cover_page(prs, sunday_date("slide"))
-        except Exception:
-            print("Error: Cannot add the Holy Communion song")
-            st_error_print("Error: Cannot add the Holy Communion song")
-
-    st_print("Adding Preacher Sermon Page")
-    add_preacher_page(
-        prs,
-        service_order.pastor.title_id,
-        service_order.pastor.title_de_or_en,
-        service_order.pastor.name,
+    render_website(
+        version=VERSION,
+        settings=settings,
+        output_dir=OUTPUT_DIR,
+        binary_output_file=binary_output_file,
+        generate_slide=main,
+        sunday_date=sunday_date,
     )
 
-    add_church_cover_page(prs, sunday_date("slide"))
 
-    st_print("Adding Apostles' Creed")
-    add_appostle_creed_page(prs)
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    st_print("Adding Offerings")
-    secondary_purpose_id = decide_offering_purpose_layout_name(sunday_date("date"))
-    add_secondary_offering_purpose_page(prs, secondary_purpose_id) 
-
-    #### add fourth song
-    st_print("Adding fourth song")
-    try:
-        insert_song_slides_drive_folder(prs, service_order.songs.worship_songs[3].value)
-    except Exception:
-        print("Error: Cannot add the 4th song")
-        st_error_print("Error: Cannot add the 4th song")
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    st_print("Adding Puji Allah Bapa Putra until closings")
-    add_doxology_page(prs)
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    add_amen_page(prs)
-
-    add_church_cover_page(prs, sunday_date("slide"))
-
-    add_bekantmachung_page(prs)
-    insert_annoucement_slides(prs)
-    
-    # save in output folder
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    prs.save(binary_output_file) # so it is downloadable using button
-    st_print("Saving the slide in " + OUTPUT_DIR)
-    output_path = os.path.join(OUTPUT_DIR, sunday_date("filename") + ".pptx")
-    with open(output_path, "wb") as saved_pptx:
-        saved_pptx.write(binary_output_file.getvalue())
-    st_print("saved in " + OUTPUT_DIR)
+def main(service_order: OrderOfMass | None = None):
+    build_service_slides(
+        service_order,
+        template_file=TEMPLATE_FILE,
+        output_dir=OUTPUT_DIR,
+        binary_output_file=binary_output_file,
+        sunday_date=sunday_date,
+        status_writer=st_print,
+        error_writer=st_error_print,
+    )
 
 
-# Run the Streamlit UI when this file is used as the app entry point.
 if __name__ == "__main__":
     create_website()
-
-

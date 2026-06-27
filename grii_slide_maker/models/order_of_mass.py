@@ -76,7 +76,7 @@ class OfferingPurpose(StrEnum):
     P_DIAKONIA = "P_DIAKONIA"
 
 
-class ServiceOrder(BaseModel):
+class OrderOfMass(BaseModel):
     songs: SongSelection
     pastor: Pastor
     bible_references: list[BibleReference] = Field(min_length=1)

@@ -17,7 +17,7 @@ from grii_slide_maker.models.drive import (
 from grii_slide_maker.models.order_of_mass import (
     OfferingPurpose,
     Pastor,
-    ServiceOrder,
+    OrderOfMass,
     SongNumber,
     SongSelection,
 )
@@ -35,7 +35,7 @@ __all__ = [
     "OfferingPurpose",
     "Passage",
     "Pastor",
-    "ServiceOrder",
+    "OrderOfMass",
     "SongImageSet",
     "SongNumber",
     "SongSelection",

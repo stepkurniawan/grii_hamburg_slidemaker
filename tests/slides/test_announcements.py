@@ -1,6 +1,7 @@
-def test_insert_annoucement_slides_uses_configured_folder(monkeypatch, image_bytes):
-    from grii_slide_maker.slides import announcements
+from grii_slide_maker.slides import announcements
 
+
+def test_insert_annoucement_slides_uses_configured_folder(monkeypatch, image_bytes):
     calls = []
     monkeypatch.setattr(announcements.settings, "ANNOUCEMENT_FOLDER_ID", "folder-1")
     monkeypatch.setattr(
