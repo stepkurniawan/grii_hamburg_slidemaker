@@ -44,7 +44,8 @@ pip install -r requirements.txt
 3. Provide secrets:
 - Place service account / Drive credentials into Streamlit secrets (`.streamlit/secrets.toml`) or use external `token.json` / `credentials.json` as needed.
 - Set `ESV_BIBLE_API_KEY` for ESV passage lookup.
-- Optional settings include `ESV_TEXT_API_URL`, `ESV_HTML_API_URL`, and `ANNOUCEMENT_FOLDER_ID`. See [`grii_slide_maker.config.Settings`](grii_slide_maker/config.py).
+- Set `GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID`, `ANNOUCEMENT_FOLDER_ID`, and `GOOGLE_DRIVE_OUTPUT_FOLDER_ID` for Drive folder lookup.
+- Optional settings include `ESV_TEXT_API_URL` and `ESV_HTML_API_URL`. See [`grii_slide_maker.config.Settings`](grii_slide_maker/config.py).
 
 ## Run (development)
 Start the Streamlit app:

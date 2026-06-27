@@ -17,6 +17,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
+from grii_slide_maker.config import Settings
 from grii_slide_maker.models import DriveFolder, DriveImageFile, DriveItem, SongImageSet
 
 base_path = getattr(
@@ -31,9 +32,7 @@ HOME_DIR = os.path.expanduser("~")
 DOWNLOAD_FOLDER = os.path.join(HOME_DIR, "Downloads")
 SONGS_FOLDER = os.path.join(base_path, 'songs' )
 
-
-# ID of the folder you want to download from Google Drive
-master_lagu_ibadah_folder_id = '1286x7da8SnvwGhBv5C0NubPDeqf2kJEt'
+settings = Settings()
 
 
 # Define the required scopes for the Drive API
@@ -299,6 +298,7 @@ def save_images_from_google_folder_to_memory(folder_id) -> dict[str, Any]:
 ############### COMBINING ALL THE FUNCTIONS #####################
 def download_new_song_pipeline(song_number): 
     st_print("Downloading song number: " + str(song_number))
+    master_lagu_ibadah_folder_id = settings.GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID
 
     get_list_folders(master_lagu_ibadah_folder_id, creds)
 

@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from pptx import Presentation
 from pptx.util import Inches
 
+from grii_slide_maker.config import Settings
 from grii_slide_maker.models import ServiceOrder
 from grii_slide_maker.songs.drive import SONGS_FOLDER
 from grii_slide_maker.slides.announcements import insert_annoucement_slides
@@ -58,10 +59,12 @@ MY_SIDE_HEIGHT = Inches(9)
 CURRENT_DIR = getattr(
     sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-OUTPUT_DIR = os.path.join(CURRENT_DIR, "output")
+OUTPUT_DIR = os.path.join(PACKAGE_DIR, "output")
 output_file = ""
 binary_output_file = BytesIO()
+settings = Settings()
 
 
 ########################################### Functions ##########################################
@@ -235,7 +238,8 @@ def create_website():
         with st.spinner('Generating the slide...'):
             main(service_order)
             st.balloons()
-            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:" + "https://drive.google.com/drive/folders/1AJTLk-AXOI7nEYcWAOMTZ_MxDNzaRSK2")
+            output_drive_folder_url = "https://drive.google.com/drive/folders/" + settings.GOOGLE_DRIVE_OUTPUT_FOLDER_ID
+            st.sidebar.success("Slide generated successfully in " + OUTPUT_DIR + ":tada:" + output_drive_folder_url)
 
             st.sidebar.download_button(
                 label="Download slide!",

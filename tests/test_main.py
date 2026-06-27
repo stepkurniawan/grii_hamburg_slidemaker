@@ -42,10 +42,10 @@ def test_processing_answers_adapts_legacy_form_data():
     ]
 
 
-def test_default_output_dir_is_under_current_dir():
+def test_default_output_dir_is_under_package_dir():
     from grii_slide_maker import app as main
 
-    assert main.OUTPUT_DIR == os.path.join(main.CURRENT_DIR, "output")
+    assert main.OUTPUT_DIR == os.path.join(main.PACKAGE_DIR, "output")
 
 
 def test_main_outputs_downloadable_and_saved_pptx(tmp_path, monkeypatch):

@@ -7,6 +7,9 @@ import pytest
 @pytest.fixture(autouse=True)
 def test_settings_env(monkeypatch):
     monkeypatch.setenv("ESV_BIBLE_API_KEY", "test-token")
+    monkeypatch.setenv("GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID", "song-master-folder")
+    monkeypatch.setenv("ANNOUCEMENT_FOLDER_ID", "announcement-folder")
+    monkeypatch.setenv("GOOGLE_DRIVE_OUTPUT_FOLDER_ID", "output-folder")
 
 
 @pytest.fixture
