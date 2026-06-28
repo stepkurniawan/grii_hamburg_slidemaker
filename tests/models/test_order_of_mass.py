@@ -10,6 +10,13 @@ def test_song_selection_accepts_four_trimmed_songs():
     assert [song.value for song in selection.worship_songs] == ["161", "320", "93", "169"]
 
 
+def test_song_selection_parses_holy_communion_song_from_song_list():
+    selection = SongSelection.model_validate("236, 299, 199, 22, HC 264")
+
+    assert [song.value for song in selection.worship_songs] == ["236", "299", "199", "22"]
+    assert selection.holy_communion_song.value == "264"
+
+
 @pytest.mark.parametrize("song_numbers", ["161, 320, 93", "161, 320, 93, 169, 200"])
 def test_song_selection_rejects_wrong_song_count(song_numbers):
     with pytest.raises(ValidationError):

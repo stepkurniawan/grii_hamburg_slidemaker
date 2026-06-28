@@ -82,6 +82,26 @@ def test_parse_service_order_from_dashboard_labels():
     ]
 
 
+def test_parse_service_order_reads_holy_communion_song_from_songs_cell():
+    workbook, _, service_order = build_workbook()
+    service_order["A174"] = "THIS WEEK"
+    service_order["A185"] = "Songs"
+    service_order["B185"] = "236, 299, 199, 22, HC 264"
+    service_order["A187"] = "Bible Reading"
+    service_order["B187"] = "Genesis 1:2-3"
+
+    loaded = load_workbook_from_bytes(workbook_bytes(workbook))
+    parsed_order = parse_service_order(loaded, Settings())
+
+    assert [song.value for song in parsed_order.songs.worship_songs] == [
+        "236",
+        "299",
+        "199",
+        "22",
+    ]
+    assert parsed_order.songs.holy_communion_song.value == "264"
+
+
 def test_parse_service_order_falls_back_when_this_week_marker_is_missing():
     workbook, _, service_order = build_workbook()
     service_order["A10"] = "Songs"

@@ -1,4 +1,5 @@
 from enum import StrEnum
+import re
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -37,8 +38,16 @@ class SongSelection(BaseModel):
         if isinstance(value, cls):
             return value
         if isinstance(value, str):
-            songs = [song.strip() for song in value.split(",") if song.strip()]
-            return {"worship_songs": songs}
+            songs: list[str] = []
+            holy_communion_song = None
+            for song in [song.strip() for song in value.split(",") if song.strip()]:
+                # Match "HC" followed by whitespace and one or more digits (e.g., "HC 123")
+                holy_communion_match = re.fullmatch(r"HC\s+(\d+)", song, re.IGNORECASE)
+                if holy_communion_match:
+                    holy_communion_song = holy_communion_match.group(1)
+                    continue
+                songs.append(song)
+            return {"worship_songs": songs, "holy_communion_song": holy_communion_song}
         return value
 
 

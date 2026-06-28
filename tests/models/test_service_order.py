@@ -42,6 +42,24 @@ def test_service_order_uses_default_pastor_title():
     assert service_order.pastor.title_de_or_en == "Rev."
 
 
+def test_service_order_parses_holy_communion_song_from_song_list():
+    service_order = ServiceOrder.model_validate(
+        {
+            "song_numbers": "236, 299, 199, 22, HC 264",
+            "pastor_name": "Pdt. Billy Kristanto",
+            "bible_verses": "Genesis 1:2-3",
+        }
+    )
+
+    assert [song.value for song in service_order.songs.worship_songs] == [
+        "236",
+        "299",
+        "199",
+        "22",
+    ]
+    assert service_order.songs.holy_communion_song.value == "264"
+
+
 def test_service_order_rejects_bad_song_count():
     with pytest.raises(ValidationError):
         SongSelection.model_validate("161, 320, 93")
