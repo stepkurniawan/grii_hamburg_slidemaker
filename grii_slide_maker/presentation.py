@@ -45,7 +45,7 @@ class SlideDeckActions:
 
 
 def build_service_slides(
-    service_order: OrderOfMass,
+    order_of_mass: OrderOfMass,
     *,
     template_file: str,
     output_dir: str,
@@ -72,7 +72,7 @@ def build_service_slides(
 
     add_song_with_status(
         prs,
-        service_order.songs.worship_songs[0].value,
+        order_of_mass.songs.worship_songs[0].value,
         status="Adding first song",
         error="Error: Cannot add the 1st song",
         status_writer=status_writer,
@@ -84,7 +84,7 @@ def build_service_slides(
 
     add_song_with_status(
         prs,
-        service_order.songs.worship_songs[1].value,
+        order_of_mass.songs.worship_songs[1].value,
         status="Adding second song",
         error="Error: Cannot add the 2nd song",
         status_writer=status_writer,
@@ -95,8 +95,8 @@ def build_service_slides(
     actions.add_church_cover_page(prs, sunday_date("slide"))
 
     status_writer("Adding bible reading")
-    print("Bible references: ", service_order.bible_references)
-    for bible_verse in service_order.bible_references:
+    print("Bible references: ", order_of_mass.bible_references)
+    for bible_verse in order_of_mass.bible_references:
         print("bible_verse: ", bible_verse)
         add_bible_reading_with_status(
             prs,
@@ -109,7 +109,7 @@ def build_service_slides(
 
     add_song_with_status(
         prs,
-        service_order.songs.worship_songs[2].value,
+        order_of_mass.songs.worship_songs[2].value,
         status="Adding third song",
         error="Error: Cannot add the 3rd song",
         status_writer=status_writer,
@@ -125,12 +125,12 @@ def build_service_slides(
 
     actions.add_church_cover_page(prs, sunday_date("slide"))
 
-    if service_order.songs.holy_communion_song is not None:
+    if order_of_mass.songs.holy_communion_song is not None:
         status_writer("Adding Holy Communion song")
         try:
             actions.insert_song_slides_drive_folder(
                 prs,
-                service_order.songs.holy_communion_song.value,
+                order_of_mass.songs.holy_communion_song.value,
             )
             actions.add_church_cover_page(prs, sunday_date("slide"))
         except Exception:
@@ -140,9 +140,9 @@ def build_service_slides(
     status_writer("Adding Preacher Sermon Page")
     actions.add_preacher_page(
         prs,
-        service_order.pastor.title_id,
-        service_order.pastor.title_de_or_en,
-        service_order.pastor.name,
+        order_of_mass.pastor.title_id,
+        order_of_mass.pastor.title_de_or_en,
+        order_of_mass.pastor.name,
     )
 
     actions.add_church_cover_page(prs, sunday_date("slide"))
@@ -158,7 +158,7 @@ def build_service_slides(
 
     add_song_with_status(
         prs,
-        service_order.songs.worship_songs[3].value,
+        order_of_mass.songs.worship_songs[3].value,
         status="Adding fourth song",
         error="Error: Cannot add the 4th song",
         status_writer=status_writer,

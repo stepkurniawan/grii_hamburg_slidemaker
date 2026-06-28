@@ -1,6 +1,6 @@
 [project]
 name = "grii-europe-slide-maker"
-version = "1.0.0"
+version = "2.0.0"
 description = ""
 authors = [{ name = "stepkurniawan", email = "stepkurniawan@gmail.com" }]
 requires-python = ">=3.13,<3.14"

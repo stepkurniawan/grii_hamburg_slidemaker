@@ -329,7 +329,7 @@ wheels = [
 
 [[package]]
 name = "grii-europe-slide-maker"
-version = "1.0.0"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "bs4" },
