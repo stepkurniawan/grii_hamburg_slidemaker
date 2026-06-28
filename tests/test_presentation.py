@@ -1,4 +1,8 @@
-from grii_slide_maker.presentation import SlideDeckActions, add_song_with_status
+from grii_slide_maker.presentation import (
+    SlideDeckActions,
+    add_bible_reading_with_status,
+    add_song_with_status,
+)
 
 
 def test_add_song_with_status_inserts_song_and_writes_status():
@@ -41,3 +45,26 @@ def test_add_song_with_status_reports_error_when_insert_fails():
     )
 
     assert calls == [("status", "Adding song"), ("error", "Error adding song")]
+
+
+def test_add_bible_reading_with_status_reports_error_when_insert_fails():
+    calls = []
+
+    def fail_insert(prs, bible_reference):
+        raise RuntimeError("BibleSuperSearch unavailable")
+
+    actions = SlideDeckActions(add_bible_reading_page=fail_insert)
+
+    add_bible_reading_with_status(
+        "prs",
+        "Romans 12:17-21",
+        error_writer=lambda text: calls.append(("error", text)),
+        actions=actions,
+    )
+
+    assert calls == [
+        (
+            "error",
+            "Error: Cannot add Bible reading Romans 12:17-21: BibleSuperSearch unavailable",
+        )
+    ]

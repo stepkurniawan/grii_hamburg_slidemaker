@@ -10,6 +10,7 @@ from grii_slide_maker.services.container import get_esv_service
 
 ######### GLOBAL VARIABLES #########
 BASE_URL = "https://api.biblesupersearch.com/api"
+REQUEST_TIMEOUT_SECONDS = 15
 
 LANG = "en"
 BIBLE_VERSION = ""
@@ -18,15 +19,30 @@ reference = "Genesis 1:1-2"
 
 ######### FUNCTIONS #########
 
+
+class BiblePassageFetchError(RuntimeError):
+    """Raised when a Bible passage cannot be fetched from an upstream service."""
+
+
 def fetch_bible_passage(bible_version: str, reference: str) -> BibleSuperSearchResponse:
     # reference = "Rom 4:1-2", always in english
     params = {
         "bible": bible_version,
         "reference": reference
     }
-    
-    response = requests.get(BASE_URL, params=params)
-    response.raise_for_status()
+
+    try:
+        response = requests.get(
+            BASE_URL,
+            params=params,
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+    except requests.RequestException as error:
+        raise BiblePassageFetchError(
+            "Could not fetch Bible passage from BibleSuperSearch. "
+            f"Reference: {reference}; version: {bible_version}."
+        ) from error
     data = response.json()
     
     return BibleSuperSearchResponse.model_validate(data)
@@ -64,30 +80,30 @@ def get_verses_dict(
         bible_version = "luther_1912"
     else:
         raise ValueError(f"Unsupported Bible language: {language}")
-    
-    # create a dictionary from the verses
-    # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
-    # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
+
     german_book = english_to_german_bible.get(bible_reference.book)
     indonesian_book = english_to_indonesian_bible.get(bible_reference.book)
     reference = bible_reference.as_reference_text()
 
-    result = fetch_bible_passage(bible_version, reference)
-
     esv_service = get_esv_service()
     esv_passage = esv_service.get_passage(reference)
-    
 
-    for bible_result in result.results:
-        # get all the verses in the chapter of this bible
-        verse_result = bible_result.verses[bible_version]
-        chapter_key = str(bible_reference.chapter)
+    if language != "EN":
+        # create a dictionary from the verses
+        # {"Romans 4:1" : "What shall we say then that Abraham our father, as pertaining to the flesh, hath found?",
+        # "Romans 4:2" : "For if Abraham were justified by works, he hath whereof to glory; but not before God."}
+        result = fetch_bible_passage(bible_version, reference)
 
-        for verse in verse_result[chapter_key]:
-            if language == "DE":
-                verses_dict[f"{german_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
-            elif language == "ID":
-                verses_dict[f"{indonesian_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
+        for bible_result in result.results:
+            # get all the verses in the chapter of this bible
+            verse_result = bible_result.verses[bible_version]
+            chapter_key = str(bible_reference.chapter)
+
+            for verse in verse_result[chapter_key]:
+                if language == "DE":
+                    verses_dict[f"{german_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
+                elif language == "ID":
+                    verses_dict[f"{indonesian_book} {chapter_key}:{verse}"] = verse_result[chapter_key][verse].text
             
     for verse in esv_passage.verses:
         verses_dict[f"{bible_reference.book} {verse.chapter}:{verse.number}"] = verse.text

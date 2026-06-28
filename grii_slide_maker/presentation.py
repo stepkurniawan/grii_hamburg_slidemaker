@@ -98,7 +98,12 @@ def build_service_slides(
     print("Bible references: ", service_order.bible_references)
     for bible_verse in service_order.bible_references:
         print("bible_verse: ", bible_verse)
-        actions.add_bible_reading_page(prs, bible_verse.as_reference_text())
+        add_bible_reading_with_status(
+            prs,
+            bible_verse.as_reference_text(),
+            error_writer=error_writer,
+            actions=actions,
+        )
 
     actions.add_church_cover_page(prs, sunday_date("slide"))
 
@@ -200,3 +205,18 @@ def add_song_with_status(
     except Exception:
         print(error)
         error_writer(error)
+
+
+def add_bible_reading_with_status(
+    prs: object,
+    bible_reference: str,
+    *,
+    error_writer: Callable[[str], None],
+    actions: SlideDeckActions,
+) -> None:
+    try:
+        actions.add_bible_reading_page(prs, bible_reference)
+    except Exception as error:
+        message = f"Error: Cannot add Bible reading {bible_reference}: {error}"
+        print(message)
+        error_writer(message)
