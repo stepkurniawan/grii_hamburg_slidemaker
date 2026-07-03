@@ -134,7 +134,7 @@ def default_generate_command() -> str:
 
 def read_crontab() -> str:
     result = subprocess.run(
-        ["crontab", "-l"],
+        ["sudo", "crontab", "-l"],
         check=False,
         capture_output=True,
         text=True,
@@ -145,12 +145,12 @@ def read_crontab() -> str:
         return ""
     if result.returncode == 1 and not result.stdout:
         return ""
-    raise RuntimeError(result.stderr.strip() or "Unable to read crontab")
+    raise RuntimeError(result.stderr.strip() or "Unable to read sudo crontab")
 
 
 def write_crontab(content: str) -> None:
     subprocess.run(
-        ["crontab", "-"],
+        ["sudo", "crontab", "-"],
         input=content,
         check=True,
         text=True,
