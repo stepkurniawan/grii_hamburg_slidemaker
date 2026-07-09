@@ -1,10 +1,14 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import ClassVar
 
 from pydantic import Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from grii_slide_maker.version import get_app_version
+
+
+SECRETS_FILE = Path(__file__).resolve().parents[1] / ".streamlit" / "secrets.toml"
 
 
 class Settings(BaseSettings):
@@ -15,7 +19,7 @@ class Settings(BaseSettings):
     DEFAULT_VERSION: ClassVar[str] = "0.0.0"
 
     model_config = SettingsConfigDict(
-        env_file=".streamlit/secrets.toml",
+        env_file=SECRETS_FILE,
         env_file_encoding="utf-8",
         extra="ignore",
     )
