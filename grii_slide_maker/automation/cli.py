@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 from openpyxl.workbook.workbook import Workbook
+from pydantic import ValidationError
 
 from grii_slide_maker.automation.excel import (
     load_workbook_from_bytes,
@@ -36,7 +37,11 @@ from grii_slide_maker.services.google_drive import (
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except (ValidationError, ValueError) as error:
+        print(f"Error: {_format_cli_error(error)}", file=sys.stderr)
+        return 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -58,6 +63,15 @@ def build_parser() -> argparse.ArgumentParser:
     sync_cron.set_defaults(func=sync_cron_command)
 
     return parser
+
+
+def _format_cli_error(error: ValidationError | ValueError) -> str:
+    if isinstance(error, ValidationError):
+        first_error = error.errors()[0] if error.errors() else {}
+        message = str(first_error.get("msg") or error)
+        return message.removeprefix("Value error, ")
+
+    return str(error)
 
 
 def generate_command(args: argparse.Namespace) -> int:

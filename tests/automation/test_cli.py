@@ -53,6 +53,23 @@ def test_generate_command_builds_and_uploads(monkeypatch):
     assert calls[1][1]["content"] == b"pptx-bytes"
 
 
+def test_generate_command_prints_workbook_validation_error(monkeypatch, capsys):
+    workbook_bytes = build_workbook_bytes()
+    workbook = cli.load_workbook_from_bytes(workbook_bytes)
+    workbook["dashboard"]["B187"] = "Deutronomy 1:1-2"
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+
+    monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
+    monkeypatch.setattr(cli, "download_excel_file_to_memory", lambda file_id: output)
+
+    exit_code = cli.main(["generate"])
+
+    assert exit_code == 1
+    assert "Unknown English Bible book: Deutronomy" in capsys.readouterr().err
+
+
 def test_print_cron_command_prints_managed_block(monkeypatch, capsys):
     monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")
     monkeypatch.setattr(
