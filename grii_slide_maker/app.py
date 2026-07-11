@@ -58,7 +58,6 @@ SELECTED_SECOND_OFFERING_PURPOSE_ID = "NONE"
 MY_SLIDE_WIDTH = Inches(16)
 MY_SIDE_HEIGHT = Inches(9)
 output_file = ""
-settings = get_settings()
 
 
 def st_print(text: str) -> None:
@@ -78,7 +77,7 @@ def sunday_date(formatted: str) -> str | datetime.date:
 def create_website() -> None:
     render_website(
         version=VERSION,
-        settings=settings,
+        settings=get_settings(),
         output_dir=OUTPUT_DIR,
         binary_output_file=binary_output_file,
         generate_slide=main,

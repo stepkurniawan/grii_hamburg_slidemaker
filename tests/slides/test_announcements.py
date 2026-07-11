@@ -3,7 +3,11 @@ from grii_slide_maker.slides import announcements
 
 def test_insert_annoucement_slides_uses_configured_folder(monkeypatch, image_bytes):
     calls = []
-    monkeypatch.setattr(announcements.settings, "ANNOUCEMENT_FOLDER_ID", "folder-1")
+    monkeypatch.setattr(
+        announcements,
+        "get_settings",
+        lambda: type("Settings", (), {"ANNOUCEMENT_FOLDER_ID": "folder-1"})(),
+    )
     monkeypatch.setattr(
         announcements,
         "save_images_from_google_folder_to_memory",

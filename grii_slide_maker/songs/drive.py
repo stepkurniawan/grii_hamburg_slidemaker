@@ -22,8 +22,6 @@ base_path = getattr(
 
 SONGS_FOLDER = os.path.join(base_path, "songs")
 
-settings = get_settings()
-
 
 def st_print(text: str) -> None:
     st.write(text)
@@ -66,6 +64,7 @@ def _raise_song_folder_not_found(song_number: str) -> Never:
 def download_new_song_pipeline(song_number: str) -> dict[str, object] | None:
     song_number = str(song_number)
     st_print("Downloading song number: " + song_number)
+    settings = get_settings()
     master_lagu_ibadah_folder_id = settings.GOOGLE_DRIVE_SONG_MASTER_FOLDER_ID
 
     song_folder_id = get_folder_id_by_name(song_number, master_lagu_ibadah_folder_id)
