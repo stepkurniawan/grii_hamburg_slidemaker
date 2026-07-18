@@ -23,9 +23,15 @@ def test_song_selection_rejects_wrong_song_count(song_numbers):
         SongSelection.model_validate(song_numbers)
 
 
-def test_song_selection_rejects_non_numeric_song_id():
-    with pytest.raises(ValidationError):
-        SongSelection.model_validate("161, test, 93, 169")
+def test_song_selection_accepts_text_song_id():
+    selection = SongSelection.model_validate("161, Gloria Patri, 93, 169")
+
+    assert [song.value for song in selection.worship_songs] == [
+        "161",
+        "Gloria Patri",
+        "93",
+        "169",
+    ]
 
 
 def test_service_order_accepts_optional_holy_communion_song():

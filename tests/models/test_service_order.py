@@ -60,6 +60,23 @@ def test_service_order_parses_holy_communion_song_from_song_list():
     assert service_order.songs.holy_communion_song.value == "264"
 
 
+def test_service_order_accepts_text_song_id():
+    service_order = ServiceOrder.model_validate(
+        {
+            "song_numbers": "161, Gloria Patri, 93, 169",
+            "pastor_name": "Pdt. Billy Kristanto",
+            "bible_verses": "Genesis 1:2-3",
+        }
+    )
+
+    assert [song.value for song in service_order.songs.worship_songs] == [
+        "161",
+        "Gloria Patri",
+        "93",
+        "169",
+    ]
+
+
 def test_service_order_rejects_bad_song_count():
     with pytest.raises(ValidationError):
         SongSelection.model_validate("161, 320, 93")

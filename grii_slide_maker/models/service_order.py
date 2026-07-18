@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from grii_slide_maker.models.bible import BibleReference
 
 
-class SongNumber(BaseModel):
+class SongNumberOrTitle(BaseModel):
     value: str = Field(min_length=1)
 
     @model_validator(mode="before")
@@ -19,8 +19,6 @@ class SongNumber(BaseModel):
             value = str(value)
         if isinstance(value, str):
             song_number = value.strip()
-            if not song_number.isdigit():
-                raise ValueError("Song number must contain digits only")
             return {"value": song_number}
         return value
 
@@ -29,8 +27,8 @@ class SongNumber(BaseModel):
 
 
 class SongSelection(BaseModel):
-    worship_songs: list[SongNumber] = Field(min_length=4, max_length=4)
-    holy_communion_song: SongNumber | None = None
+    worship_songs: list[SongNumberOrTitle] = Field(min_length=4, max_length=4)
+    holy_communion_song: SongNumberOrTitle | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -99,7 +97,7 @@ class ServiceOrder(BaseModel):
             holy_communion_song = value.get("holy_communion_song_number")
             song_selection = SongSelection.model_validate(value["song_numbers"])
             if holy_communion_song not in (None, ""):
-                song_selection.holy_communion_song = SongNumber.model_validate(holy_communion_song)
+                song_selection.holy_communion_song = SongNumberOrTitle.model_validate(holy_communion_song)
 
             pastor = Pastor.model_validate(value["pastor_name"])
             pastor.title_de_or_en = value.get("pastor_title") or "Rev."
