@@ -84,6 +84,17 @@ def test_print_cron_command_prints_managed_block(monkeypatch, capsys):
     assert "30 9 * * 0 generate-command" in capsys.readouterr().out
 
 
+def test_default_generate_command_uses_absolute_uv_path(monkeypatch):
+    monkeypatch.setattr(cli.os, "getcwd", lambda: "/repo path")
+    monkeypatch.setattr(cli.shutil, "which", lambda command: "/home/user/.local/bin/uv")
+
+    command = cli.default_generate_command()
+
+    assert command == (
+        "cd '/repo path' && /home/user/.local/bin/uv run grii-slide-auto generate"
+    )
+
+
 def test_sync_cron_command_replaces_existing_block(monkeypatch):
     written = []
     monkeypatch.setenv("GOOGLE_SHEET_MASTER_WARTA_ID", "excel-file")

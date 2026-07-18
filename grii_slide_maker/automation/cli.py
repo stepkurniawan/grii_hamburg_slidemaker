@@ -7,6 +7,7 @@ import datetime
 from io import BytesIO
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 
@@ -143,7 +144,11 @@ def default_generate_command() -> str:
     # Build the default shell command used for scheduled execution.
     # It changes the working directory to the repository root and then
     # runs the `grii-slide-auto generate` entrypoint through the UV runtime.
-    return f"cd {shlex.quote(os.getcwd())} && uv run grii-slide-auto generate"
+    uv_executable = shutil.which("uv") or "uv"
+    return (
+        f"cd {shlex.quote(os.getcwd())} && "
+        f"{shlex.quote(uv_executable)} run grii-slide-auto generate"
+    )
 
 
 def read_crontab() -> str:
