@@ -115,6 +115,7 @@ On the NAS, schedule a daily sync job that updates one managed weekly generation
 
 ```bash
 uv run grii-slide-auto sync-cron
+sudo "$(command -v uv)" run grii-slide-auto sync-cron # this one is better since we are using sudo crontab
 ```
 
 The managed crontab block is marked with `# BEGIN grii-slide-auto` and `# END grii-slide-auto`; unrelated cron entries are preserved.
