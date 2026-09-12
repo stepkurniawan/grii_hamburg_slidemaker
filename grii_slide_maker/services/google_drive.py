@@ -59,7 +59,7 @@ def try_build_drive_service(active_creds: Any) -> None:
 
         print("Files:")
         for item in items:
-            print("{0} ({1})".format(item["name"], item["id"]))
+            print("{} ({})".format(item["name"], item["id"]))
     except HttpError as error:
         print(f"An error occurred: {error}")
 
@@ -69,7 +69,7 @@ def connect_service_account_streamlit() -> None:
     global creds
 
     if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+        if creds and creds.expired:
             creds.refresh(Request())
         else:
             creds = service_account.Credentials.from_service_account_info(

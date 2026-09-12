@@ -1,6 +1,17 @@
 from grii_slide_maker.services import google_drive
 
 
+class FakeExpiredServiceAccountCredentials:
+    valid = False
+    expired = True
+
+    def __init__(self):
+        self.refresh_calls = []
+
+    def refresh(self, request):
+        self.refresh_calls.append(request)
+
+
 class FakeDownload:
     def __init__(self, fh, request):
         self.fh = fh
@@ -82,6 +93,20 @@ class FakeDriveService:
 
     def files(self):
         return self.files_resource
+
+
+def test_connect_service_account_streamlit_refreshes_expired_credentials(monkeypatch):
+    credentials = FakeExpiredServiceAccountCredentials()
+    monkeypatch.setattr(google_drive, "creds", credentials)
+    monkeypatch.setattr(
+        google_drive.service_account.Credentials,
+        "from_service_account_info",
+        lambda *_args, **_kwargs: AssertionError("credentials should be refreshed"),
+    )
+
+    google_drive.connect_service_account_streamlit()
+
+    assert len(credentials.refresh_calls) == 1
 
 
 def test_get_list_folders_returns_all_pages(monkeypatch, drive_folder_payload):
